@@ -1,37 +1,44 @@
 import { AddAccount, AddAccountParams } from '@/domain/usecases'
 
 class AddAccountImpl implements AddAccount {
-  private userRepository
+  private addAccountRepository
 
-  constructor(userRepository: UserRepositoryMock) {
-    this.userRepository = userRepository
+  constructor(addAccountRepository: AddAccountRepository) {
+    this.addAccountRepository = addAccountRepository
   }
 
   async execute(account: AddAccountParams): Promise<void> {
-    await this.userRepository.add(account)
+    await this.addAccountRepository.add(account)
   }
 }
 
-class UserRepositoryMock {
-  async add(account: any): Promise<void> {}
+type AddAccountRepositoryParams = {
+  name: string
+  email: string
+  password: string
+}
+
+interface AddAccountRepository {
+  add: (account: AddAccountRepositoryParams) => Promise<void>
+}
+
+class AddAccountRepositoryMock implements AddAccountRepository {
+  async add(account: AddAccountRepositoryParams): Promise<void> {}
 }
 
 describe('AddAccount usecase', () => {
-  it('should call UserRepository with correct values', async () => {
-    const userRepositoryMock = new UserRepositoryMock()
-    const addSpy = jest.spyOn(userRepositoryMock, 'add')
-    const sut = new AddAccountImpl(userRepositoryMock)
-
-    await sut.execute({
+  it('should call AddAccountRepository with correct values', async () => {
+    const addAccountRepositoryMock = new AddAccountRepositoryMock()
+    const addSpy = jest.spyOn(addAccountRepositoryMock, 'add')
+    const sut = new AddAccountImpl(addAccountRepositoryMock)
+    const fakeAccount = {
       name: 'any_name',
       email: 'any_email@mail.com',
       password: 'any_password',
-    })
+    }
 
-    expect(addSpy).toHaveBeenCalledWith({
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      password: 'any_password',
-    })
+    await sut.execute(fakeAccount)
+
+    expect(addSpy).toHaveBeenCalledWith(fakeAccount)
   })
 })
