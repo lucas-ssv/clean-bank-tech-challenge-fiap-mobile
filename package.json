@@ -8,7 +8,9 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "prepare": "husky",
+    "commitlint": "commitlint --edit"
   },
   "dependencies": {
     "expo": "~52.0.43",
@@ -18,11 +20,14 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
     "@types/react": "~18.3.12",
     "eslint": "^8.57.0",
     "eslint-config-expo": "~8.0.1",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
+    "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "typescript": "^5.3.3"
   },
