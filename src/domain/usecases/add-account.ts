@@ -1,5 +1,5 @@
 export interface AddAccount {
-  add: (account: AddAccountParams) => Promise<void>
+  execute: (account: AddAccountParams) => Promise<void>
 }
 
 export type AddAccountParams = {
