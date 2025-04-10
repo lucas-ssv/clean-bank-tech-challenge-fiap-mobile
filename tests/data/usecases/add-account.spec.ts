@@ -1,30 +1,5 @@
-import { AddAccount, AddAccountParams } from '@/domain/usecases'
-
-class AddAccountImpl implements AddAccount {
-  private addAccountRepository
-
-  constructor(addAccountRepository: AddAccountRepository) {
-    this.addAccountRepository = addAccountRepository
-  }
-
-  async execute(account: AddAccountParams): Promise<void> {
-    await this.addAccountRepository.add(account)
-  }
-}
-
-type AddAccountRepositoryParams = {
-  name: string
-  email: string
-  password: string
-}
-
-interface AddAccountRepository {
-  add: (account: AddAccountRepositoryParams) => Promise<void>
-}
-
-class AddAccountRepositoryMock implements AddAccountRepository {
-  async add(account: AddAccountRepositoryParams): Promise<void> {}
-}
+import { AddAccountImpl } from '@/data/usecases'
+import { AddAccountRepositoryMock } from '@/tests/data/mocks'
 
 describe('AddAccount usecase', () => {
   it('should call AddAccountRepository with correct values', async () => {
