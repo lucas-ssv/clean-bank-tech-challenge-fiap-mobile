@@ -41,4 +41,20 @@ describe('AddAccount usecase', () => {
 
     expect(addSpy).toHaveBeenCalledWith(fakeAccount)
   })
+
+  it('should throw if AddAccountRepository throws', async () => {
+    const addAccountRepositoryMock = new AddAccountRepositoryMock()
+    jest.spyOn(addAccountRepositoryMock, 'add').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const sut = new AddAccountImpl(addAccountRepositoryMock)
+
+    const promise = sut.execute({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password',
+    })
+
+    await expect(promise).rejects.toThrow()
+  })
 })
