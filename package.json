@@ -4,12 +4,14 @@
   "main": "index.ts",
   "scripts": {
     "test": "jest",
+    "test:staged": "jest --findRelatedTests",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "lint-staged": "lint-staged",
     "prepare": "husky",
     "commitlint": "commitlint --edit"
   },
@@ -29,12 +31,19 @@
     "eslint-config-expo": "~8.0.1",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
+    "husky": "^9.1.7",
     "jest": "~29.7.0",
     "jest-expo": "~52.0.6",
-    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
     "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
+  },
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": [
+      "npm run lint",
+      "npm run test:staged"
+    ]
   },
   "private": true
 }
