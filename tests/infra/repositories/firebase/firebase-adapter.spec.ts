@@ -1,9 +1,6 @@
-import {
-  AddAccountRepository,
-  AddAccountRepositoryParams,
-} from '@/data/contracts'
-import { createUserWithEmailAndPassword, initializeAuth } from 'firebase/auth'
-import { initializeApp } from 'firebase/app'
+import { FirebaseAdapter } from '@/infra/repositories/firebase'
+import { auth } from '@/main/config/firebase'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
 
 jest.mock('firebase/auth', () => ({
   createUserWithEmailAndPassword: jest.fn(),
@@ -13,20 +10,6 @@ jest.mock('firebase/auth', () => ({
 jest.mock('firebase/app', () => ({
   initializeApp: jest.fn(),
 }))
-
-const app = initializeApp({
-  appId: '1:434201147933:android:6edcd3adeb99a81c68e4f4',
-  projectId: 'bank-tech-challenge-mobile',
-  apiKey: 'AIzaSyCEn6q-emhI9yoMdMn4BWKgEWiSLwpGrS8',
-})
-
-const auth = initializeAuth(app)
-
-class FirebaseAdapter implements AddAccountRepository {
-  async add(account: AddAccountRepositoryParams): Promise<void> {
-    await createUserWithEmailAndPassword(auth, account.email, account.password)
-  }
-}
 
 describe('FirebaseAdapter', () => {
   it('should add an account on success', async () => {
