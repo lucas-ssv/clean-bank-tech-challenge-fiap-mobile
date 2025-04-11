@@ -44,4 +44,21 @@ describe('FirebaseAdapter', () => {
       'any_password',
     )
   })
+
+  it('should throw if createUserWithEmailAndPassword throws', async () => {
+    const sut = new FirebaseAdapter()
+    ;(createUserWithEmailAndPassword as jest.Mock).mockImplementationOnce(
+      () => {
+        throw new Error()
+      },
+    )
+
+    const promise = sut.add({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password',
+    })
+
+    await expect(promise).rejects.toThrow()
+  })
 })
