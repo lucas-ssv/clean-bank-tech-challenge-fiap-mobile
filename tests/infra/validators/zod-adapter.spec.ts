@@ -2,8 +2,10 @@ import { z, ZodRawShape, ZodString } from 'zod'
 
 jest.mock('zod', () => {
   const emailMock = jest.fn()
+  const minMock = jest.fn()
   const stringMock = jest.fn(() => ({
     email: emailMock,
+    min: minMock,
   }))
 
   return {
@@ -38,6 +40,12 @@ class ZodAdapter {
     return this
   }
 
+  min(minLength: number, message: string): ZodAdapter {
+    const current = this.validations[this.fieldName] as any
+    this.validations[this.fieldName] = current.min(minLength, { message })
+    return this
+  }
+
   build() {
     return z.object(this.validations)
   }
@@ -54,7 +62,7 @@ describe('ZodAdapter', () => {
     })
   })
 
-  it('should call z.email with correct message', () => {
+  it('should call z.string().email with correct message', () => {
     const sut = ZodAdapter
 
     sut
@@ -66,5 +74,17 @@ describe('ZodAdapter', () => {
     expect(z.string().email).toHaveBeenCalledWith({
       message: 'any_email_error',
     })
+  })
+
+  it('should call z.string().min with correct message', () => {
+    const sut = ZodAdapter
+
+    sut
+      .field('any_field')
+      .string('any_message_error')
+      .min(6, 'any_min_error')
+      .build()
+
+    expect(z.string().min).toHaveBeenCalledWith(6, { message: 'any_min_error' })
   })
 })
