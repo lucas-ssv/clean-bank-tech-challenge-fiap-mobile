@@ -12,6 +12,7 @@ jest.mock('zod', () => {
     z: {
       object: jest.fn(),
       string: stringMock,
+      literal: jest.fn(),
     },
   }
 })
@@ -43,6 +44,11 @@ class ZodAdapter {
   min(minLength: number, message: string): ZodAdapter {
     const current = this.validations[this.fieldName] as any
     this.validations[this.fieldName] = current.min(minLength, { message })
+    return this
+  }
+
+  literal(value: boolean): ZodAdapter {
+    this.validations[this.fieldName] = z.literal<boolean>(value)
     return this
   }
 
@@ -86,5 +92,13 @@ describe('ZodAdapter', () => {
       .build()
 
     expect(z.string().min).toHaveBeenCalledWith(6, { message: 'any_min_error' })
+  })
+
+  it('should call z.literal with correct value', () => {
+    const sut = ZodAdapter
+
+    sut.field('any_field').literal(true).build()
+
+    expect(z.literal).toHaveBeenCalledWith(true)
   })
 })
