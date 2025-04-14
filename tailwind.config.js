@@ -3,7 +3,13 @@ import gluestackPlugin from '@gluestack-ui/nativewind-utils/tailwind-plugin'
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'media',
-  content: ['src/**/*.{tsx,jsx,ts,js}', 'components/**/*.{tsx,jsx,ts,js}'],
+  content: [
+    './App.{tsx,jsx,ts,js}',
+    './index.{tsx,jsx,ts,js}',
+    './src/index.{tsx,jsx,ts,js}',
+    './src/**/*.{tsx,jsx,ts,js}',
+    './src/components/**/*.{tsx,jsx,ts,js}',
+  ],
   presets: [require('nativewind/preset')],
   safelist: [
     {
@@ -186,16 +192,28 @@ module.exports = {
         },
       },
       fontFamily: {
-        heading: undefined,
-        body: undefined,
-        mono: undefined,
-        roboto: ['Roboto', 'sans-serif'],
+        heading: 'Inter_700Bold',
+        body: 'Inter_400Regular',
+        medium: 'Inter_500Medium',
+        semibold: 'Inter_600SemiBold',
+        body_montserrat: 'Montserrat_400Regular',
+        inter: [
+          'Inter_400Regular',
+          'Inter_500Medium',
+          'Inter_600SemiBold',
+          'Inter_700Bold',
+        ],
+        montserrat: ['Montserrat_400Regular'],
       },
       fontWeight: {
         extrablack: '950',
       },
       fontSize: {
-        '2xs': '10px',
+        sm: '13px',
+        md: '16px',
+        lg: '20px',
+        xl: '25px',
+        '2xl': '31px',
       },
       boxShadow: {
         'hard-1': '-2px 2px 8px 0px rgba(38, 38, 38, 0.20)',
