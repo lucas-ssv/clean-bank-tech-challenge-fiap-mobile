@@ -4,8 +4,16 @@
     "strict": true,
     "baseUrl": "src",
     "paths": {
-      "@/*": ["*"],
-      "@/tests/*": ["../tests/*"]
+      "@/*": [
+        "*",
+        "./*"
+      ],
+      "@/tests/*": [
+        "../tests/*"
+      ],
+      "tailwind.config": [
+        "./tailwind.config.js"
+      ]
     }
   }
 }
