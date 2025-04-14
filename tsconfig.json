@@ -2,18 +2,12 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "useUnknownInCatchVariables": false,
     "baseUrl": "src",
     "paths": {
-      "@/*": [
-        "*",
-        "./*"
-      ],
-      "@/tests/*": [
-        "../tests/*"
-      ],
-      "tailwind.config": [
-        "./tailwind.config.js"
-      ]
+      "@/*": ["*", "./*"],
+      "@/tests/*": ["../tests/*"],
+      "tailwind.config": ["./tailwind.config.js"]
     }
   }
 }
