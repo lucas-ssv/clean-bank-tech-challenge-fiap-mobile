@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import Checkbox from 'expo-checkbox'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ZodLiteral, ZodObject, ZodString } from 'zod'
+import { z } from 'zod'
 
 import { AddAccount } from '@/domain/usecases'
 
@@ -36,16 +36,25 @@ import IluNovaConta from '@/presentation/assets/cadastro.svg'
 import CloseIcon from '@/presentation/assets/close-black.svg'
 
 type Props = {
-  schema: ZodObject<{
-    name: ZodString
-    email: ZodString
-    password: ZodString
-    terms: ZodLiteral<boolean>
-  }>
   addAccount: AddAccount
 }
 
-export function ModalCriarConta({ schema, addAccount }: Props) {
+type SignUpData = z.infer<typeof schema>
+
+const schema = z.object({
+  name: z
+    .string({ message: 'O nome é obrigatório' })
+    .min(2, { message: 'O nome deve conter pelo menos 2 caracteres' }),
+  email: z
+    .string({ message: 'O e-mail é obrigatório' })
+    .email({ message: 'Endereço de e-mail inválido' }),
+  password: z
+    .string({ message: 'A senha é obrigatória' })
+    .min(6, { message: 'A senha deve conter pelo menos 6 caracteres' }),
+  terms: z.literal<boolean>(true),
+})
+
+export function ModalCriarConta({ addAccount }: Props) {
   const {
     control,
     handleSubmit,
@@ -58,7 +67,7 @@ export function ModalCriarConta({ schema, addAccount }: Props) {
   const toast = useToast()
   const [showModal, setShowModal] = useState(false)
 
-  const onSignUp = async (data: any) => {
+  const onSignUp = async (data: SignUpData) => {
     const { name, email, password } = data
     try {
       await addAccount.execute({

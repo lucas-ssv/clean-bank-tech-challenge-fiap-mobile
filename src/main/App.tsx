@@ -35,7 +35,7 @@ export default function App() {
 
   return (
     <GluestackUIProvider mode="light">
-      <Home signUpSchemaValidation={{} as any} addAccount={{} as any} />
+      <Home addAccount={{} as any} />
       <StatusBar style="light" />
     </GluestackUIProvider>
   )

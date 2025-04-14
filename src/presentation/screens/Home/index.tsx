@@ -7,7 +7,6 @@ import {
 } from '@/presentation/components/ui'
 import { ScrollView, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
-import { ZodObject, ZodString, ZodLiteral } from 'zod'
 
 import { AddAccount } from '@/domain/usecases'
 
@@ -19,16 +18,10 @@ import Star from '@/presentation/assets/pontos.svg'
 import Dispositivos from '@/presentation/assets/dispositivos.svg'
 
 type Props = {
-  signUpSchemaValidation: ZodObject<{
-    name: ZodString
-    email: ZodString
-    password: ZodString
-    terms: ZodLiteral<boolean>
-  }>
   addAccount: AddAccount
 }
 
-export function Home({ signUpSchemaValidation, addAccount }: Props) {
+export function Home({ addAccount }: Props) {
   return (
     <ScrollView
       className="bg-custom-my-light-green"
@@ -45,10 +38,7 @@ export function Home({ signUpSchemaValidation, addAccount }: Props) {
               <IlustracaoBanner width="100%" height={194} />
             </View>
             <HStack className="justify-between items-center gap-6 mt-4">
-              <ModalCriarConta
-                schema={signUpSchemaValidation}
-                addAccount={addAccount}
-              />
+              <ModalCriarConta addAccount={addAccount} />
               <ModalLogin />
             </HStack>
 
