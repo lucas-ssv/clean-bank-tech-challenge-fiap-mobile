@@ -11,8 +11,8 @@ import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
-import { Home } from '@/presentation/screens'
 import '@/presentation/styles'
+import { MakeHome } from './factories/screens'
 
 export default function App() {
   const [loaded, error] = useFonts({
@@ -35,7 +35,7 @@ export default function App() {
 
   return (
     <GluestackUIProvider mode="light">
-      <Home addAccount={{} as any} />
+      <MakeHome />
       <StatusBar style="light" />
     </GluestackUIProvider>
   )
