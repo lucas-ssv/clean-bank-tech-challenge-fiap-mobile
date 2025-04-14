@@ -1,14 +1,14 @@
 {
   "name": "clean-banktech",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "src/main/index.ts",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:staged": "jest --findRelatedTests",
+    "test:staged": "jest --findRelatedTests --passWithNoTests",
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
