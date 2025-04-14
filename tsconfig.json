@@ -5,8 +5,8 @@
     "useUnknownInCatchVariables": false,
     "baseUrl": "src",
     "paths": {
-      "@/*": ["*", "./*"],
-      "@/tests/*": ["../tests/*"],
+      "@/*": ["./*"],
+      "@tests/*": ["../tests/*"],
       "tailwind.config": ["./tailwind.config.js"]
     }
   }

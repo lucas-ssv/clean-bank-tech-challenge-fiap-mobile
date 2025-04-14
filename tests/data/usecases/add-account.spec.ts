@@ -1,5 +1,5 @@
 import { AddAccountImpl } from '@/data/usecases'
-import { AddAccountRepositoryMock } from '@/tests/data/mocks'
+import { AddAccountRepositoryMock } from '@tests/data/mocks'
 
 describe('AddAccount usecase', () => {
   it('should call AddAccountRepository with correct values', async () => {
