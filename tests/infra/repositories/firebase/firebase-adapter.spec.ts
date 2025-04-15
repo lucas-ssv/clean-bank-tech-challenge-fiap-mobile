@@ -5,6 +5,8 @@ import { createUserWithEmailAndPassword } from 'firebase/auth'
 jest.mock('firebase/auth', () => ({
   createUserWithEmailAndPassword: jest.fn(),
   initializeAuth: jest.fn(),
+  getReactNativePersistence: jest.fn(),
+  setPersistence: jest.fn(),
 }))
 
 jest.mock('firebase/app', () => ({

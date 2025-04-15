@@ -9,6 +9,7 @@ const config: Config = {
     '^@tests/(.*)$': '<rootDir>/tests/$1',
     '^@/(.*)$': '<rootDir>/src/$1',
   },
+  setupFiles: ['<rootDir>/jestSetupFile.ts'],
 }
 
 export default config
