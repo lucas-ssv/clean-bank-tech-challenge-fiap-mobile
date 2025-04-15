@@ -25,6 +25,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="com.lucasssv.cleanbanktech"/>
+        <data android:scheme="exp+clean-banktech"/>
       </intent-filter>
     </activity>
   </application>

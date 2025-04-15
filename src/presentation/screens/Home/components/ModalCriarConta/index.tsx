@@ -59,6 +59,7 @@ export function ModalCriarConta({ addAccount }: Props) {
     control,
     handleSubmit,
     setValue,
+    setError,
     getValues,
     formState: { errors, isSubmitting },
   } = useForm({
@@ -77,8 +78,11 @@ export function ModalCriarConta({ addAccount }: Props) {
       })
     } catch (error) {
       switch (error.code) {
-        case 'auth/email-already-exists':
+        case 'auth/email-already-in-use':
           toast('error', 'Este e-mail já existe.', error.code)
+          setError('email', {
+            message: 'Este e-mail já existe.',
+          })
           break
         default:
           toast('error', 'Ocorreu um erro ao efetuar o cadastro.', error.code)
