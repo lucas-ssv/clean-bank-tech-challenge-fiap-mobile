@@ -1,0 +1,56 @@
+import {
+  fireEvent,
+  render,
+  screen,
+  act,
+  waitFor,
+} from '@testing-library/react-native'
+
+import { AddAccount, AddAccountParams } from '@/domain/usecases'
+import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
+import { Home } from '@/presentation/screens'
+
+jest.useFakeTimers()
+jest.mock('nativewind', () => {
+  const setColorSchemeMock = jest.fn()
+
+  return {
+    useColorScheme: () => ({
+      colorScheme: 'light',
+      setColorScheme: setColorSchemeMock,
+    }),
+    vars: jest.fn(),
+    cssInterop: jest.fn(),
+  }
+})
+
+class AddAccountMock implements AddAccount {
+  async execute(account: AddAccountParams): Promise<void> {}
+}
+
+describe('<Home />', () => {
+  it('should render correctly on start', async () => {
+    const addAccountMock = new AddAccountMock()
+    render(
+      <GluestackUIProvider>
+        <Home addAccount={addAccountMock} />
+      </GluestackUIProvider>,
+    )
+
+    const openAccountButton = screen.getByTestId('open-account-button')
+    await waitFor(() => {
+      act(() => fireEvent(openAccountButton, 'press'))
+    })
+    const checkboxTerms = await screen.findByTestId('checkbox-terms')
+
+    expect(await screen.findByTestId('input-name')).toHaveDisplayValue('')
+    expect(await screen.findByTestId('input-email')).toHaveDisplayValue('')
+    expect(await screen.findByTestId('input-password')).toHaveDisplayValue('')
+    expect(checkboxTerms.props.accessibilityState.checked).toBeUndefined()
+    expect(screen.queryByTestId('error-name')).not.toBeOnTheScreen()
+    expect(screen.queryByTestId('error-email')).not.toBeOnTheScreen()
+    expect(screen.queryByTestId('error-password')).not.toBeOnTheScreen()
+    expect(await screen.findByTestId('submit-button')).not.toBeDisabled()
+    expect(screen.queryByTestId('submit-button-loading')).not.toBeOnTheScreen()
+  })
+})

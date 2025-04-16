@@ -93,6 +93,7 @@ export function ModalCriarConta({ addAccount }: Props) {
   return (
     <Box className="flex-1">
       <Button
+        testID="open-account-button"
         className="h-12 w-full bg-black rounded-lg"
         onPress={() => setShowModal(true)}
       >
@@ -149,6 +150,7 @@ export function ModalCriarConta({ addAccount }: Props) {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input className="h-12 bg-white border border-custom-my-input-border rounded-lg mt-2">
                       <InputField
+                        testID="input-name"
                         className="text-md"
                         onChangeText={onChange}
                         onBlur={onBlur}
@@ -159,7 +161,7 @@ export function ModalCriarConta({ addAccount }: Props) {
                   )}
                 />
                 {errors.name && (
-                  <FormControlError>
+                  <FormControlError testID="error-name">
                     <FormControlErrorText>
                       {errors.name.message}
                     </FormControlErrorText>
@@ -178,6 +180,7 @@ export function ModalCriarConta({ addAccount }: Props) {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input className="h-12 bg-white border border-custom-my-input-border rounded-lg mt-2">
                       <InputField
+                        testID="input-email"
                         className="text-md"
                         onChangeText={onChange}
                         onBlur={onBlur}
@@ -188,7 +191,7 @@ export function ModalCriarConta({ addAccount }: Props) {
                   )}
                 />
                 {errors.email && (
-                  <FormControlError>
+                  <FormControlError testID="error-email">
                     <FormControlErrorText>
                       {errors.email.message}
                     </FormControlErrorText>
@@ -208,6 +211,7 @@ export function ModalCriarConta({ addAccount }: Props) {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input className="h-12 bg-white border border-custom-my-input-border rounded-lg mt-2">
                       <InputField
+                        testID="input-password"
                         className="text-md"
                         type="password"
                         placeholder="Digite sua senha"
@@ -219,7 +223,7 @@ export function ModalCriarConta({ addAccount }: Props) {
                   )}
                 />
                 {errors.password && (
-                  <FormControlError>
+                  <FormControlError testID="error-password">
                     <FormControlErrorText>
                       {errors.password.message}
                     </FormControlErrorText>
@@ -235,6 +239,7 @@ export function ModalCriarConta({ addAccount }: Props) {
                       name="terms"
                       render={({ field: { onChange, value } }) => (
                         <Checkbox
+                          testID="checkbox-terms"
                           color="#47A138"
                           className={`${errors.terms ? '!border-custom-my-dark-red' : '!border-custom-my-green'} !rounded-[5px]`}
                           onValueChange={onChange}
@@ -252,11 +257,17 @@ export function ModalCriarConta({ addAccount }: Props) {
               </Pressable>
 
               <Button
+                testID="submit-button"
                 className="h-12 bg-custom-my-orange rounded-lg mt-8"
                 onPress={handleSubmit(onSignUp)}
                 isDisabled={isSubmitting}
               >
-                {isSubmitting && <ButtonSpinner className="text-white" />}
+                {isSubmitting && (
+                  <ButtonSpinner
+                    testID="submit-button-loading"
+                    className="text-white"
+                  />
+                )}
                 <ButtonText className="text-md">Criar conta</ButtonText>
               </Button>
             </VStack>
