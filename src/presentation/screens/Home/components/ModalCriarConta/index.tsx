@@ -161,8 +161,8 @@ export function ModalCriarConta({ addAccount }: Props) {
                   )}
                 />
                 {errors.name && (
-                  <FormControlError testID="error-name">
-                    <FormControlErrorText>
+                  <FormControlError>
+                    <FormControlErrorText testID="error-name">
                       {errors.name.message}
                     </FormControlErrorText>
                   </FormControlError>
