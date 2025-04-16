@@ -53,4 +53,23 @@ describe('<Home />', () => {
     expect(await screen.findByTestId('submit-button')).not.toBeDisabled()
     expect(screen.queryByTestId('submit-button-loading')).not.toBeOnTheScreen()
   })
+
+  it('should show nameError if field name is empty', async () => {
+    const addAccountMock = new AddAccountMock()
+    render(
+      <GluestackUIProvider>
+        <Home addAccount={addAccountMock} />
+      </GluestackUIProvider>,
+    )
+
+    const openAccountButton = screen.getByTestId('open-account-button')
+    fireEvent(openAccountButton, 'press')
+    const submitButton = await screen.findByTestId('submit-button')
+    fireEvent(submitButton, 'press')
+    const errorName = await screen.findByTestId('error-name')
+
+    await waitFor(async () => {
+      expect(errorName.props.children).toBe('O nome é obrigatório')
+    })
+  })
 })
