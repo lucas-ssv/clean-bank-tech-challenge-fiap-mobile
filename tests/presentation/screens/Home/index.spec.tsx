@@ -135,4 +135,23 @@ describe('<Home />', () => {
       expect(errorEmail.props.children).toBe('Endereço de e-mail inválido')
     })
   })
+
+  it('should show passwordError if field password is empty', async () => {
+    const addAccountMock = new AddAccountMock()
+    render(
+      <GluestackUIProvider>
+        <Home addAccount={addAccountMock} />
+      </GluestackUIProvider>,
+    )
+
+    const openAccountButton = screen.getByTestId('open-account-button')
+    fireEvent(openAccountButton, 'press')
+    const submitButton = await screen.findByTestId('submit-button')
+    fireEvent(submitButton, 'press')
+    const errorEmail = await screen.findByTestId('error-password')
+
+    await waitFor(async () => {
+      expect(errorEmail.props.children).toBe('A senha é obrigatória')
+    })
+  })
 })
