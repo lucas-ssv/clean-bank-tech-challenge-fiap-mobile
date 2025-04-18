@@ -73,6 +73,29 @@ describe('<Home />', () => {
     })
   })
 
+  it('should show nameError if field name is less than 2 characters', async () => {
+    const addAccountMock = new AddAccountMock()
+    render(
+      <GluestackUIProvider>
+        <Home addAccount={addAccountMock} />
+      </GluestackUIProvider>,
+    )
+
+    const openAccountButton = screen.getByTestId('open-account-button')
+    fireEvent(openAccountButton, 'press')
+    const inputName = await screen.findByTestId('input-name')
+    fireEvent(inputName, 'changeText', 'x')
+    const submitButton = await screen.findByTestId('submit-button')
+    fireEvent(submitButton, 'press')
+    const errorName = await screen.findByTestId('error-name')
+
+    await waitFor(async () => {
+      expect(errorName.props.children).toBe(
+        'O nome deve conter pelo menos 2 caracteres',
+      )
+    })
+  })
+
   it('should show emailError if field email is empty', async () => {
     const addAccountMock = new AddAccountMock()
     render(
