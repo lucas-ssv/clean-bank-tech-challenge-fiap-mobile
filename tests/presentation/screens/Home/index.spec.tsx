@@ -72,4 +72,23 @@ describe('<Home />', () => {
       expect(errorName.props.children).toBe('O nome é obrigatório')
     })
   })
+
+  it('should show emailError if field email is empty', async () => {
+    const addAccountMock = new AddAccountMock()
+    render(
+      <GluestackUIProvider>
+        <Home addAccount={addAccountMock} />
+      </GluestackUIProvider>,
+    )
+
+    const openAccountButton = screen.getByTestId('open-account-button')
+    fireEvent(openAccountButton, 'press')
+    const submitButton = await screen.findByTestId('submit-button')
+    fireEvent(submitButton, 'press')
+    const errorEmail = await screen.findByTestId('error-email')
+
+    await waitFor(async () => {
+      expect(errorEmail.props.children).toBe('O e-mail é obrigatório')
+    })
+  })
 })
