@@ -177,4 +177,27 @@ describe('<Home />', () => {
       )
     })
   })
+
+  it('should show border error if checkbox terms is false', async () => {
+    const addAccountMock = new AddAccountMock()
+    render(
+      <GluestackUIProvider>
+        <Home addAccount={addAccountMock} />
+      </GluestackUIProvider>,
+    )
+
+    const openAccountButton = screen.getByTestId('open-account-button')
+    fireEvent(openAccountButton, 'press')
+    const checkboxTerms = await screen.findByTestId('checkbox-terms')
+    const submitButton = await screen.findByTestId('submit-button')
+    act(() => {
+      fireEvent(submitButton, 'press')
+    })
+
+    await waitFor(async () => {
+      expect(checkboxTerms.props.className).toBe(
+        '!border-custom-my-dark-red !rounded-[5px]',
+      )
+    })
+  })
 })
