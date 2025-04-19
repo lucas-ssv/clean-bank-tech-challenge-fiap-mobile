@@ -9,6 +9,7 @@ import {
 import { AddAccount, AddAccountParams } from '@/domain/usecases'
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
 import { Home } from '@/presentation/screens'
+import { useToast } from '@/presentation/components/ui'
 
 jest.useFakeTimers()
 jest.mock('nativewind', () => {
@@ -23,6 +24,11 @@ jest.mock('nativewind', () => {
     cssInterop: jest.fn(),
   }
 })
+jest.mock('@/presentation/components/ui/toast', () => ({
+  useToast: jest.fn().mockReturnValue({
+    show: jest.fn(),
+  }),
+}))
 
 class AddAccountMock implements AddAccount {
   async execute(account: AddAccountParams): Promise<void> {}
@@ -198,6 +204,37 @@ describe('<Home />', () => {
       expect(checkboxTerms.props.className).toBe(
         '!border-custom-my-dark-red !rounded-[5px]',
       )
+    })
+  })
+
+  it('should show toast error if AddAccount throws', async () => {
+    const addAccountMock = new AddAccountMock()
+    jest.spyOn(addAccountMock, 'execute').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    render(
+      <GluestackUIProvider>
+        <Home addAccount={addAccountMock} />
+      </GluestackUIProvider>,
+    )
+
+    const openAccountButton = screen.getByTestId('open-account-button')
+    fireEvent(openAccountButton, 'press')
+    const inputName = await screen.findByTestId('input-name')
+    fireEvent(inputName, 'changeText', 'any_name')
+    const inputEmail = await screen.findByTestId('input-email')
+    fireEvent(inputEmail, 'changeText', 'any_email@mail.com')
+    const inputPassword = await screen.findByTestId('input-password')
+    fireEvent(inputPassword, 'changeText', 'any_password')
+    const checkboxTerms = await screen.findByTestId('checkbox-terms')
+    fireEvent(checkboxTerms, 'press')
+    const submitButton = await screen.findByTestId('submit-button')
+    act(() => {
+      fireEvent(submitButton, 'press')
+    })
+
+    await waitFor(async () => {
+      expect(useToast().show).toHaveBeenCalled()
     })
   })
 })
