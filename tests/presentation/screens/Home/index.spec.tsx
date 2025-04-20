@@ -237,4 +237,33 @@ describe('<Home />', () => {
       expect(useToast().show).toHaveBeenCalled()
     })
   })
+
+  it('should show loading on submit', async () => {
+    const addAccountMock = new AddAccountMock()
+    render(
+      <GluestackUIProvider>
+        <Home addAccount={addAccountMock} />
+      </GluestackUIProvider>,
+    )
+
+    const openAccountButton = screen.getByTestId('open-account-button')
+    fireEvent(openAccountButton, 'press')
+    const inputName = await screen.findByTestId('input-name')
+    fireEvent(inputName, 'changeText', 'any_name')
+    const inputEmail = await screen.findByTestId('input-email')
+    fireEvent(inputEmail, 'changeText', 'any_email@mail.com')
+    const inputPassword = await screen.findByTestId('input-password')
+    fireEvent(inputPassword, 'changeText', 'any_password')
+    const checkboxTerms = await screen.findByTestId('checkbox-terms')
+    fireEvent(checkboxTerms, 'press')
+    const submitButton = await screen.findByTestId('submit-button')
+    await waitFor(() => {
+      fireEvent.press(submitButton)
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('submit-button-loading')).toBeOnTheScreen()
+      expect(submitButton).toBeDisabled()
+    })
+  })
 })
