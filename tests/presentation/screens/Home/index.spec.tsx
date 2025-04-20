@@ -6,10 +6,10 @@ import {
   waitFor,
 } from '@testing-library/react-native'
 
-import { AddAccount, AddAccountParams } from '@/domain/usecases'
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
 import { Home } from '@/presentation/screens'
 import { useToast } from '@/presentation/components/ui'
+import { AddAccountMock } from '@tests/domain/usecases'
 
 jest.useFakeTimers()
 jest.mock('nativewind', () => {
@@ -30,23 +30,23 @@ jest.mock('@/presentation/components/ui/toast', () => ({
   }),
 }))
 
-class AddAccountMock implements AddAccount {
-  async execute(account: AddAccountParams): Promise<void> {}
+const makeSut = async () => {
+  const addAccountMock = new AddAccountMock()
+  render(
+    <GluestackUIProvider>
+      <Home addAccount={addAccountMock} />
+    </GluestackUIProvider>,
+  )
+
+  const openAccountButton = screen.getByTestId('open-account-button')
+  await waitFor(() => {
+    fireEvent(openAccountButton, 'press')
+  })
 }
 
 describe('<Home />', () => {
   it('should render correctly on start', async () => {
-    const addAccountMock = new AddAccountMock()
-    render(
-      <GluestackUIProvider>
-        <Home addAccount={addAccountMock} />
-      </GluestackUIProvider>,
-    )
-
-    const openAccountButton = screen.getByTestId('open-account-button')
-    await waitFor(() => {
-      act(() => fireEvent(openAccountButton, 'press'))
-    })
+    makeSut()
     const checkboxTerms = await screen.findByTestId('checkbox-terms')
 
     expect(await screen.findByTestId('input-name')).toHaveDisplayValue('')
@@ -61,15 +61,7 @@ describe('<Home />', () => {
   })
 
   it('should show nameError if field name is empty', async () => {
-    const addAccountMock = new AddAccountMock()
-    render(
-      <GluestackUIProvider>
-        <Home addAccount={addAccountMock} />
-      </GluestackUIProvider>,
-    )
-
-    const openAccountButton = screen.getByTestId('open-account-button')
-    fireEvent(openAccountButton, 'press')
+    makeSut()
     const submitButton = await screen.findByTestId('submit-button')
     fireEvent(submitButton, 'press')
     const errorName = await screen.findByTestId('error-name')
@@ -80,15 +72,7 @@ describe('<Home />', () => {
   })
 
   it('should show nameError if field name is less than 2 characters', async () => {
-    const addAccountMock = new AddAccountMock()
-    render(
-      <GluestackUIProvider>
-        <Home addAccount={addAccountMock} />
-      </GluestackUIProvider>,
-    )
-
-    const openAccountButton = screen.getByTestId('open-account-button')
-    fireEvent(openAccountButton, 'press')
+    makeSut()
     const inputName = await screen.findByTestId('input-name')
     fireEvent(inputName, 'changeText', 'x')
     const submitButton = await screen.findByTestId('submit-button')
@@ -103,15 +87,7 @@ describe('<Home />', () => {
   })
 
   it('should show emailError if field email is empty', async () => {
-    const addAccountMock = new AddAccountMock()
-    render(
-      <GluestackUIProvider>
-        <Home addAccount={addAccountMock} />
-      </GluestackUIProvider>,
-    )
-
-    const openAccountButton = screen.getByTestId('open-account-button')
-    fireEvent(openAccountButton, 'press')
+    makeSut()
     const submitButton = await screen.findByTestId('submit-button')
     fireEvent(submitButton, 'press')
     const errorEmail = await screen.findByTestId('error-email')
@@ -122,15 +98,7 @@ describe('<Home />', () => {
   })
 
   it('should show emailError if field email is not an email', async () => {
-    const addAccountMock = new AddAccountMock()
-    render(
-      <GluestackUIProvider>
-        <Home addAccount={addAccountMock} />
-      </GluestackUIProvider>,
-    )
-
-    const openAccountButton = screen.getByTestId('open-account-button')
-    fireEvent(openAccountButton, 'press')
+    makeSut()
     const inputEmail = await screen.findByTestId('input-email')
     fireEvent(inputEmail, 'changeText', 'any_invalid_email')
     const submitButton = await screen.findByTestId('submit-button')
@@ -143,15 +111,7 @@ describe('<Home />', () => {
   })
 
   it('should show passwordError if field password is empty', async () => {
-    const addAccountMock = new AddAccountMock()
-    render(
-      <GluestackUIProvider>
-        <Home addAccount={addAccountMock} />
-      </GluestackUIProvider>,
-    )
-
-    const openAccountButton = screen.getByTestId('open-account-button')
-    fireEvent(openAccountButton, 'press')
+    makeSut()
     const submitButton = await screen.findByTestId('submit-button')
     fireEvent(submitButton, 'press')
     const errorEmail = await screen.findByTestId('error-password')
@@ -162,15 +122,7 @@ describe('<Home />', () => {
   })
 
   it('should show passwordError if field password is less than 6', async () => {
-    const addAccountMock = new AddAccountMock()
-    render(
-      <GluestackUIProvider>
-        <Home addAccount={addAccountMock} />
-      </GluestackUIProvider>,
-    )
-
-    const openAccountButton = screen.getByTestId('open-account-button')
-    fireEvent(openAccountButton, 'press')
+    makeSut()
     const inputPassword = await screen.findByTestId('input-password')
     fireEvent(inputPassword, 'changeText', 'any')
     const submitButton = await screen.findByTestId('submit-button')
@@ -185,15 +137,7 @@ describe('<Home />', () => {
   })
 
   it('should show border error if checkbox terms is false', async () => {
-    const addAccountMock = new AddAccountMock()
-    render(
-      <GluestackUIProvider>
-        <Home addAccount={addAccountMock} />
-      </GluestackUIProvider>,
-    )
-
-    const openAccountButton = screen.getByTestId('open-account-button')
-    fireEvent(openAccountButton, 'press')
+    makeSut()
     const checkboxTerms = await screen.findByTestId('checkbox-terms')
     const submitButton = await screen.findByTestId('submit-button')
     act(() => {
@@ -239,15 +183,7 @@ describe('<Home />', () => {
   })
 
   it('should show loading on submit', async () => {
-    const addAccountMock = new AddAccountMock()
-    render(
-      <GluestackUIProvider>
-        <Home addAccount={addAccountMock} />
-      </GluestackUIProvider>,
-    )
-
-    const openAccountButton = screen.getByTestId('open-account-button')
-    fireEvent(openAccountButton, 'press')
+    makeSut()
     const inputName = await screen.findByTestId('input-name')
     fireEvent(inputName, 'changeText', 'any_name')
     const inputEmail = await screen.findByTestId('input-email')
