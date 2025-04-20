@@ -82,5 +82,10 @@
       "npm run test:staged"
     ]
   },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
   "private": true
 }
