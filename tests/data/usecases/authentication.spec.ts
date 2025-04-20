@@ -3,7 +3,7 @@ import { Authentication, AuthenticationParams } from '@/domain/usecases'
 class AuthenticationImpl implements Authentication {
   private loadAccountRepository
 
-  constructor(loadAccountRepository: LoadAccountRepositoryMock) {
+  constructor(loadAccountRepository: LoadAccountRepository) {
     this.loadAccountRepository = loadAccountRepository
   }
 
@@ -12,8 +12,17 @@ class AuthenticationImpl implements Authentication {
   }
 }
 
-class LoadAccountRepositoryMock {
-  async auth(user: any): Promise<void> {}
+interface LoadAccountRepository {
+  auth: (user: LoadAccountRepositoryParams) => Promise<void>
+}
+
+type LoadAccountRepositoryParams = {
+  email: string
+  password: string
+}
+
+class LoadAccountRepositoryMock implements LoadAccountRepository {
+  async auth(user: LoadAccountRepositoryParams): Promise<void> {}
 }
 
 describe('Authentication usecase', () => {
