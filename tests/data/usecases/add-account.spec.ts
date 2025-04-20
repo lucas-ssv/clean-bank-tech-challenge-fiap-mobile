@@ -69,4 +69,19 @@ describe('AddAccount usecase', () => {
       email: 'any_email@mail.com',
     })
   })
+
+  it('should throw if SaveUserRepository throws', async () => {
+    const { sut, saveUserRepositoryMock } = makeSut()
+    jest.spyOn(saveUserRepositoryMock, 'save').mockImplementationOnce(() => {
+      throw new Error()
+    })
+
+    const promise = sut.execute({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password',
+    })
+
+    expect(promise).rejects.toThrow()
+  })
 })
