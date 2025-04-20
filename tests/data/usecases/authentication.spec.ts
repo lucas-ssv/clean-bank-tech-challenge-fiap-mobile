@@ -1,29 +1,5 @@
-import { Authentication, AuthenticationParams } from '@/domain/usecases'
-
-class AuthenticationImpl implements Authentication {
-  private loadAccountRepository
-
-  constructor(loadAccountRepository: LoadAccountRepository) {
-    this.loadAccountRepository = loadAccountRepository
-  }
-
-  async execute(user: AuthenticationParams): Promise<void> {
-    await this.loadAccountRepository.auth(user)
-  }
-}
-
-interface LoadAccountRepository {
-  auth: (user: LoadAccountRepositoryParams) => Promise<void>
-}
-
-type LoadAccountRepositoryParams = {
-  email: string
-  password: string
-}
-
-class LoadAccountRepositoryMock implements LoadAccountRepository {
-  async auth(user: LoadAccountRepositoryParams): Promise<void> {}
-}
+import { AuthenticationImpl } from '@/data/usecases'
+import { LoadAccountRepositoryMock } from '@tests/data/mocks'
 
 describe('Authentication usecase', () => {
   it('should call LoadAccountRepository with correct values', async () => {
