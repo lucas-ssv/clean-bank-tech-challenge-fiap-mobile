@@ -1,11 +1,18 @@
 import { AddAccountImpl } from '@/data/usecases'
-import { AddAccountRepositoryMock } from '@tests/data/mocks'
+import {
+  AddAccountRepositoryMock,
+  SaveUserRepositoryMock,
+} from '@tests/data/mocks'
 
 describe('AddAccount usecase', () => {
   it('should call AddAccountRepository with correct values', async () => {
     const addAccountRepositoryMock = new AddAccountRepositoryMock()
     const addSpy = jest.spyOn(addAccountRepositoryMock, 'add')
-    const sut = new AddAccountImpl(addAccountRepositoryMock)
+    const saveUserRepositoryMock = new SaveUserRepositoryMock()
+    const sut = new AddAccountImpl(
+      addAccountRepositoryMock,
+      saveUserRepositoryMock,
+    )
     const fakeAccount = {
       name: 'any_name',
       email: 'any_email@mail.com',
@@ -22,7 +29,11 @@ describe('AddAccount usecase', () => {
     jest.spyOn(addAccountRepositoryMock, 'add').mockImplementationOnce(() => {
       throw new Error()
     })
-    const sut = new AddAccountImpl(addAccountRepositoryMock)
+    const saveUserRepositoryMock = new SaveUserRepositoryMock()
+    const sut = new AddAccountImpl(
+      addAccountRepositoryMock,
+      saveUserRepositoryMock,
+    )
 
     const promise = sut.execute({
       name: 'any_name',
@@ -31,5 +42,26 @@ describe('AddAccount usecase', () => {
     })
 
     await expect(promise).rejects.toThrow()
+  })
+
+  it('should call SaveUserRepository with correct values', async () => {
+    const addAccountRepositoryMock = new AddAccountRepositoryMock()
+    const saveUserRepositoryMock = new SaveUserRepositoryMock()
+    const saveSpy = jest.spyOn(saveUserRepositoryMock, 'save')
+    const sut = new AddAccountImpl(
+      addAccountRepositoryMock,
+      saveUserRepositoryMock,
+    )
+
+    await sut.execute({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password',
+    })
+
+    expect(saveSpy).toHaveBeenCalledWith({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+    })
   })
 })
