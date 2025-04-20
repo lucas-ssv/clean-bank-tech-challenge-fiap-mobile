@@ -41,4 +41,19 @@ describe('SaveUser usecase', () => {
       email: 'any_email@mail.com',
     })
   })
+
+  it('should throw if SaveUserRepository throws', async () => {
+    const saveUserRepositoryMock = new SaveUserRepositoryMock()
+    jest.spyOn(saveUserRepositoryMock, 'save').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const sut = new SaveUserImpl(saveUserRepositoryMock)
+
+    const promise = sut.execute({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+    })
+
+    expect(promise).rejects.toThrow()
+  })
 })
