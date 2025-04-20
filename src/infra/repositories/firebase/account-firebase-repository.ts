@@ -1,7 +1,7 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { addDoc, collection, getFirestore, Timestamp } from 'firebase/firestore'
+import { addDoc, collection, Timestamp } from 'firebase/firestore'
 
-import { auth } from '@/main/config/firebase'
+import { auth, db } from '@/main/config/firebase'
 import {
   AddAccountRepository,
   AddAccountRepositoryParams,
@@ -9,8 +9,6 @@ import {
   SaveUserRepositoryParams,
 } from '@/data/contracts'
 import { userConverter } from './converters'
-
-export const db = getFirestore()
 
 export class AccountFirebaseRepository
   implements AddAccountRepository, SaveUserRepository
