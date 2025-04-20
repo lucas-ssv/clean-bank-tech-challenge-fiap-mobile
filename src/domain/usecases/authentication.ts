@@ -1,5 +1,5 @@
 export interface Authentication {
-  auth: (user: AuthenticationParams) => Promise<void>
+  execute: (user: AuthenticationParams) => Promise<void>
 }
 
 export type AuthenticationParams = {
