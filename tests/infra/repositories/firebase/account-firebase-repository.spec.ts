@@ -82,5 +82,19 @@ describe('AccountFirebaseRepository', () => {
         updatedAt: 'any_timestamp',
       })
     })
+
+    it('should throw if addDoc throws', async () => {
+      const sut = new AccountFirebaseRepository()
+      ;(addDoc as jest.Mock).mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+      const promise = sut.save({
+        name: 'any_name',
+        email: 'any_email@mail.com',
+      })
+
+      expect(promise).rejects.toThrow()
+    })
   })
 })
