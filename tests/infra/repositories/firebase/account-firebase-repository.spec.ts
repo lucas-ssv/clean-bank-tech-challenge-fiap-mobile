@@ -1,4 +1,4 @@
-import { FirebaseAdapter } from '@/infra/repositories/firebase'
+import { AccountFirebaseRepository } from '@/infra/repositories/firebase'
 import { auth } from '@/main/config/firebase'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 
@@ -13,10 +13,10 @@ jest.mock('firebase/app', () => ({
   initializeApp: jest.fn(),
 }))
 
-describe('FirebaseAdapter', () => {
+describe('AccountFirebaseRepository', () => {
   describe('add()', () => {
     it('should add an account on success', async () => {
-      const sut = new FirebaseAdapter()
+      const sut = new AccountFirebaseRepository()
 
       await sut.add({
         name: 'any_name',
@@ -32,7 +32,7 @@ describe('FirebaseAdapter', () => {
     })
 
     it('should throw if createUserWithEmailAndPassword throws', async () => {
-      const sut = new FirebaseAdapter()
+      const sut = new AccountFirebaseRepository()
       ;(createUserWithEmailAndPassword as jest.Mock).mockImplementationOnce(
         () => {
           throw new Error()
