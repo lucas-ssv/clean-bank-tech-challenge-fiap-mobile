@@ -4,15 +4,30 @@ import {
   SaveUserRepositoryMock,
 } from '@tests/data/mocks'
 
+type SutTypes = {
+  sut: AddAccountImpl
+  addAccountRepositoryMock: AddAccountRepositoryMock
+  saveUserRepositoryMock: SaveUserRepositoryMock
+}
+
+const makeSut = (): SutTypes => {
+  const addAccountRepositoryMock = new AddAccountRepositoryMock()
+  const saveUserRepositoryMock = new SaveUserRepositoryMock()
+  const sut = new AddAccountImpl(
+    addAccountRepositoryMock,
+    saveUserRepositoryMock,
+  )
+  return {
+    sut,
+    addAccountRepositoryMock,
+    saveUserRepositoryMock,
+  }
+}
+
 describe('AddAccount usecase', () => {
   it('should call AddAccountRepository with correct values', async () => {
-    const addAccountRepositoryMock = new AddAccountRepositoryMock()
+    const { sut, addAccountRepositoryMock } = makeSut()
     const addSpy = jest.spyOn(addAccountRepositoryMock, 'add')
-    const saveUserRepositoryMock = new SaveUserRepositoryMock()
-    const sut = new AddAccountImpl(
-      addAccountRepositoryMock,
-      saveUserRepositoryMock,
-    )
     const fakeAccount = {
       name: 'any_name',
       email: 'any_email@mail.com',
@@ -25,15 +40,10 @@ describe('AddAccount usecase', () => {
   })
 
   it('should throw if AddAccountRepository throws', async () => {
-    const addAccountRepositoryMock = new AddAccountRepositoryMock()
+    const { sut, addAccountRepositoryMock } = makeSut()
     jest.spyOn(addAccountRepositoryMock, 'add').mockImplementationOnce(() => {
       throw new Error()
     })
-    const saveUserRepositoryMock = new SaveUserRepositoryMock()
-    const sut = new AddAccountImpl(
-      addAccountRepositoryMock,
-      saveUserRepositoryMock,
-    )
 
     const promise = sut.execute({
       name: 'any_name',
@@ -45,13 +55,8 @@ describe('AddAccount usecase', () => {
   })
 
   it('should call SaveUserRepository with correct values', async () => {
-    const addAccountRepositoryMock = new AddAccountRepositoryMock()
-    const saveUserRepositoryMock = new SaveUserRepositoryMock()
+    const { sut, saveUserRepositoryMock } = makeSut()
     const saveSpy = jest.spyOn(saveUserRepositoryMock, 'save')
-    const sut = new AddAccountImpl(
-      addAccountRepositoryMock,
-      saveUserRepositoryMock,
-    )
 
     await sut.execute({
       name: 'any_name',
