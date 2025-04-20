@@ -3,7 +3,7 @@ import { SaveUser, SaveUserParams } from '@/domain/usecases'
 class SaveUserImpl implements SaveUser {
   private saveUserRepository
 
-  constructor(saveUserRepository: SaveUserRepositoryMock) {
+  constructor(saveUserRepository: SaveUserRepository) {
     this.saveUserRepository = saveUserRepository
   }
 
@@ -12,8 +12,17 @@ class SaveUserImpl implements SaveUser {
   }
 }
 
-class SaveUserRepositoryMock {
-  async save(user: any): Promise<void> {}
+interface SaveUserRepository {
+  save: (user: SaveUserRepositoryParams) => Promise<void>
+}
+
+type SaveUserRepositoryParams = {
+  name: string
+  email: string
+}
+
+class SaveUserRepositoryMock implements SaveUserRepository {
+  async save(user: SaveUserRepositoryParams): Promise<void> {}
 }
 
 describe('SaveUser usecase', () => {
