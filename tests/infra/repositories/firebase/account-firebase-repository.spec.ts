@@ -1,9 +1,13 @@
 import { AccountFirebaseRepository } from '@/infra/repositories/firebase'
 import { auth } from '@/main/config/firebase'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from 'firebase/auth'
 import { addDoc, collection } from 'firebase/firestore'
 
 jest.mock('firebase/auth', () => ({
+  signInWithEmailAndPassword: jest.fn(),
   createUserWithEmailAndPassword: jest.fn(),
   initializeAuth: jest.fn(),
   getReactNativePersistence: jest.fn(),
@@ -95,6 +99,23 @@ describe('AccountFirebaseRepository', () => {
       })
 
       expect(promise).rejects.toThrow()
+    })
+  })
+
+  describe('auth()', () => {
+    it('should authenticate on success', async () => {
+      const sut = new AccountFirebaseRepository()
+
+      await sut.auth({
+        email: 'any_email@mail.com',
+        password: 'any_password',
+      })
+
+      expect(signInWithEmailAndPassword).toHaveBeenCalledWith(
+        auth,
+        'any_email@mail.com',
+        'any_password',
+      )
     })
   })
 })
