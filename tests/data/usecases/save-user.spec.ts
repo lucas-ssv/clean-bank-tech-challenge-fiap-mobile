@@ -1,29 +1,5 @@
-import { SaveUser, SaveUserParams } from '@/domain/usecases'
-
-class SaveUserImpl implements SaveUser {
-  private saveUserRepository
-
-  constructor(saveUserRepository: SaveUserRepository) {
-    this.saveUserRepository = saveUserRepository
-  }
-
-  async execute(user: SaveUserParams): Promise<void> {
-    await this.saveUserRepository.save(user)
-  }
-}
-
-interface SaveUserRepository {
-  save: (user: SaveUserRepositoryParams) => Promise<void>
-}
-
-type SaveUserRepositoryParams = {
-  name: string
-  email: string
-}
-
-class SaveUserRepositoryMock implements SaveUserRepository {
-  async save(user: SaveUserRepositoryParams): Promise<void> {}
-}
+import { SaveUserImpl } from '@/data/usecases'
+import { SaveUserRepositoryMock } from '@tests/data/mocks'
 
 describe('SaveUser usecase', () => {
   it('should call SaveUserRepository with correct values', async () => {
