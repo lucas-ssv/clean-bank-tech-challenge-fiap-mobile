@@ -30,7 +30,11 @@ jest.mock('@/presentation/components/ui/toast', () => ({
   }),
 }))
 
-const makeSignUpSut = async () => {
+type SutSignUpTypes = {
+  addAccountMock: AddAccountMock
+}
+
+const makeSignUpSut = async (): Promise<SutSignUpTypes> => {
   const addAccountMock = new AddAccountMock()
   render(
     <GluestackUIProvider>
@@ -42,6 +46,10 @@ const makeSignUpSut = async () => {
   await waitFor(() => {
     fireEvent(openAccountButton, 'press')
   })
+
+  return {
+    addAccountMock,
+  }
 }
 
 const makeLoginSut = async () => {
@@ -167,18 +175,11 @@ describe('<Home />', () => {
     })
 
     it('should show toast error if AddAccount throws', async () => {
-      const addAccountMock = new AddAccountMock()
+      const { addAccountMock } = await makeSignUpSut()
       jest.spyOn(addAccountMock, 'execute').mockImplementationOnce(() => {
         throw new Error()
       })
-      render(
-        <GluestackUIProvider>
-          <Home addAccount={addAccountMock} />
-        </GluestackUIProvider>,
-      )
 
-      const openAccountButton = screen.getByTestId('open-account-button')
-      fireEvent(openAccountButton, 'press')
       const inputName = await screen.findByTestId('input-name')
       fireEvent(inputName, 'changeText', 'any_name')
       const inputEmail = await screen.findByTestId('input-email')
