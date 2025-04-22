@@ -70,6 +70,7 @@ export function ModalLogin() {
   return (
     <Box className="flex-1">
       <Button
+        testID="login-button"
         variant="outline"
         className="h-12 w-full border-2 border-black rounded-lg"
         onPress={() => setShowModal(true)}
@@ -136,7 +137,7 @@ export function ModalLogin() {
                 />
                 {errors.email && (
                   <FormControlError>
-                    <FormControlErrorText>
+                    <FormControlErrorText testID="error-email-login">
                       {errors.email.message}
                     </FormControlErrorText>
                   </FormControlError>
@@ -180,6 +181,7 @@ export function ModalLogin() {
                 </ButtonText>
               </Button>
               <Button
+                testID="submit-button-login"
                 className="h-12 bg-custom-my-orange rounded-lg mt-8"
                 onPress={handleSubmit(onLogin)}
                 isDisabled={isSubmitting}
