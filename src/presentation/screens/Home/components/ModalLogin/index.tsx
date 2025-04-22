@@ -4,6 +4,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import React, { useState } from 'react'
 
+import { Authentication } from '@/domain/usecases'
 import {
   Modal,
   ModalBackdrop,
@@ -30,6 +31,10 @@ import BannerLogin from '@/presentation/assets/login.svg'
 import CloseIcon from '@/presentation/assets/close-black.svg'
 import { useToast } from '@/presentation/hooks'
 
+type Props = {
+  authentication: Authentication
+}
+
 type LoginData = z.infer<typeof schema>
 
 const schema = z.object({
@@ -41,7 +46,7 @@ const schema = z.object({
     .min(6, { message: 'A senha deve conter pelo menos 6 caracteres' }),
 })
 
-export function ModalLogin() {
+export function ModalLogin({ authentication }: Props) {
   const {
     control,
     handleSubmit,
@@ -53,9 +58,12 @@ export function ModalLogin() {
   const [showModal, setShowModal] = useState(false)
 
   const onLogin = async (data: LoginData) => {
-    // const { email, password } = data
+    const { email, password } = data
     try {
-      // await login(email, password)
+      await authentication.execute({
+        email,
+        password,
+      })
     } catch (error) {
       switch (error.code) {
         case 'auth/invalid-credential':

@@ -8,7 +8,7 @@ import {
 import { ScrollView, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
-import { AddAccount } from '@/domain/usecases'
+import { AddAccount, Authentication } from '@/domain/usecases'
 
 import { Footer, ModalCriarConta, ModalLogin } from './components'
 import IlustracaoBanner from '@/presentation/assets/ilustracao-banner.svg'
@@ -19,9 +19,10 @@ import Dispositivos from '@/presentation/assets/dispositivos.svg'
 
 type Props = {
   addAccount: AddAccount
+  authentication: Authentication
 }
 
-export function Home({ addAccount }: Props) {
+export function Home({ addAccount, authentication }: Props) {
   return (
     <ScrollView
       className="bg-custom-my-light-green"
@@ -39,7 +40,7 @@ export function Home({ addAccount }: Props) {
             </View>
             <HStack className="justify-between items-center gap-6 mt-4">
               <ModalCriarConta addAccount={addAccount} />
-              <ModalLogin />
+              <ModalLogin authentication={authentication} />
             </HStack>
 
             <Box className="px-10">
