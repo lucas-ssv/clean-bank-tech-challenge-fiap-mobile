@@ -10,6 +10,7 @@ import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-p
 import { Home } from '@/presentation/screens'
 import { useToast } from '@/presentation/components/ui'
 import { AddAccountMock } from '@tests/domain/usecases'
+import { Authentication, AuthenticationParams } from '@/domain/usecases'
 
 jest.useFakeTimers()
 jest.mock('nativewind', () => {
@@ -34,11 +35,16 @@ type SutSignUpTypes = {
   addAccountMock: AddAccountMock
 }
 
+type SutLoginTypes = {
+  authenticationMock: AuthenticationMock
+}
+
 const makeSignUpSut = async (): Promise<SutSignUpTypes> => {
   const addAccountMock = new AddAccountMock()
+  const authenticationMock = new AuthenticationMock()
   render(
     <GluestackUIProvider>
-      <Home addAccount={addAccountMock} />
+      <Home addAccount={addAccountMock} authentication={authenticationMock} />
     </GluestackUIProvider>,
   )
 
@@ -52,11 +58,12 @@ const makeSignUpSut = async (): Promise<SutSignUpTypes> => {
   }
 }
 
-const makeLoginSut = async () => {
+const makeLoginSut = async (): Promise<SutLoginTypes> => {
   const addAccountMock = new AddAccountMock()
+  const authenticationMock = new AuthenticationMock()
   render(
     <GluestackUIProvider>
-      <Home addAccount={addAccountMock} />
+      <Home addAccount={addAccountMock} authentication={authenticationMock} />
     </GluestackUIProvider>,
   )
 
@@ -64,6 +71,14 @@ const makeLoginSut = async () => {
   await waitFor(() => {
     fireEvent(loginButton, 'press')
   })
+
+  return {
+    authenticationMock,
+  }
+}
+
+class AuthenticationMock implements Authentication {
+  async execute(user: AuthenticationParams): Promise<void> {}
 }
 
 describe('<Home />', () => {
@@ -268,6 +283,26 @@ describe('<Home />', () => {
         expect(errorEmail.props.children).toBe(
           'A senha deve conter pelo menos 6 caracteres',
         )
+      })
+    })
+
+    it('should show toast error if Authentication throws', async () => {
+      const { authenticationMock } = await makeLoginSut()
+      jest.spyOn(authenticationMock, 'execute').mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+      const inputEmail = await screen.findByTestId('input-email')
+      fireEvent(inputEmail, 'changeText', 'any_email@mail.com')
+      const inputPassword = await screen.findByTestId('input-password')
+      fireEvent(inputPassword, 'changeText', 'any_password')
+      const submitButton = await screen.findByTestId('submit-button')
+      act(() => {
+        fireEvent(submitButton, 'press')
+      })
+
+      await waitFor(async () => {
+        expect(useToast().show).toHaveBeenCalled()
       })
     })
   })
