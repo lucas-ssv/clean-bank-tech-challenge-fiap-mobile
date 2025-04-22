@@ -9,8 +9,10 @@ import {
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
 import { Home } from '@/presentation/screens'
 import { useToast } from '@/presentation/components/ui'
-import { AddAccountMock } from '@tests/domain/usecases'
-import { Authentication, AuthenticationParams } from '@/domain/usecases'
+import {
+  AddAccountMock,
+  AuthenticationMock,
+} from '@tests/domain/usecases/account'
 
 jest.useFakeTimers()
 jest.mock('nativewind', () => {
@@ -75,10 +77,6 @@ const makeLoginSut = async (): Promise<SutLoginTypes> => {
   return {
     authenticationMock,
   }
-}
-
-class AuthenticationMock implements Authentication {
-  async execute(user: AuthenticationParams): Promise<void> {}
 }
 
 describe('<Home />', () => {

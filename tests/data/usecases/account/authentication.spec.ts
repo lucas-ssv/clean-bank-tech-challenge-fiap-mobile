@@ -1,5 +1,5 @@
-import { AuthenticationImpl } from '@/data/usecases'
-import { LoadAccountRepositoryMock } from '@tests/data/mocks'
+import { AuthenticationImpl } from '@/data/usecases/account'
+import { LoadAccountRepositoryMock } from '@tests/data/mocks/account'
 
 describe('Authentication usecase', () => {
   it('should call LoadAccountRepository with correct values', async () => {

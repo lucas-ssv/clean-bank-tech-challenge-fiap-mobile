@@ -8,7 +8,7 @@ import {
 import { ScrollView, View } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 
-import { AddAccount, Authentication } from '@/domain/usecases'
+import { AddAccount, Authentication } from '@/domain/usecases/account'
 
 import { Footer, ModalCriarConta, ModalLogin } from './components'
 import IlustracaoBanner from '@/presentation/assets/ilustracao-banner.svg'

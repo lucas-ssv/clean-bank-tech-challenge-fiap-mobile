@@ -1,5 +1,5 @@
-import { AddAccountImpl } from '@/data/usecases'
-import { AddAccount } from '@/domain/usecases'
+import { AddAccountImpl } from '@/data/usecases/account'
+import { AddAccount } from '@/domain/usecases/account'
 import { AccountFirebaseRepository } from '@/infra/repositories/firebase'
 
 export const makeAddAccount = (): AddAccount => {
