@@ -10,7 +10,7 @@ jest.useFakeTimers()
 class AddTransactionImpl implements AddTransaction {
   private addTransactionRepository
 
-  constructor(addTransactionRepository: AddTransactionRepositoryMock) {
+  constructor(addTransactionRepository: AddTransactionRepository) {
     this.addTransactionRepository = addTransactionRepository
   }
 
@@ -22,15 +22,36 @@ class AddTransactionImpl implements AddTransaction {
   }
 }
 
-class AddTransactionRepositoryMock {
-  async add(transaction: any): Promise<void> {}
+type AddTransactionRepositoryParams = {
+  transactionType: TransactionType
+  date: Date
+  value: number
+  userUID: string
+}
+
+type AddTransactionRepositoryResult = {
+  id: string
+}
+
+interface AddTransactionRepository {
+  add: (
+    transaction: AddTransactionRepositoryParams,
+  ) => Promise<AddTransactionRepositoryResult>
+}
+
+class AddTransactionRepositoryStub implements AddTransactionRepository {
+  async add(
+    transaction: AddTransactionRepositoryParams,
+  ): Promise<AddTransactionRepositoryResult> {
+    return Promise.resolve(null as any)
+  }
 }
 
 describe('AddTransaction usecase', () => {
   it('should call AddTransactionRepository with correct values', async () => {
-    const addTransactionRepositoryMock = new AddTransactionRepositoryMock()
-    const addSpy = jest.spyOn(addTransactionRepositoryMock, 'add')
-    const sut = new AddTransactionImpl(addTransactionRepositoryMock)
+    const addTransactionRepositoryStub = new AddTransactionRepositoryStub()
+    const addSpy = jest.spyOn(addTransactionRepositoryStub, 'add')
+    const sut = new AddTransactionImpl(addTransactionRepositoryStub)
 
     await sut.execute({
       transactionType: TransactionType.CAMBIO_DE_MOEDA,
