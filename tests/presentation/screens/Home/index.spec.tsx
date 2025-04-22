@@ -222,9 +222,9 @@ describe('<Home />', () => {
   describe('login', () => {
     it('should show emailError if field email is empty', async () => {
       makeLoginSut()
-      const submitButton = await screen.findByTestId('submit-button-login')
+      const submitButton = await screen.findByTestId('submit-button')
       fireEvent(submitButton, 'press')
-      const errorEmail = await screen.findByTestId('error-email-login')
+      const errorEmail = await screen.findByTestId('error-email')
 
       await waitFor(async () => {
         expect(errorEmail.props.children).toBe('O e-mail é obrigatório')

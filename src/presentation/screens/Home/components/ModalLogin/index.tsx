@@ -137,7 +137,7 @@ export function ModalLogin() {
                 />
                 {errors.email && (
                   <FormControlError>
-                    <FormControlErrorText testID="error-email-login">
+                    <FormControlErrorText testID="error-email">
                       {errors.email.message}
                     </FormControlErrorText>
                   </FormControlError>
@@ -181,7 +181,7 @@ export function ModalLogin() {
                 </ButtonText>
               </Button>
               <Button
-                testID="submit-button-login"
+                testID="submit-button"
                 className="h-12 bg-custom-my-orange rounded-lg mt-8"
                 onPress={handleSubmit(onLogin)}
                 isDisabled={isSubmitting}
