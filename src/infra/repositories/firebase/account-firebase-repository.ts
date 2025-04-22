@@ -12,7 +12,7 @@ import {
   LoadAccountRepositoryParams,
   SaveUserRepository,
   SaveUserRepositoryParams,
-} from '@/data/contracts'
+} from '@/data/contracts/account'
 import { userConverter } from './converters'
 
 export class AccountFirebaseRepository

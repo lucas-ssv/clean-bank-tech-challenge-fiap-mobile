@@ -5,7 +5,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
-import { AddAccount } from '@/domain/usecases'
+import { AddAccount } from '@/domain/usecases/account'
 
 import {
   Modal,

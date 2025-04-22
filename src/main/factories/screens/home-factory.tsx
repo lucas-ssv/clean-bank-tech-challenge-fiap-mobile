@@ -1,5 +1,8 @@
 import { Home } from '@/presentation/screens'
-import { makeAddAccount, makeAuthentication } from '@/main/factories/usecases'
+import {
+  makeAddAccount,
+  makeAuthentication,
+} from '@/main/factories/usecases/account'
 
 export function MakeHome() {
   return (

@@ -1,8 +1,8 @@
-import { AddAccountImpl } from '@/data/usecases'
+import { AddAccountImpl } from '@/data/usecases/account'
 import {
   AddAccountRepositoryMock,
   SaveUserRepositoryMock,
-} from '@tests/data/mocks'
+} from '@tests/data/mocks/account'
 
 type SutTypes = {
   sut: AddAccountImpl

@@ -1,4 +1,4 @@
-import { SaveUserRepositoryParams } from '@/data/contracts'
+import { SaveUserRepositoryParams } from '@/data/contracts/account'
 import {
   DocumentData,
   FirestoreDataConverter,

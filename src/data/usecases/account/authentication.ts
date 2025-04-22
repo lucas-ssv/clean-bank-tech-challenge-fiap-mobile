@@ -1,5 +1,5 @@
-import { Authentication, AuthenticationParams } from '@/domain/usecases'
-import { LoadAccountRepository } from '@/data/contracts'
+import { Authentication, AuthenticationParams } from '@/domain/usecases/account'
+import { LoadAccountRepository } from '@/data/contracts/account'
 
 export class AuthenticationImpl implements Authentication {
   private loadAccountRepository

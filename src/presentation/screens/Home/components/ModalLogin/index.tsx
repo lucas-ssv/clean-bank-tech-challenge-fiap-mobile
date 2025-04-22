@@ -4,7 +4,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import React, { useState } from 'react'
 
-import { Authentication } from '@/domain/usecases'
+import { Authentication } from '@/domain/usecases/account'
 import {
   Modal,
   ModalBackdrop,

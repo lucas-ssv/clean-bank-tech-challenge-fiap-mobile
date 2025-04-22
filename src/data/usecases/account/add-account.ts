@@ -1,5 +1,8 @@
-import { AddAccount, AddAccountParams } from '@/domain/usecases'
-import { AddAccountRepository, SaveUserRepository } from '@/data/contracts'
+import { AddAccount, AddAccountParams } from '@/domain/usecases/account'
+import {
+  AddAccountRepository,
+  SaveUserRepository,
+} from '@/data/contracts/account'
 
 export class AddAccountImpl implements AddAccount {
   private addAccountRepository
