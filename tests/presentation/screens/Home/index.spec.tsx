@@ -254,5 +254,20 @@ describe('<Home />', () => {
         expect(errorEmail.props.children).toBe('A senha é obrigatória')
       })
     })
+
+    it('should show passwordError if field password is less than 6', async () => {
+      makeLoginSut()
+      const inputPassword = await screen.findByTestId('input-password')
+      fireEvent(inputPassword, 'changeText', 'any')
+      const submitButton = await screen.findByTestId('submit-button')
+      fireEvent(submitButton, 'press')
+      const errorEmail = await screen.findByTestId('error-password')
+
+      await waitFor(async () => {
+        expect(errorEmail.props.children).toBe(
+          'A senha deve conter pelo menos 6 caracteres',
+        )
+      })
+    })
   })
 })
