@@ -305,5 +305,22 @@ describe('<Home />', () => {
         expect(useToast().show).toHaveBeenCalled()
       })
     })
+
+    it('should show loading on submit', async () => {
+      makeLoginSut()
+      const inputEmail = await screen.findByTestId('input-email')
+      fireEvent(inputEmail, 'changeText', 'any_email@mail.com')
+      const inputPassword = await screen.findByTestId('input-password')
+      fireEvent(inputPassword, 'changeText', 'any_password')
+      const submitButton = await screen.findByTestId('submit-button')
+      await waitFor(() => {
+        fireEvent.press(submitButton)
+      })
+
+      await waitFor(() => {
+        expect(screen.getByTestId('submit-button-loading')).toBeOnTheScreen()
+        expect(submitButton).toBeDisabled()
+      })
+    })
   })
 })
