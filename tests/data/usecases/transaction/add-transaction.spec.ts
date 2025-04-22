@@ -1,4 +1,4 @@
-import { AddTransactionResult } from '@/domain/models/transaction'
+import { AddTransactionModel } from '@/domain/models/transaction'
 import {
   AddTransaction,
   AddTransactionParams,
@@ -16,7 +16,7 @@ class AddTransactionImpl implements AddTransaction {
 
   async execute(
     transaction: AddTransactionParams,
-  ): Promise<AddTransactionResult> {
+  ): Promise<AddTransactionModel> {
     await this.addTransactionRepository.add(transaction)
     return Promise.resolve(null as any)
   }
@@ -55,6 +55,14 @@ describe('AddTransaction usecase', () => {
 
     await sut.execute({
       transactionType: TransactionType.CAMBIO_DE_MOEDA,
+      transactionDocuments: [
+        {
+          mimeType: 'any_mimetype',
+          name: 'any_name',
+          transactionId: 'any_transaction_id',
+          uri: 'any_uri',
+        },
+      ],
       date: new Date(),
       value: 100,
       userUID: 'any_user_uid',
@@ -62,6 +70,14 @@ describe('AddTransaction usecase', () => {
 
     expect(addSpy).toHaveBeenCalledWith({
       transactionType: TransactionType.CAMBIO_DE_MOEDA,
+      transactionDocuments: [
+        {
+          mimeType: 'any_mimetype',
+          name: 'any_name',
+          transactionId: 'any_transaction_id',
+          uri: 'any_uri',
+        },
+      ],
       date: new Date(),
       value: 100,
       userUID: 'any_user_uid',

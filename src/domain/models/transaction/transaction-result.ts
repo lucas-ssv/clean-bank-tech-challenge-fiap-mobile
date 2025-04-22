@@ -1,3 +1,3 @@
-export interface AddTransactionResult {
+export interface AddTransactionModel {
   id: string
 }
