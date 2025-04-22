@@ -196,7 +196,12 @@ export function ModalLogin({ authentication }: Props) {
                 onPress={handleSubmit(onLogin)}
                 isDisabled={isSubmitting}
               >
-                {isSubmitting && <ButtonSpinner className="text-white" />}
+                {isSubmitting && (
+                  <ButtonSpinner
+                    testID="submit-button-loading"
+                    className="text-white"
+                  />
+                )}
                 <ButtonText className="text-md">Entrar</ButtonText>
               </Button>
             </VStack>
