@@ -157,6 +157,7 @@ export function ModalLogin() {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input className="h-12 bg-white border border-custom-my-input-border rounded-lg mt-2">
                       <InputField
+                        testID="input-password"
                         className="text-md"
                         type="password"
                         placeholder="Digite sua senha"
