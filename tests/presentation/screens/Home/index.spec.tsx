@@ -230,5 +230,18 @@ describe('<Home />', () => {
         expect(errorEmail.props.children).toBe('O e-mail é obrigatório')
       })
     })
+
+    it('should show emailError if field email is not an email', async () => {
+      makeLoginSut()
+      const inputEmail = await screen.findByTestId('input-email')
+      fireEvent(inputEmail, 'changeText', 'any_invalid_email')
+      const submitButton = await screen.findByTestId('submit-button')
+      fireEvent(submitButton, 'press')
+      const errorEmail = await screen.findByTestId('error-email')
+
+      await waitFor(async () => {
+        expect(errorEmail.props.children).toBe('Endereço de e-mail inválido')
+      })
+    })
   })
 })
