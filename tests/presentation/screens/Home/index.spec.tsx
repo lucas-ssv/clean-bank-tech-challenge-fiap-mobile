@@ -30,7 +30,7 @@ jest.mock('@/presentation/components/ui/toast', () => ({
   }),
 }))
 
-const makeSut = async () => {
+const makeSignUpSut = async () => {
   const addAccountMock = new AddAccountMock()
   render(
     <GluestackUIProvider>
@@ -44,27 +44,39 @@ const makeSut = async () => {
   })
 }
 
+const makeLoginSut = async () => {
+  const addAccountMock = new AddAccountMock()
+  render(
+    <GluestackUIProvider>
+      <Home addAccount={addAccountMock} />
+    </GluestackUIProvider>,
+  )
+
+  const loginButton = screen.getByTestId('login-button')
+  await waitFor(() => {
+    fireEvent(loginButton, 'press')
+  })
+}
+
 describe('<Home />', () => {
+  it('should render correctly on start', async () => {
+    makeSignUpSut()
+    const checkboxTerms = await screen.findByTestId('checkbox-terms')
+
+    expect(await screen.findByTestId('input-name')).toHaveDisplayValue('')
+    expect(await screen.findByTestId('input-email')).toHaveDisplayValue('')
+    expect(await screen.findByTestId('input-password')).toHaveDisplayValue('')
+    expect(checkboxTerms.props.accessibilityState.checked).toBeUndefined()
+    expect(screen.queryByTestId('error-name')).not.toBeOnTheScreen()
+    expect(screen.queryByTestId('error-email')).not.toBeOnTheScreen()
+    expect(screen.queryByTestId('error-password')).not.toBeOnTheScreen()
+    expect(await screen.findByTestId('submit-button')).not.toBeDisabled()
+    expect(screen.queryByTestId('submit-button-loading')).not.toBeOnTheScreen()
+  })
+
   describe('signUp', () => {
-    it('should render correctly on start', async () => {
-      makeSut()
-      const checkboxTerms = await screen.findByTestId('checkbox-terms')
-
-      expect(await screen.findByTestId('input-name')).toHaveDisplayValue('')
-      expect(await screen.findByTestId('input-email')).toHaveDisplayValue('')
-      expect(await screen.findByTestId('input-password')).toHaveDisplayValue('')
-      expect(checkboxTerms.props.accessibilityState.checked).toBeUndefined()
-      expect(screen.queryByTestId('error-name')).not.toBeOnTheScreen()
-      expect(screen.queryByTestId('error-email')).not.toBeOnTheScreen()
-      expect(screen.queryByTestId('error-password')).not.toBeOnTheScreen()
-      expect(await screen.findByTestId('submit-button')).not.toBeDisabled()
-      expect(
-        screen.queryByTestId('submit-button-loading'),
-      ).not.toBeOnTheScreen()
-    })
-
     it('should show nameError if field name is empty', async () => {
-      makeSut()
+      makeSignUpSut()
       const submitButton = await screen.findByTestId('submit-button')
       fireEvent(submitButton, 'press')
       const errorName = await screen.findByTestId('error-name')
@@ -75,7 +87,7 @@ describe('<Home />', () => {
     })
 
     it('should show nameError if field name is less than 2 characters', async () => {
-      makeSut()
+      makeSignUpSut()
       const inputName = await screen.findByTestId('input-name')
       fireEvent(inputName, 'changeText', 'x')
       const submitButton = await screen.findByTestId('submit-button')
@@ -90,7 +102,7 @@ describe('<Home />', () => {
     })
 
     it('should show emailError if field email is empty', async () => {
-      makeSut()
+      makeSignUpSut()
       const submitButton = await screen.findByTestId('submit-button')
       fireEvent(submitButton, 'press')
       const errorEmail = await screen.findByTestId('error-email')
@@ -101,7 +113,7 @@ describe('<Home />', () => {
     })
 
     it('should show emailError if field email is not an email', async () => {
-      makeSut()
+      makeSignUpSut()
       const inputEmail = await screen.findByTestId('input-email')
       fireEvent(inputEmail, 'changeText', 'any_invalid_email')
       const submitButton = await screen.findByTestId('submit-button')
@@ -114,7 +126,7 @@ describe('<Home />', () => {
     })
 
     it('should show passwordError if field password is empty', async () => {
-      makeSut()
+      makeSignUpSut()
       const submitButton = await screen.findByTestId('submit-button')
       fireEvent(submitButton, 'press')
       const errorEmail = await screen.findByTestId('error-password')
@@ -125,7 +137,7 @@ describe('<Home />', () => {
     })
 
     it('should show passwordError if field password is less than 6', async () => {
-      makeSut()
+      makeSignUpSut()
       const inputPassword = await screen.findByTestId('input-password')
       fireEvent(inputPassword, 'changeText', 'any')
       const submitButton = await screen.findByTestId('submit-button')
@@ -140,7 +152,7 @@ describe('<Home />', () => {
     })
 
     it('should show border error if checkbox terms is false', async () => {
-      makeSut()
+      makeSignUpSut()
       const checkboxTerms = await screen.findByTestId('checkbox-terms')
       const submitButton = await screen.findByTestId('submit-button')
       act(() => {
@@ -186,7 +198,7 @@ describe('<Home />', () => {
     })
 
     it('should show loading on submit', async () => {
-      makeSut()
+      makeSignUpSut()
       const inputName = await screen.findByTestId('input-name')
       fireEvent(inputName, 'changeText', 'any_name')
       const inputEmail = await screen.findByTestId('input-email')
@@ -203,6 +215,19 @@ describe('<Home />', () => {
       await waitFor(() => {
         expect(screen.getByTestId('submit-button-loading')).toBeOnTheScreen()
         expect(submitButton).toBeDisabled()
+      })
+    })
+  })
+
+  describe('login', () => {
+    it('should show emailError if field email is empty', async () => {
+      makeLoginSut()
+      const submitButton = await screen.findByTestId('submit-button-login')
+      fireEvent(submitButton, 'press')
+      const errorEmail = await screen.findByTestId('error-email-login')
+
+      await waitFor(async () => {
+        expect(errorEmail.props.children).toBe('O e-mail é obrigatório')
       })
     })
   })
