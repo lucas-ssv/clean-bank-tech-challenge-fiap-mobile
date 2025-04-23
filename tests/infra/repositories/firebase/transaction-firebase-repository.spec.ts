@@ -1,12 +1,7 @@
-import { addDoc, collection, Timestamp } from 'firebase/firestore'
+import { addDoc, collection } from 'firebase/firestore'
 
-import {
-  AddTransactionRepository,
-  AddTransactionRepositoryParams,
-  TransactionType,
-} from '@/data/contracts/transaction'
-import { db } from '@/main/config/firebase'
-import { transactionConverter } from '@/infra/repositories/firebase/converters'
+import { TransactionType } from '@/data/contracts/transaction'
+import { TransactionFirebaseRepository } from '@/infra/repositories/firebase'
 
 jest.useFakeTimers()
 
@@ -30,23 +25,6 @@ jest.mock('firebase/firestore', () => ({
 jest.mock('firebase/app', () => ({
   initializeApp: jest.fn(),
 }))
-
-class TransactionFirebaseRepository implements AddTransactionRepository {
-  async add(transaction: AddTransactionRepositoryParams): Promise<string> {
-    const transactionRef = await addDoc(
-      collection(db, 'transactions').withConverter(transactionConverter),
-      {
-        transactionType: transaction.transactionType,
-        date: transaction.date,
-        value: transaction.value,
-        userUID: transaction.userUID,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-      },
-    )
-    return transactionRef.id
-  }
-}
 
 describe('TransactionFirebaseRepository', () => {
   it('should add a transaction on success', async () => {
