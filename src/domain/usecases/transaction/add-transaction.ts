@@ -1,8 +1,7 @@
-import { AddTransactionModel } from '@/domain/models/transaction'
 import { TransactionDocumentModel } from '@/domain/models/transaction-document'
 
 export interface AddTransaction {
-  execute: (transaction: AddTransactionParams) => Promise<AddTransactionModel>
+  execute: (transaction: AddTransactionParams) => Promise<void>
 }
 
 export enum TransactionType {

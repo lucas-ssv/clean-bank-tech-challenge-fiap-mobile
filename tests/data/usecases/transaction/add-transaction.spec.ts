@@ -1,4 +1,3 @@
-import { AddTransactionModel } from '@/domain/models/transaction'
 import {
   AddTransaction,
   AddTransactionParams,
@@ -14,32 +13,27 @@ class AddTransactionImpl implements AddTransaction {
 
   constructor(
     addTransactionRepository: AddTransactionRepository,
-    uploadTransactionDocumentService: UploadTransactionDocumentServiceMock,
-    addTransactionDocumentRepository: AddTransactionDocumentRepositoryMock,
+    uploadTransactionDocumentService: UploadTransactionDocumentServiceStub,
+    addTransactionDocumentRepository: AddTransactionDocumentRepository,
   ) {
     this.addTransactionRepository = addTransactionRepository
     this.uploadTransactionDocumentService = uploadTransactionDocumentService
     this.addTransactionDocumentRepository = addTransactionDocumentRepository
   }
 
-  async execute(
-    transaction: AddTransactionParams,
-  ): Promise<AddTransactionModel> {
-    const { id } = await this.addTransactionRepository.add(transaction)
+  async execute(transaction: AddTransactionParams): Promise<void> {
+    const transactionId = await this.addTransactionRepository.add(transaction)
 
     for (const transactionDocument of transaction.transactionDocuments) {
-      const { documentUrl } =
-        await this.uploadTransactionDocumentService.upload(
-          transactionDocument.uri,
-        )
+      const documentUrl = await this.uploadTransactionDocumentService.upload(
+        transactionDocument.uri,
+      )
       await this.addTransactionDocumentRepository.add({
-        transactionId: id,
+        transactionId,
         mimeType: transactionDocument.mimeType,
         url: documentUrl,
       })
     }
-
-    return null as any
   }
 }
 
@@ -50,35 +44,25 @@ type AddTransactionRepositoryParams = {
   userUID: string
 }
 
-type AddTransactionRepositoryResult = {
-  id: string
-}
-
 interface AddTransactionRepository {
-  add: (
-    transaction: AddTransactionRepositoryParams,
-  ) => Promise<AddTransactionRepositoryResult>
+  add: (transaction: AddTransactionRepositoryParams) => Promise<string>
 }
 
 class AddTransactionRepositoryStub implements AddTransactionRepository {
-  async add(
-    transaction: AddTransactionRepositoryParams,
-  ): Promise<AddTransactionRepositoryResult> {
-    return Promise.resolve({
-      id: 'any_transaction_id',
-    })
+  async add(transaction: AddTransactionRepositoryParams): Promise<string> {
+    return Promise.resolve('any_transaction_id')
   }
 }
 
-type UploadResult = {
-  documentUrl: string
+interface UploadTransactionDocumentService {
+  upload: (uri: string) => Promise<string>
 }
 
-class UploadTransactionDocumentServiceMock {
-  async upload(transactionDocument: any): Promise<UploadResult> {
-    return {
-      documentUrl: 'any_url',
-    }
+class UploadTransactionDocumentServiceStub
+  implements UploadTransactionDocumentService
+{
+  async upload(uri: string): Promise<string> {
+    return 'any_url'
   }
 }
 
@@ -106,14 +90,14 @@ describe('AddTransaction usecase', () => {
   it('should call AddTransactionRepository with correct values', async () => {
     const addTransactionRepositoryStub = new AddTransactionRepositoryStub()
     const addSpy = jest.spyOn(addTransactionRepositoryStub, 'add')
-    const uploadTransactionDocumentServiceMock =
-      new UploadTransactionDocumentServiceMock()
+    const uploadTransactionDocumentServiceStub =
+      new UploadTransactionDocumentServiceStub()
     const addTransactionDocumentRepositoryMock =
       new AddTransactionDocumentRepositoryMock()
 
     const sut = new AddTransactionImpl(
       addTransactionRepositoryStub,
-      uploadTransactionDocumentServiceMock,
+      uploadTransactionDocumentServiceStub,
       addTransactionDocumentRepositoryMock,
     )
 
@@ -148,14 +132,14 @@ describe('AddTransaction usecase', () => {
 
   it('should call UploadTransactionDocumentService with correct values', async () => {
     const addTransactionRepositoryStub = new AddTransactionRepositoryStub()
-    const uploadTransactionDocumentServiceMock =
-      new UploadTransactionDocumentServiceMock()
-    const uploadSpy = jest.spyOn(uploadTransactionDocumentServiceMock, 'upload')
+    const uploadTransactionDocumentServiceStub =
+      new UploadTransactionDocumentServiceStub()
+    const uploadSpy = jest.spyOn(uploadTransactionDocumentServiceStub, 'upload')
     const addTransactionDocumentRepositoryMock =
       new AddTransactionDocumentRepositoryMock()
     const sut = new AddTransactionImpl(
       addTransactionRepositoryStub,
-      uploadTransactionDocumentServiceMock,
+      uploadTransactionDocumentServiceStub,
       addTransactionDocumentRepositoryMock,
     )
 
@@ -179,14 +163,14 @@ describe('AddTransaction usecase', () => {
 
   it('should call AddTransactionDocumentRepository with correct values', async () => {
     const addTransactionRepositoryStub = new AddTransactionRepositoryStub()
-    const uploadTransactionDocumentServiceMock =
-      new UploadTransactionDocumentServiceMock()
+    const uploadTransactionDocumentServiceStub =
+      new UploadTransactionDocumentServiceStub()
     const addTransactionDocumentRepositoryMock =
       new AddTransactionDocumentRepositoryMock()
     const addSpy = jest.spyOn(addTransactionDocumentRepositoryMock, 'add')
     const sut = new AddTransactionImpl(
       addTransactionRepositoryStub,
-      uploadTransactionDocumentServiceMock,
+      uploadTransactionDocumentServiceStub,
       addTransactionDocumentRepositoryMock,
     )
 
