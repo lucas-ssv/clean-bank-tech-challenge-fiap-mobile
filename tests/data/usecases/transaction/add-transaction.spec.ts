@@ -86,20 +86,38 @@ class AddTransactionDocumentRepositoryMock
   ): Promise<void> {}
 }
 
+type SutTypes = {
+  sut: AddTransactionImpl
+  addTransactionRepositoryStub: AddTransactionRepositoryStub
+  uploadTransactionDocumentServiceStub: UploadTransactionDocumentServiceStub
+  addTransactionDocumentRepositoryMock: AddTransactionDocumentRepositoryMock
+}
+
+const makeSut = (): SutTypes => {
+  const addTransactionRepositoryStub = new AddTransactionRepositoryStub()
+  const uploadTransactionDocumentServiceStub =
+    new UploadTransactionDocumentServiceStub()
+  const addTransactionDocumentRepositoryMock =
+    new AddTransactionDocumentRepositoryMock()
+
+  const sut = new AddTransactionImpl(
+    addTransactionRepositoryStub,
+    uploadTransactionDocumentServiceStub,
+    addTransactionDocumentRepositoryMock,
+  )
+
+  return {
+    sut,
+    addTransactionRepositoryStub,
+    uploadTransactionDocumentServiceStub,
+    addTransactionDocumentRepositoryMock,
+  }
+}
+
 describe('AddTransaction usecase', () => {
   it('should call AddTransactionRepository with correct values', async () => {
-    const addTransactionRepositoryStub = new AddTransactionRepositoryStub()
+    const { sut, addTransactionRepositoryStub } = makeSut()
     const addSpy = jest.spyOn(addTransactionRepositoryStub, 'add')
-    const uploadTransactionDocumentServiceStub =
-      new UploadTransactionDocumentServiceStub()
-    const addTransactionDocumentRepositoryMock =
-      new AddTransactionDocumentRepositoryMock()
-
-    const sut = new AddTransactionImpl(
-      addTransactionRepositoryStub,
-      uploadTransactionDocumentServiceStub,
-      addTransactionDocumentRepositoryMock,
-    )
 
     await sut.execute({
       transactionType: TransactionType.CAMBIO_DE_MOEDA,
@@ -131,17 +149,8 @@ describe('AddTransaction usecase', () => {
   })
 
   it('should call UploadTransactionDocumentService with correct values', async () => {
-    const addTransactionRepositoryStub = new AddTransactionRepositoryStub()
-    const uploadTransactionDocumentServiceStub =
-      new UploadTransactionDocumentServiceStub()
+    const { sut, uploadTransactionDocumentServiceStub } = makeSut()
     const uploadSpy = jest.spyOn(uploadTransactionDocumentServiceStub, 'upload')
-    const addTransactionDocumentRepositoryMock =
-      new AddTransactionDocumentRepositoryMock()
-    const sut = new AddTransactionImpl(
-      addTransactionRepositoryStub,
-      uploadTransactionDocumentServiceStub,
-      addTransactionDocumentRepositoryMock,
-    )
 
     await sut.execute({
       transactionType: TransactionType.CAMBIO_DE_MOEDA,
@@ -162,17 +171,8 @@ describe('AddTransaction usecase', () => {
   })
 
   it('should call AddTransactionDocumentRepository with correct values', async () => {
-    const addTransactionRepositoryStub = new AddTransactionRepositoryStub()
-    const uploadTransactionDocumentServiceStub =
-      new UploadTransactionDocumentServiceStub()
-    const addTransactionDocumentRepositoryMock =
-      new AddTransactionDocumentRepositoryMock()
+    const { sut, addTransactionDocumentRepositoryMock } = makeSut()
     const addSpy = jest.spyOn(addTransactionDocumentRepositoryMock, 'add')
-    const sut = new AddTransactionImpl(
-      addTransactionRepositoryStub,
-      uploadTransactionDocumentServiceStub,
-      addTransactionDocumentRepositoryMock,
-    )
 
     await sut.execute({
       transactionType: TransactionType.CAMBIO_DE_MOEDA,
