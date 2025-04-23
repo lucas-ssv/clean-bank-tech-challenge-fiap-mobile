@@ -27,6 +27,10 @@ jest.mock('firebase/app', () => ({
   initializeApp: jest.fn(),
 }))
 
+jest.mock('firebase/storage', () => ({
+  getStorage: jest.fn(),
+}))
+
 describe('AccountFirebaseRepository', () => {
   describe('add()', () => {
     it('should add an account on success', async () => {

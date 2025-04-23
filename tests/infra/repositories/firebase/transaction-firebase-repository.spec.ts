@@ -26,6 +26,10 @@ jest.mock('firebase/app', () => ({
   initializeApp: jest.fn(),
 }))
 
+jest.mock('firebase/storage', () => ({
+  getStorage: jest.fn(),
+}))
+
 describe('TransactionFirebaseRepository', () => {
   it('should add a transaction on success', async () => {
     const mockedCollectionWithConverter = 'mockedCollectionWithConverter'
