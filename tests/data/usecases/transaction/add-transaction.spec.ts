@@ -244,4 +244,29 @@ describe('AddTransaction usecase', () => {
 
     expect(promise).rejects.toThrow()
   })
+
+  it('should throw if AddTransactionDocumentRepository throws', async () => {
+    const { sut, addTransactionDocumentRepositoryMock } = makeSut()
+    jest
+      .spyOn(addTransactionDocumentRepositoryMock, 'add')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+    const promise = sut.execute({
+      transactionType: TransactionType.CAMBIO_DE_MOEDA,
+      transactionDocuments: [
+        {
+          mimeType: 'any_mimetype',
+          name: 'any_name',
+          uri: 'any_uri',
+        },
+      ],
+      date: new Date(),
+      value: 100,
+      userUID: 'any_user_uid',
+    })
+
+    expect(promise).rejects.toThrow()
+  })
 })
