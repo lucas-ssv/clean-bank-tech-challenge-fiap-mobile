@@ -25,7 +25,9 @@ class AddTransactionImpl implements AddTransaction {
     await this.addTransactionRepository.add(transaction)
 
     for (const transactionDocument of transaction.transactionDocuments) {
-      await this.uploadTransactionDocumentService.upload(transactionDocument)
+      await this.uploadTransactionDocumentService.upload(
+        transactionDocument.uri,
+      )
     }
 
     return null as any
@@ -128,12 +130,7 @@ describe('AddTransaction usecase', () => {
       userUID: 'any_user_uid',
     })
 
-    expect(uploadSpy).toHaveBeenCalledWith({
-      mimeType: 'any_mimetype',
-      name: 'any_name',
-      transactionId: 'any_transaction_id',
-      uri: 'any_uri',
-    })
+    expect(uploadSpy).toHaveBeenCalledWith('any_uri')
     expect(uploadSpy).toHaveBeenCalledTimes(1)
   })
 })
