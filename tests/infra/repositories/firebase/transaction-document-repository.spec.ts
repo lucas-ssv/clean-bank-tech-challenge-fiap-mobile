@@ -1,10 +1,5 @@
-import {
-  AddTransactionDocumentRepository,
-  AddTransactionDocumentRepositoryParams,
-} from '@/data/contracts/transaction-document'
-import { transactionDocumentConverter } from '@/infra/repositories/firebase/converters'
-import { db } from '@/main/config/firebase'
-import { addDoc, collection, Timestamp } from 'firebase/firestore'
+import { TransactionDocumentRepository } from '@/infra/repositories/firebase'
+import { addDoc, collection } from 'firebase/firestore'
 
 jest.mock('firebase/auth', () => ({
   signInWithEmailAndPassword: jest.fn(),
@@ -30,27 +25,6 @@ jest.mock('firebase/app', () => ({
 jest.mock('firebase/storage', () => ({
   getStorage: jest.fn(),
 }))
-
-class TransactionDocumentRepository
-  implements AddTransactionDocumentRepository
-{
-  async add(
-    transactionDocument: AddTransactionDocumentRepositoryParams,
-  ): Promise<void> {
-    await addDoc(
-      collection(db, 'transaction-documents').withConverter(
-        transactionDocumentConverter,
-      ),
-      {
-        transactionId: transactionDocument.transactionId,
-        mimeType: transactionDocument.mimeType,
-        url: transactionDocument.url,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
-      },
-    )
-  }
-}
 
 describe('TransactionDocumentRepository', () => {
   it('should add a transaction document on success', async () => {
