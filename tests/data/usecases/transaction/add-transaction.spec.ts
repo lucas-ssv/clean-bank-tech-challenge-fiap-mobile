@@ -109,6 +109,7 @@ describe('AddTransaction usecase', () => {
     })
 
     expect(addSpy).toHaveBeenCalledWith({
+      fileName: 'any_filename',
       transactionId: 'any_transaction_id',
       mimeType: 'any_mimetype',
       url: 'any_url',
