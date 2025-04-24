@@ -38,12 +38,14 @@ describe('TransactionDocumentRepository', () => {
     const sut = new TransactionDocumentRepository()
 
     await sut.add({
+      fileName: 'any_filename',
       transactionId: 'any_transaction_id',
       mimeType: 'any_mimetype',
       url: 'any_url',
     })
 
     expect(addDoc).toHaveBeenCalledWith(mockedCollectionWithConverter, {
+      fileName: 'any_filename',
       transactionId: 'any_transaction_id',
       mimeType: 'any_mimetype',
       url: 'any_url',
