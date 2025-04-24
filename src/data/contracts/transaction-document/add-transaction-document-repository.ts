@@ -5,6 +5,7 @@ export interface AddTransactionDocumentRepository {
 }
 
 export type AddTransactionDocumentRepositoryParams = {
+  fileName: string
   transactionId: string
   mimeType: string
   url: string

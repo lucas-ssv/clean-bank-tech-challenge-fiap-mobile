@@ -25,10 +25,12 @@ export class AddTransactionImpl implements AddTransaction {
     const transactionId = await this.addTransactionRepository.add(transaction)
 
     for (const transactionDocument of transaction.transactionDocuments) {
-      const documentUrl = await this.uploadTransactionDocumentService.upload(
-        transactionDocument.uri,
-      )
+      const { fileName, documentUrl } =
+        await this.uploadTransactionDocumentService.upload(
+          transactionDocument.uri,
+        )
       await this.addTransactionDocumentRepository.add({
+        fileName,
         transactionId,
         mimeType: transactionDocument.mimeType,
         url: documentUrl,
