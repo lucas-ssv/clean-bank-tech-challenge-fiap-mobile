@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { UploadTransactionDocumentService } from '@/data/contracts/services'
 import { ref } from 'firebase/storage'
 import { storage } from '@/main/config/firebase'
+import { uriToBlob } from '@/infra/utils'
 
 jest.mock('node:crypto', () => ({
   randomUUID: jest.fn().mockReturnValue('any_filename'),
@@ -38,10 +39,15 @@ jest.mock('@/main/config/firebase', () => ({
   storage: 'mocked_storage',
 }))
 
+jest.mock('@/infra/utils', () => ({
+  uriToBlob: jest.fn(),
+}))
+
 class UploadFirebaseService implements UploadTransactionDocumentService {
   async upload(uri: string): Promise<string> {
     const fileName = randomUUID()
     ref(storage, `transaction-documents/${fileName}`)
+    await uriToBlob(uri)
     return ''
   }
 }
@@ -64,5 +70,13 @@ describe('UploadFirebaseService', () => {
       storage,
       'transaction-documents/any_filename',
     )
+  })
+
+  it('should call uriToBlob with correct uri', async () => {
+    const sut = new UploadFirebaseService()
+
+    await sut.upload('any_document_uri')
+
+    expect(uriToBlob).toHaveBeenCalledWith('any_document_uri')
   })
 })
