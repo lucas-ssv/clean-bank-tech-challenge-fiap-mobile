@@ -96,7 +96,7 @@ describe('UploadFirebaseService', () => {
     )
   })
 
-  it('should upload the file and return the download URL', async () => {
+  it('should upload the file and return the filename and download URL', async () => {
     const sut = new UploadFirebaseService()
     const onMock = jest.fn((_event, _progress, _error, success) => {
       success()
@@ -109,10 +109,13 @@ describe('UploadFirebaseService', () => {
     }
     ;(uploadBytesResumable as jest.Mock).mockReturnValue(mockUploadTask)
 
-    const downloadUrl = await sut.upload('any_document_uri')
+    const result = await sut.upload('any_document_uri')
 
     expect(onMock).toHaveBeenCalled()
     expect(getDownloadURL).toHaveBeenCalledWith('mocked_ref')
-    expect(downloadUrl).toBe('any_download_url')
+    expect(result).toEqual({
+      fileName: 'any_filename',
+      documentUrl: 'any_download_url',
+    })
   })
 })

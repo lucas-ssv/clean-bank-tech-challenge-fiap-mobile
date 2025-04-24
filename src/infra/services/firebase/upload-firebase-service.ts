@@ -1,12 +1,15 @@
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { randomUUID } from 'node:crypto'
 
-import { UploadTransactionDocumentService } from '@/data/contracts/services'
+import {
+  UploadTransactionDocumentService,
+  UploadTransactionDocumentServiceResult,
+} from '@/data/contracts/services'
 import { storage } from '@/main/config/firebase'
 import { uriToBlob } from '@/infra/utils'
 
 export class UploadFirebaseService implements UploadTransactionDocumentService {
-  async upload(uri: string): Promise<string> {
+  async upload(uri: string): Promise<UploadTransactionDocumentServiceResult> {
     const fileName = randomUUID()
     const storageRef = ref(storage, `transaction-documents/${fileName}`)
     const blob = await uriToBlob(uri)
@@ -18,7 +21,10 @@ export class UploadFirebaseService implements UploadTransactionDocumentService {
         (error) => reject(error),
         async () => {
           const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref)
-          resolve(downloadUrl)
+          resolve({
+            fileName,
+            documentUrl: downloadUrl,
+          })
         },
       )
     })
