@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 
 import { UploadTransactionDocumentService } from '@/data/contracts/services'
-import { ref } from 'firebase/storage'
+import { ref, uploadBytesResumable } from 'firebase/storage'
 import { storage } from '@/main/config/firebase'
 import { uriToBlob } from '@/infra/utils'
 
@@ -32,7 +32,8 @@ jest.mock('firebase/app', () => ({
 
 jest.mock('firebase/storage', () => ({
   getStorage: jest.fn(),
-  ref: jest.fn(),
+  ref: jest.fn().mockReturnValue('mocked_storage_ref'),
+  uploadBytesResumable: jest.fn(),
 }))
 
 jest.mock('@/main/config/firebase', () => ({
@@ -40,14 +41,15 @@ jest.mock('@/main/config/firebase', () => ({
 }))
 
 jest.mock('@/infra/utils', () => ({
-  uriToBlob: jest.fn(),
+  uriToBlob: jest.fn().mockResolvedValue('mocked_blob'),
 }))
 
 class UploadFirebaseService implements UploadTransactionDocumentService {
   async upload(uri: string): Promise<string> {
     const fileName = randomUUID()
-    ref(storage, `transaction-documents/${fileName}`)
-    await uriToBlob(uri)
+    const storageRef = ref(storage, `transaction-documents/${fileName}`)
+    const blob = await uriToBlob(uri)
+    uploadBytesResumable(storageRef, blob)
     return ''
   }
 }
@@ -78,5 +80,16 @@ describe('UploadFirebaseService', () => {
     await sut.upload('any_document_uri')
 
     expect(uriToBlob).toHaveBeenCalledWith('any_document_uri')
+  })
+
+  it('should call uploadBytesResumable with correct values', async () => {
+    const sut = new UploadFirebaseService()
+
+    await sut.upload('any_document_uri')
+
+    expect(uploadBytesResumable).toHaveBeenCalledWith(
+      'mocked_storage_ref',
+      'mocked_blob',
+    )
   })
 })
