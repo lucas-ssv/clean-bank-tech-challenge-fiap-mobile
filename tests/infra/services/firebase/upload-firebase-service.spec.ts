@@ -1,9 +1,9 @@
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { randomUUID } from 'node:crypto'
 
-import { UploadTransactionDocumentService } from '@/data/contracts/services'
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { storage } from '@/main/config/firebase'
 import { uriToBlob } from '@/infra/utils'
+import { UploadFirebaseService } from '@/infra/services/firebase'
 
 jest.mock('node:crypto', () => ({
   randomUUID: jest.fn().mockReturnValue('any_filename'),
@@ -56,26 +56,6 @@ jest.mock('@/main/config/firebase', () => ({
 jest.mock('@/infra/utils', () => ({
   uriToBlob: jest.fn().mockResolvedValue('mocked_blob'),
 }))
-
-class UploadFirebaseService implements UploadTransactionDocumentService {
-  async upload(uri: string): Promise<string> {
-    const fileName = randomUUID()
-    const storageRef = ref(storage, `transaction-documents/${fileName}`)
-    const blob = await uriToBlob(uri)
-    const uploadTask = uploadBytesResumable(storageRef, blob)
-    return new Promise((resolve, reject) => {
-      uploadTask.on(
-        'state_changed',
-        () => {},
-        (error) => reject(error),
-        async () => {
-          const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref)
-          resolve(downloadUrl)
-        },
-      )
-    })
-  }
-}
 
 describe('UploadFirebaseService', () => {
   it('should call randomUUID', async () => {
