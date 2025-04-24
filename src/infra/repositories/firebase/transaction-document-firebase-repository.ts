@@ -18,6 +18,7 @@ export class TransactionDocumentRepository
         transactionDocumentConverter,
       ),
       {
+        fileName: transactionDocument.fileName,
         transactionId: transactionDocument.transactionId,
         mimeType: transactionDocument.mimeType,
         url: transactionDocument.url,
