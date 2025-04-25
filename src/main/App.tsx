@@ -12,7 +12,7 @@ import { StatusBar } from 'expo-status-bar'
 
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
 import '@/presentation/styles'
-import { MakeHome } from './factories/screens'
+import { Dashboard } from '@/presentation/screens'
 
 export default function App() {
   const [loaded, error] = useFonts({
@@ -35,7 +35,7 @@ export default function App() {
 
   return (
     <GluestackUIProvider mode="light">
-      <MakeHome />
+      <Dashboard />
       <StatusBar style="light" />
     </GluestackUIProvider>
   )
