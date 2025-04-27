@@ -224,6 +224,7 @@ export function NewTransaction({ className, ...rest }: Props) {
           render={({ field: { onChange, value } }) => (
             <Select onValueChange={onChange} selectedValue={value}>
               <SelectTrigger
+                testID="select-transaction"
                 variant="outline"
                 size="xl"
                 className="h-12 bg-white border border-custom-my-dark-green rounded-lg"
@@ -260,7 +261,7 @@ export function NewTransaction({ className, ...rest }: Props) {
         />
         {errors.transactionType && (
           <FormControlError>
-            <FormControlErrorText>
+            <FormControlErrorText testID="select-transaction-error">
               {errors.transactionType.message}
             </FormControlErrorText>
           </FormControlError>
@@ -280,6 +281,7 @@ export function NewTransaction({ className, ...rest }: Props) {
             render={({ field: { onChange, onBlur, value } }) => (
               <Input className="h-12 bg-white border border-custom-my-dark-green rounded-lg mt-2">
                 <MaskInput
+                  testID="input-value"
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
@@ -296,7 +298,7 @@ export function NewTransaction({ className, ...rest }: Props) {
           />
           {errors.value && (
             <FormControlError>
-              <FormControlErrorText>
+              <FormControlErrorText testID="input-value-error">
                 {errors.value.message}
               </FormControlErrorText>
             </FormControlError>
@@ -331,6 +333,7 @@ export function NewTransaction({ className, ...rest }: Props) {
 
         {transactionDocuments.map((document) => (
           <Box
+            testID="card-document"
             key={document.uri}
             className="bg-custom-my-light-gray rounded-lg p-2 pr-4 mt-2"
           >
@@ -360,7 +363,12 @@ export function NewTransaction({ className, ...rest }: Props) {
           onPress={handleSubmit(onCreateTransaction)}
           isDisabled={isSubmitting}
         >
-          {isSubmitting && <ButtonSpinner className="text-white" />}
+          {isSubmitting && (
+            <ButtonSpinner
+              testID="loading-finish-transation"
+              className="text-white"
+            />
+          )}
           <ButtonText className="text-white text-md font-semibold">
             Concluir transação
           </ButtonText>
