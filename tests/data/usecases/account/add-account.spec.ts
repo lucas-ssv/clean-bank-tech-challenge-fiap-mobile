@@ -65,6 +65,7 @@ describe('AddAccount usecase', () => {
     })
 
     expect(saveSpy).toHaveBeenCalledWith({
+      userUID: 'any_user_uid',
       name: 'any_name',
       email: 'any_email@mail.com',
     })
