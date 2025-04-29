@@ -1,4 +1,9 @@
-import { render, screen } from '@testing-library/react-native'
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react-native'
 
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
 import { Dashboard } from '@/presentation/screens'
@@ -27,15 +32,31 @@ describe('<Dashboard />', () => {
       </GluestackUIProvider>,
     )
 
-    expect(screen.getByTestId('select-transaction')).toBeTruthy()
+    expect(screen.getByTestId('transaction-type')).toBeTruthy()
     expect(screen.getByTestId('input-value')).toHaveDisplayValue('R$ 0,00')
     expect(screen.queryByTestId('card-document')).not.toBeOnTheScreen()
     expect(
       screen.queryByTestId('loading-finish-transation'),
     ).not.toBeOnTheScreen()
-    expect(
-      screen.queryByTestId('select-transaction-error'),
-    ).not.toBeOnTheScreen()
+    expect(screen.queryByTestId('transaction-type-error')).not.toBeOnTheScreen()
     expect(screen.queryByTestId('input-value-error')).not.toBeOnTheScreen()
+  })
+
+  it('should show transactionTypeError if field transactionType is empty', async () => {
+    render(
+      <GluestackUIProvider>
+        <Dashboard />
+      </GluestackUIProvider>,
+    )
+    const submitButton = screen.getByTestId('submit-button')
+    await waitFor(() => {
+      fireEvent(submitButton, 'press')
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('transaction-type-error').props.children).toBe(
+        'O tipo da transação é obrigatório',
+      )
+    })
   })
 })
