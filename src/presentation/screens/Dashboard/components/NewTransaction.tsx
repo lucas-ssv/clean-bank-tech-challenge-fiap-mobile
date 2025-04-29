@@ -1,5 +1,5 @@
 import { Alert } from 'react-native'
-import { ComponentProps } from 'react'
+import { ComponentProps, useState } from 'react'
 import * as DocumentPicker from 'expo-document-picker'
 import * as FileSystem from 'expo-file-system'
 import MaskInput, { Masks } from 'react-native-mask-input'
@@ -52,6 +52,7 @@ import { ModalImage } from '@/presentation/components'
 // import { useAuth } from '@/contexts'
 import { useToast } from '@/presentation/hooks'
 import { TransactionType } from '@/domain/usecases/transaction'
+import { TransactionDocumentModel } from '@/domain/models/transaction-document'
 // import { TransactionDocument, TransactionType } from '@/models'
 
 type Props = ComponentProps<typeof Box>
@@ -87,10 +88,9 @@ export function NewTransaction({ className, ...rest }: Props) {
       value: 'R$0,00',
     },
   })
-  // const [transactionDocuments, setTransactionDocuments] = useState<
-  //   Omit<TransactionDocument, 'transactionId'>[]
-  // >([])
-  const transactionDocuments: any[] = []
+  const [transactionDocuments, setTransactionDocuments] = useState<
+    Omit<TransactionDocumentModel, 'transactionId'>[]
+  >([])
 
   const handlePickerDocument = async () => {
     try {
@@ -115,16 +115,14 @@ export function NewTransaction({ className, ...rest }: Props) {
               )
             }
 
-            // setTransactionDocuments((prevState) => [
-            //   ...prevState,
-            //   {
-            //     name: asset.name,
-            //     uri: assetInfo.uri,
-            //     mimeType: asset.mimeType!,
-            //     createdAt: Timestamp.now(),
-            //     updatedAt: Timestamp.now(),
-            //   },
-            // ])
+            setTransactionDocuments((prevState) => [
+              ...prevState,
+              {
+                name: asset.name,
+                uri: assetInfo.uri,
+                mimeType: asset.mimeType!,
+              },
+            ])
           }
         }
       }
@@ -186,15 +184,15 @@ export function NewTransaction({ className, ...rest }: Props) {
 
   const clearTransactionData = () => {
     reset()
-    // setTransactionDocuments([])
+    setTransactionDocuments([])
   }
 
-  // const handleRemoveDocument = (documentUri: string) => {
-  //   const newTransactionDocuments = transactionDocuments.filter(
-  //     (document) => document.uri !== documentUri,
-  //   )
-  //   setTransactionDocuments(newTransactionDocuments)
-  // }
+  const handleRemoveDocument = (documentUri: string) => {
+    const newTransactionDocuments = transactionDocuments.filter(
+      (document) => document.uri !== documentUri,
+    )
+    setTransactionDocuments(newTransactionDocuments)
+  }
 
   return (
     <Box
@@ -350,7 +348,7 @@ export function NewTransaction({ className, ...rest }: Props) {
               </HStack>
               <Button
                 variant="link"
-                // onPress={() => handleRemoveDocument(document.uri)}
+                onPress={() => handleRemoveDocument(document.uri)}
               >
                 <Feather name="x" size={24} color="#000000" />
               </Button>
