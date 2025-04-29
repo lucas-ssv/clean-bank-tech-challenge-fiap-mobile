@@ -3,6 +3,7 @@ export interface SaveUserRepository {
 }
 
 export type SaveUserRepositoryParams = {
+  userUID: string
   name: string
   email: string
 }
