@@ -8,7 +8,11 @@ import { addDoc, collection } from 'firebase/firestore'
 
 jest.mock('firebase/auth', () => ({
   signInWithEmailAndPassword: jest.fn(),
-  createUserWithEmailAndPassword: jest.fn(),
+  createUserWithEmailAndPassword: jest.fn().mockResolvedValue({
+    user: {
+      uid: 'any_user_uid',
+    },
+  }),
   initializeAuth: jest.fn(),
   getReactNativePersistence: jest.fn(),
   setPersistence: jest.fn(),
@@ -47,6 +51,18 @@ describe('AccountFirebaseRepository', () => {
         'any_email@mail.com',
         'any_password',
       )
+    })
+
+    it('should return an userUID on success', async () => {
+      const sut = new AccountFirebaseRepository()
+
+      const userUID = await sut.add({
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+      })
+
+      expect(userUID).toBe('any_user_uid')
     })
   })
 
