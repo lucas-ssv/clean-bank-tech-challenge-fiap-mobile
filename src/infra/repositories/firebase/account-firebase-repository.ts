@@ -22,8 +22,13 @@ export class AccountFirebaseRepository
     await signInWithEmailAndPassword(auth, user.email, user.password)
   }
 
-  async add(account: AddAccountRepositoryParams): Promise<void> {
-    await createUserWithEmailAndPassword(auth, account.email, account.password)
+  async add(account: AddAccountRepositoryParams): Promise<string> {
+    const { user } = await createUserWithEmailAndPassword(
+      auth,
+      account.email,
+      account.password,
+    )
+    return user.uid
   }
 
   async save(user: SaveUserRepositoryParams): Promise<void> {

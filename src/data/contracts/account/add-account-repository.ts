@@ -1,5 +1,5 @@
 export interface AddAccountRepository {
-  add: (account: AddAccountRepositoryParams) => Promise<void>
+  add: (account: AddAccountRepositoryParams) => Promise<string>
 }
 
 export type AddAccountRepositoryParams = {
