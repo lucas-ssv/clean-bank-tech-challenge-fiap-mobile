@@ -24,13 +24,17 @@ jest.mock('nativewind', () => {
 jest.mock('@expo/vector-icons/Feather')
 jest.mock('@expo/vector-icons/MaterialIcons')
 
+const makeSut = () => {
+  render(
+    <GluestackUIProvider>
+      <Dashboard />
+    </GluestackUIProvider>,
+  )
+}
+
 describe('<Dashboard />', () => {
   it('should render correctly on start', () => {
-    render(
-      <GluestackUIProvider>
-        <Dashboard />
-      </GluestackUIProvider>,
-    )
+    makeSut()
 
     expect(screen.getByTestId('transaction-type')).toBeTruthy()
     expect(screen.getByTestId('input-value')).toHaveDisplayValue('R$ 0,00')
@@ -43,11 +47,7 @@ describe('<Dashboard />', () => {
   })
 
   it('should show transactionTypeError if field transactionType is empty', async () => {
-    render(
-      <GluestackUIProvider>
-        <Dashboard />
-      </GluestackUIProvider>,
-    )
+    makeSut()
     const submitButton = screen.getByTestId('submit-button')
     await waitFor(() => {
       fireEvent(submitButton, 'press')
