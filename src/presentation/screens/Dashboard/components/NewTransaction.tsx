@@ -224,7 +224,7 @@ export function NewTransaction({ className, ...rest }: Props) {
           render={({ field: { onChange, value } }) => (
             <Select onValueChange={onChange} selectedValue={value}>
               <SelectTrigger
-                testID="select-transaction"
+                testID="transaction-type"
                 variant="outline"
                 size="xl"
                 className="h-12 bg-white border border-custom-my-dark-green rounded-lg"
@@ -261,7 +261,7 @@ export function NewTransaction({ className, ...rest }: Props) {
         />
         {errors.transactionType && (
           <FormControlError>
-            <FormControlErrorText testID="select-transaction-error">
+            <FormControlErrorText testID="transaction-type-error">
               {errors.transactionType.message}
             </FormControlErrorText>
           </FormControlError>
@@ -359,6 +359,7 @@ export function NewTransaction({ className, ...rest }: Props) {
         ))}
 
         <Button
+          testID="submit-button"
           className="h-12 bg-custom-my-dark-green rounded-lg mt-8"
           onPress={handleSubmit(onCreateTransaction)}
           isDisabled={isSubmitting}
