@@ -59,4 +59,21 @@ describe('<Dashboard />', () => {
       )
     })
   })
+
+  it('should show valueError if field value is empty', async () => {
+    makeSut()
+
+    const inputValue = screen.getByTestId('input-value')
+    fireEvent(inputValue, 'changeText', '')
+    const submitButton = screen.getByTestId('submit-button')
+    await waitFor(() => {
+      fireEvent(submitButton, 'press')
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('input-value-error').props.children).toBe(
+        'O valor é obrigatório',
+      )
+    })
+  })
 })
