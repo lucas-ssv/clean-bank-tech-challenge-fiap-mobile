@@ -76,4 +76,21 @@ describe('<Dashboard />', () => {
       )
     })
   })
+
+  it('should show valueError if field value is less than 1', async () => {
+    makeSut()
+
+    const inputValue = screen.getByTestId('input-value')
+    fireEvent(inputValue, 'changeText', '00.01')
+    const submitButton = screen.getByTestId('submit-button')
+    await waitFor(() => {
+      fireEvent(submitButton, 'press')
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('input-value-error').props.children).toBe(
+        'O valor mínimo é R$1,00',
+      )
+    })
+  })
 })
