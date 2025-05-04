@@ -1,7 +1,4 @@
-import {
-  ObserveAuthState,
-  ObserveAuthStateParams,
-} from '@/domain/usecases/account'
+import { ObserveAuthState } from '@/domain/usecases/account'
 
 class ObserveAuthStateImpl implements ObserveAuthState {
   private authRepository
@@ -10,8 +7,8 @@ class ObserveAuthStateImpl implements ObserveAuthState {
     this.authRepository = authRepository
   }
 
-  execute(callback: ObserveAuthStateParams): () => void {
-    this.authRepository.onAuthStateChanged(callback)
+  execute(): () => void {
+    this.authRepository.onAuthStateChanged(() => {})
     return () => {}
   }
 }
@@ -25,10 +22,9 @@ describe('ObserveAuthState', () => {
     const authRepositoryMock = new AuthRepositoryMock()
     const authSpy = jest.spyOn(authRepositoryMock, 'onAuthStateChanged')
     const sut = new ObserveAuthStateImpl(authRepositoryMock)
-    const callback = () => {}
 
-    await sut.execute(callback)
+    sut.execute()
 
-    expect(authSpy).toHaveBeenCalledWith(callback)
+    expect(authSpy).toHaveBeenCalled()
   })
 })
