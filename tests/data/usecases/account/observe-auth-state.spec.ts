@@ -16,23 +16,26 @@ class ObserveAuthStateImpl implements ObserveAuthState {
   }
 
   execute(callback: ObserveAuthStateParams): () => void {
-    this.authRepository.onAuthStateChanged(async (user) => {
+    const unsubscribe = this.authRepository.onAuthStateChanged(async (user) => {
       const account = await this.loadAccountByEmailRepository.loadByEmail(
         user.email,
       )
       callback(account)
     })
-    return () => {}
+    return unsubscribe
   }
 }
 
 interface AuthRepository {
-  onAuthStateChanged: (callback: (user: { email: string }) => void) => void
+  onAuthStateChanged: (
+    callback: (user: { email: string }) => void,
+  ) => () => void
 }
 
 class AuthRepositoryStub implements AuthRepository {
-  onAuthStateChanged(callback: (user: { email: string }) => void): void {
+  onAuthStateChanged(callback: (user: { email: string }) => void): () => void {
     callback({ email: 'any_email@mail.com' })
+    return () => {}
   }
 }
 
@@ -115,5 +118,13 @@ describe('ObserveAuthState', () => {
       email: 'any_email@mail.com',
       userUID: 'any_user_uid',
     })
+  })
+
+  it('should return a void function on success', async () => {
+    const { sut } = makeSut()
+
+    const unsubscribe = sut.execute(() => {})
+
+    expect(typeof unsubscribe).toBe('function')
   })
 })
