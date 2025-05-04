@@ -17,7 +17,10 @@ class ObserveAuthStateImpl implements ObserveAuthState {
 
   execute(callback: ObserveAuthStateParams): () => void {
     this.authRepository.onAuthStateChanged(async (user) => {
-      await this.loadAccountByEmailRepository.loadByEmail(user.email)
+      const account = await this.loadAccountByEmailRepository.loadByEmail(
+        user.email,
+      )
+      callback(account)
     })
     return () => {}
   }
@@ -96,5 +99,21 @@ describe('ObserveAuthState', () => {
     sut.execute(callback)
 
     expect(loadSpy).toHaveBeenCalledWith('any_email@mail.com')
+  })
+
+  it('should call callback with the result from LoadAccountByEmailRepository', async () => {
+    const { sut } = makeSut()
+
+    const callbackResult = new Promise((resolve) => {
+      sut.execute((account) => {
+        resolve(account)
+      })
+    })
+
+    await expect(callbackResult).resolves.toEqual({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      userUID: 'any_user_uid',
+    })
   })
 })
