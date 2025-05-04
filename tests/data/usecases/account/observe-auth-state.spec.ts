@@ -1,65 +1,8 @@
+import { ObserveAuthStateImpl } from '@/data/usecases/account'
 import {
-  ObserveAuthState,
-  ObserveAuthStateParams,
-} from '@/domain/usecases/account'
-
-class ObserveAuthStateImpl implements ObserveAuthState {
-  private authRepository
-  private loadAccountByEmailRepository
-
-  constructor(
-    authRepository: AuthRepository,
-    loadAccountByEmailRepository: LoadAccountByEmailRepository,
-  ) {
-    this.authRepository = authRepository
-    this.loadAccountByEmailRepository = loadAccountByEmailRepository
-  }
-
-  execute(callback: ObserveAuthStateParams): () => void {
-    const unsubscribe = this.authRepository.onAuthStateChanged(async (user) => {
-      const account = await this.loadAccountByEmailRepository.loadByEmail(
-        user.email,
-      )
-      callback(account)
-    })
-    return unsubscribe
-  }
-}
-
-interface AuthRepository {
-  onAuthStateChanged: (
-    callback: (user: { email: string }) => void,
-  ) => () => void
-}
-
-class AuthRepositoryStub implements AuthRepository {
-  onAuthStateChanged(callback: (user: { email: string }) => void): () => void {
-    callback({ email: 'any_email@mail.com' })
-    return () => {}
-  }
-}
-
-type LoadAccountByEmailRepositoryResult = {
-  name: string
-  email: string
-  userUID: string
-}
-
-interface LoadAccountByEmailRepository {
-  loadByEmail: (email: string) => Promise<LoadAccountByEmailRepositoryResult>
-}
-
-class LoadAccountByEmailRepositoryMock implements LoadAccountByEmailRepository {
-  async loadByEmail(
-    email: string,
-  ): Promise<LoadAccountByEmailRepositoryResult> {
-    return Promise.resolve({
-      name: 'any_name',
-      email: 'any_email@mail.com',
-      userUID: 'any_user_uid',
-    })
-  }
-}
+  AuthRepositoryStub,
+  LoadAccountByEmailRepositoryMock,
+} from '@tests/data/mocks/account'
 
 type SutTypes = {
   sut: ObserveAuthStateImpl
