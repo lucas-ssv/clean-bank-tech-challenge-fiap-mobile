@@ -1,4 +1,7 @@
-import { ObserveAuthState } from '@/domain/usecases/account'
+import {
+  ObserveAuthState,
+  ObserveAuthStateParams,
+} from '@/domain/usecases/account'
 
 class ObserveAuthStateImpl implements ObserveAuthState {
   private authRepository
@@ -12,7 +15,7 @@ class ObserveAuthStateImpl implements ObserveAuthState {
     this.loadAccountByEmailRepository = loadAccountByEmailRepository
   }
 
-  execute(): () => void {
+  execute(callback: ObserveAuthStateParams): () => void {
     this.authRepository.onAuthStateChanged(async (user) => {
       await this.loadAccountByEmailRepository.loadByEmail(user.email)
     })
@@ -30,12 +33,26 @@ class AuthRepositoryStub implements AuthRepository {
   }
 }
 
+type LoadAccountByEmailRepositoryResult = {
+  name: string
+  email: string
+  userUID: string
+}
+
 interface LoadAccountByEmailRepository {
-  loadByEmail: (email: string) => Promise<void>
+  loadByEmail: (email: string) => Promise<LoadAccountByEmailRepositoryResult>
 }
 
 class LoadAccountByEmailRepositoryMock implements LoadAccountByEmailRepository {
-  async loadByEmail(email: string): Promise<void> {}
+  async loadByEmail(
+    email: string,
+  ): Promise<LoadAccountByEmailRepositoryResult> {
+    return Promise.resolve({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      userUID: 'any_user_uid',
+    })
+  }
 }
 
 type SutTypes = {
@@ -64,8 +81,9 @@ describe('ObserveAuthState', () => {
   it('should call AuthRepository with correct values', async () => {
     const { sut, authRepositoryStub } = makeSut()
     const authSpy = jest.spyOn(authRepositoryStub, 'onAuthStateChanged')
+    const callback = () => {}
 
-    sut.execute()
+    sut.execute(callback)
 
     expect(authSpy).toHaveBeenCalled()
   })
@@ -73,8 +91,9 @@ describe('ObserveAuthState', () => {
   it('should call LoadAccountByEmailRepository with correct values', async () => {
     const { sut, loadAccountByEmailRepositoryMock } = makeSut()
     const loadSpy = jest.spyOn(loadAccountByEmailRepositoryMock, 'loadByEmail')
+    const callback = () => {}
 
-    sut.execute()
+    sut.execute(callback)
 
     expect(loadSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
