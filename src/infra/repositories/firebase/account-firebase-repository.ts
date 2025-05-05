@@ -1,6 +1,9 @@
 import {
   createUserWithEmailAndPassword,
+  NextOrObserver,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
+  User,
 } from 'firebase/auth'
 import { addDoc, collection, Timestamp } from 'firebase/firestore'
 
@@ -8,6 +11,7 @@ import { auth, db } from '@/main/config/firebase'
 import {
   AddAccountRepository,
   AddAccountRepositoryParams,
+  AuthRepository,
   LoadAccountRepository,
   LoadAccountRepositoryParams,
   SaveUserRepository,
@@ -16,10 +20,19 @@ import {
 import { userConverter } from './converters'
 
 export class AccountFirebaseRepository
-  implements LoadAccountRepository, AddAccountRepository, SaveUserRepository
+  implements
+    LoadAccountRepository,
+    AddAccountRepository,
+    SaveUserRepository,
+    AuthRepository<NextOrObserver<User>>
 {
   async auth(user: LoadAccountRepositoryParams): Promise<void> {
     await signInWithEmailAndPassword(auth, user.email, user.password)
+  }
+
+  onAuthStateChanged(callback: NextOrObserver<User>): () => void {
+    onAuthStateChanged(auth, callback)
+    return () => {}
   }
 
   async add(account: AddAccountRepositoryParams): Promise<string> {
