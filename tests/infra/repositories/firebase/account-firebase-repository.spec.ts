@@ -2,6 +2,7 @@ import { AccountFirebaseRepository } from '@/infra/repositories/firebase'
 import { auth } from '@/main/config/firebase'
 import {
   createUserWithEmailAndPassword,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
 } from 'firebase/auth'
 import { addDoc, collection } from 'firebase/firestore'
@@ -16,6 +17,7 @@ jest.mock('firebase/auth', () => ({
   initializeAuth: jest.fn(),
   getReactNativePersistence: jest.fn(),
   setPersistence: jest.fn(),
+  onAuthStateChanged: jest.fn(),
 }))
 
 jest.mock('firebase/firestore', () => ({
@@ -107,6 +109,16 @@ describe('AccountFirebaseRepository', () => {
         'any_email@mail.com',
         'any_password',
       )
+    })
+  })
+
+  describe('onAuthStateChange', () => {
+    it('should call onAuthStateChange', () => {
+      const sut = new AccountFirebaseRepository()
+
+      sut.onAuthStateChanged(() => {})
+
+      expect(onAuthStateChanged).toHaveBeenCalled()
     })
   })
 })
