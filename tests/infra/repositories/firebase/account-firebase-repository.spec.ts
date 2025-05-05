@@ -78,11 +78,13 @@ describe('AccountFirebaseRepository', () => {
       const sut = new AccountFirebaseRepository()
 
       await sut.save({
+        userUID: 'any_user_uid',
         name: 'any_name',
         email: 'any_email@mail.com',
       })
 
       expect(addDoc).toHaveBeenCalledWith(mockedCollectionWithConverter, {
+        userUID: 'any_user_uid',
         name: 'any_name',
         email: 'any_email@mail.com',
         createdAt: 'any_timestamp',
