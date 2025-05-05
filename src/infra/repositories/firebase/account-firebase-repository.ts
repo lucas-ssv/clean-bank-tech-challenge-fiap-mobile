@@ -33,6 +33,7 @@ export class AccountFirebaseRepository
 
   async save(user: SaveUserRepositoryParams): Promise<void> {
     await addDoc(collection(db, 'users').withConverter(userConverter), {
+      userUID: user.userUID,
       name: user.name,
       email: user.email,
       createdAt: Timestamp.now(),
