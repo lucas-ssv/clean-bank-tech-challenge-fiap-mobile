@@ -31,8 +31,8 @@ export class AccountFirebaseRepository
   }
 
   onAuthStateChanged(callback: NextOrObserver<User>): () => void {
-    onAuthStateChanged(auth, callback)
-    return () => {}
+    const unsubscribe = onAuthStateChanged(auth, callback)
+    return unsubscribe
   }
 
   async add(account: AddAccountRepositoryParams): Promise<string> {
