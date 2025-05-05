@@ -1,3 +1,3 @@
 export * from './add-account'
 export * from './authentication'
-export * from './observe-auth-state'
+export * from './observe-and-load-account-by-email'

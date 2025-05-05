@@ -1,11 +1,11 @@
-import { ObserveAuthStateImpl } from '@/data/usecases/account'
+import { ObserveAndLoadAccountByEmailImpl } from '@/data/usecases/account'
 import {
   AuthRepositoryStub,
   LoadAccountByEmailRepositoryMock,
 } from '@tests/data/mocks/account'
 
 type SutTypes = {
-  sut: ObserveAuthStateImpl
+  sut: ObserveAndLoadAccountByEmailImpl
   authRepositoryStub: AuthRepositoryStub
   loadAccountByEmailRepositoryMock: LoadAccountByEmailRepositoryMock
 }
@@ -14,7 +14,7 @@ const makeSut = (): SutTypes => {
   const authRepositoryStub = new AuthRepositoryStub()
   const loadAccountByEmailRepositoryMock =
     new LoadAccountByEmailRepositoryMock()
-  const sut = new ObserveAuthStateImpl(
+  const sut = new ObserveAndLoadAccountByEmailImpl(
     authRepositoryStub,
     loadAccountByEmailRepositoryMock,
   )

@@ -3,11 +3,13 @@ import {
   LoadAccountByEmailRepository,
 } from '@/data/contracts/account'
 import {
-  ObserveAuthState,
-  ObserveAuthStateParams,
+  ObserveAndLoadAccountByEmail,
+  ObserveAndLoadAccountByEmailParams,
 } from '@/domain/usecases/account'
 
-export class ObserveAuthStateImpl implements ObserveAuthState {
+export class ObserveAndLoadAccountByEmailImpl
+  implements ObserveAndLoadAccountByEmail
+{
   private authRepository
   private loadAccountByEmailRepository
 
@@ -19,7 +21,7 @@ export class ObserveAuthStateImpl implements ObserveAuthState {
     this.loadAccountByEmailRepository = loadAccountByEmailRepository
   }
 
-  execute(callback: ObserveAuthStateParams): () => void {
+  execute(callback: ObserveAndLoadAccountByEmailParams): () => void {
     const unsubscribe = this.authRepository.onAuthStateChanged(async (user) => {
       const account = await this.loadAccountByEmailRepository.loadByEmail(
         user.email,
