@@ -17,7 +17,7 @@ jest.mock('firebase/auth', () => ({
   initializeAuth: jest.fn(),
   getReactNativePersistence: jest.fn(),
   setPersistence: jest.fn(),
-  onAuthStateChanged: jest.fn(),
+  onAuthStateChanged: jest.fn().mockReturnValue(() => {}),
 }))
 
 jest.mock('firebase/firestore', () => ({
@@ -119,6 +119,14 @@ describe('AccountFirebaseRepository', () => {
       sut.onAuthStateChanged(() => {})
 
       expect(onAuthStateChanged).toHaveBeenCalled()
+    })
+
+    it('should return an unsubscribe on success', () => {
+      const sut = new AccountFirebaseRepository()
+
+      const unsubscribe = sut.onAuthStateChanged(() => {})
+
+      expect(typeof unsubscribe).toBe('function')
     })
   })
 })
