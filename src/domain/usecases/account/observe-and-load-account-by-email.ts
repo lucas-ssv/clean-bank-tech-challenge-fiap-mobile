@@ -3,7 +3,7 @@ export interface ObserveAndLoadAccountByEmail {
 }
 
 export type ObserveAndLoadAccountByEmailParams = (
-  user: ObserveAndLoadAccountByEmailUserParams,
+  user: ObserveAndLoadAccountByEmailUserParams | null,
 ) => void
 
 export type ObserveAndLoadAccountByEmailUserParams = {
