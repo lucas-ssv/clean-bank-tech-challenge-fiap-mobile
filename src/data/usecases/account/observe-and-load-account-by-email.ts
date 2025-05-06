@@ -22,12 +22,14 @@ export class ObserveAndLoadAccountByEmailImpl
   }
 
   execute(callback: ObserveAndLoadAccountByEmailParams): () => void {
-    const unsubscribe = this.authRepository.onAuthStateChanged(async (user) => {
-      const account = await this.loadAccountByEmailRepository.loadByEmail(
-        user.email,
-      )
-      callback(account)
-    })
+    const unsubscribe = this.authRepository.onAuthStateChanged(
+      async (user: { email: string }) => {
+        const account = await this.loadAccountByEmailRepository.loadByEmail(
+          user.email,
+        )
+        callback(account)
+      },
+    )
     return unsubscribe
   }
 }
