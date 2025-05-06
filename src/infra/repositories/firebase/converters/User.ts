@@ -5,7 +5,7 @@ import {
   Timestamp,
 } from 'firebase/firestore'
 
-type User = SaveUserRepositoryParams & {
+export type User = SaveUserRepositoryParams & {
   createdAt: Timestamp
   updatedAt: Timestamp
 }
