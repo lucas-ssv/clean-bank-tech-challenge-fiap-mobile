@@ -22,6 +22,21 @@ jest.mock('firebase/auth', () => ({
 
 jest.mock('firebase/firestore', () => ({
   addDoc: jest.fn(),
+  query: jest.fn(),
+  where: jest.fn(),
+  getDocs: jest.fn().mockResolvedValue({
+    forEach: (callback: (doc: any) => void) => {
+      callback({
+        data: () => ({
+          name: 'any_name',
+          email: 'any_email@mail.com',
+          userUID: 'any_user_uid',
+          createdAt: 'any_timestamp',
+          updatedAt: 'any_timestamp',
+        }),
+      })
+    },
+  }),
   collection: jest.fn(),
   getFirestore: jest.fn(),
   Timestamp: {
@@ -127,6 +142,22 @@ describe('AccountFirebaseRepository', () => {
       const unsubscribe = sut.onAuthStateChanged(() => {})
 
       expect(typeof unsubscribe).toBe('function')
+    })
+  })
+
+  describe('loadByEmail', () => {
+    it('should load an account by email on success', async () => {
+      const sut = new AccountFirebaseRepository()
+
+      const account = await sut.loadByEmail('any_email@mail.com')
+
+      expect(account).toEqual({
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        userUID: 'any_user_uid',
+        createdAt: 'any_timestamp',
+        updatedAt: 'any_timestamp',
+      })
     })
   })
 })
