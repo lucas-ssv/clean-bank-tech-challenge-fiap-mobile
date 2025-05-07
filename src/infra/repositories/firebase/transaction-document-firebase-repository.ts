@@ -7,7 +7,7 @@ import {
 } from '@/data/contracts/transaction-document'
 import { transactionDocumentConverter } from './converters'
 
-export class TransactionDocumentRepository
+export class TransactionDocumentFirebaseRepository
   implements AddTransactionDocumentRepository
 {
   async add(

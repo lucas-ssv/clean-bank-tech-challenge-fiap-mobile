@@ -1,9 +1,15 @@
+import { ScrollView } from 'react-native'
+
+import { AddTransaction } from '@/domain/usecases/transaction'
 import { FinancialFlowChart, NewTransaction } from './components'
 import { VStack } from '@/presentation/components/ui'
 import { Extract, Welcome } from '@/presentation/components'
-import { ScrollView } from 'react-native'
 
-export function Dashboard() {
+type Props = {
+  addTransaction: AddTransaction
+}
+
+export function Dashboard({ addTransaction }: Props) {
   return (
     <ScrollView
       className="bg-custom-my-light-green"
@@ -11,7 +17,7 @@ export function Dashboard() {
     >
       <VStack className="flex-1 p-6">
         <Welcome />
-        <NewTransaction />
+        <NewTransaction addTransaction={addTransaction} />
         <FinancialFlowChart />
         <Extract />
       </VStack>

@@ -7,13 +7,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { z } from 'zod'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-// import { randomUUID } from 'expo-crypto'
-// import { uploadFile } from '@/firebase/storage'
-// import { db } from '@/firebase/config'
-// import {
-//   transactionConverter,
-//   transactionDocumentConverter,
-// } from '@/firebase/converters'
+import { Timestamp } from 'firebase/firestore'
 
 import {
   Box,
@@ -48,14 +42,14 @@ import Illustration from '@/presentation/assets/ilustracao2.svg'
 import ArrowDropdown from '@/presentation/assets/arrow-dropdown.svg'
 import File from '@/presentation/assets/file.svg'
 import { ModalImage } from '@/presentation/components'
-// import { addDoc, collection, Timestamp } from 'firebase/firestore'
-// import { useAuth } from '@/contexts'
 import { useToast } from '@/presentation/hooks'
-import { TransactionType } from '@/domain/usecases/transaction'
+import { AddTransaction, TransactionType } from '@/domain/usecases/transaction'
 import { TransactionDocumentModel } from '@/domain/models/transaction-document'
-// import { TransactionDocument, TransactionType } from '@/models'
+import { useAuth } from '@/presentation/contexts'
 
-type Props = ComponentProps<typeof Box>
+type Props = ComponentProps<typeof Box> & {
+  addTransaction: AddTransaction
+}
 
 type CreateTransactionData = z.infer<typeof schema>
 
@@ -74,8 +68,8 @@ const schema = z.object({
     }, 'O valor mínimo é R$1,00'),
 })
 
-export function NewTransaction({ className, ...rest }: Props) {
-  // const { user } = useAuth()
+export function NewTransaction({ addTransaction, className, ...rest }: Props) {
+  const { user } = useAuth()
   const toast = useToast()
   const {
     control,
@@ -133,47 +127,18 @@ export function NewTransaction({ className, ...rest }: Props) {
 
   const onCreateTransaction = async (data: CreateTransactionData) => {
     try {
-      console.log(data)
-      // const { transactionType, value } = data
-      // const numericValue = Number(
-      //   value.replace(/[^0-9,]/g, '').replace(',', '.'),
-      // )
+      const { transactionType, value } = data
+      const numericValue = Number(
+        value.replace(/[^0-9,]/g, '').replace(',', '.'),
+      )
 
-      // const transactionRef = await addDoc(
-      //   collection(db, 'transactions').withConverter(transactionConverter),
-      //   {
-      //     userUid: user?.uid!,
-      //     transactionType,
-      //     date: Timestamp.now(),
-      //     value: numericValue,
-      //     createdAt: Timestamp.now(),
-      //     updatedAt: Timestamp.now(),
-      //   },
-      // )
-
-      // if (transactionDocuments.length > 0) {
-      //   for (const document of transactionDocuments) {
-      //     const fileName = randomUUID()
-      //     const documentUrl = (await uploadFile(
-      //       document.uri,
-      //       fileName,
-      //     )) as string
-
-      //     await addDoc(
-      //       collection(db, 'transaction-documents').withConverter(
-      //         transactionDocumentConverter,
-      //       ),
-      //       {
-      //         transactionId: transactionRef.id,
-      //         name: fileName,
-      //         mimeType: document.mimeType,
-      //         uri: documentUrl,
-      //         createdAt: Timestamp.now(),
-      //         updatedAt: Timestamp.now(),
-      //       },
-      //     )
-      //   }
-      // }
+      await addTransaction.execute({
+        userUID: user?.userUID!,
+        date: Timestamp.now().toDate(),
+        transactionType,
+        value: numericValue,
+        transactionDocuments,
+      })
 
       toast('success', 'Transação realizada com sucesso!')
       clearTransactionData()

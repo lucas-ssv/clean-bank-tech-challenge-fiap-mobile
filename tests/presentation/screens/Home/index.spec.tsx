@@ -15,6 +15,7 @@ import {
 } from '@tests/domain/usecases/account'
 
 jest.useFakeTimers()
+
 jest.mock('nativewind', () => {
   const setColorSchemeMock = jest.fn()
 
@@ -27,10 +28,15 @@ jest.mock('nativewind', () => {
     cssInterop: jest.fn(),
   }
 })
+
 jest.mock('@/presentation/components/ui/toast', () => ({
   useToast: jest.fn().mockReturnValue({
     show: jest.fn(),
   }),
+}))
+
+jest.mock('firebase/firestore', () => ({
+  Timestamp: jest.fn(),
 }))
 
 type SutSignUpTypes = {

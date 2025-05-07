@@ -3,9 +3,9 @@ import { DrawerScreenProps } from '@react-navigation/drawer'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Feather from '@expo/vector-icons/Feather'
 
-import { Dashboard } from '@/presentation/screens'
 import { DrawerParamList } from '@/presentation/@types/navigation'
 import { AvatarMenu } from './components'
+import { MakeDashboard } from '@/main/factories/screens'
 
 type Props = DrawerScreenProps<DrawerParamList, 'StackRoutes'>
 
@@ -29,7 +29,7 @@ export function StackRoutes({ navigation }: Props) {
     >
       <Screen
         name="Dashboard"
-        component={Dashboard}
+        component={MakeDashboard}
         options={{
           title: 'Início',
           headerLeft() {

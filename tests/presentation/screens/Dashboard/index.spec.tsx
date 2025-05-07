@@ -5,6 +5,7 @@ import {
   waitFor,
 } from '@testing-library/react-native'
 
+import { AddTransactionMock } from '@tests/domain/usecases/transaction'
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
 import { Dashboard } from '@/presentation/screens'
 
@@ -21,13 +22,18 @@ jest.mock('nativewind', () => {
   }
 })
 
+jest.mock('firebase/firestore', () => ({
+  Timestamp: jest.fn(),
+}))
+
 jest.mock('@expo/vector-icons/Feather')
 jest.mock('@expo/vector-icons/MaterialIcons')
 
 const makeSut = () => {
+  const addTransactionMock = new AddTransactionMock()
   render(
     <GluestackUIProvider>
-      <Dashboard />
+      <Dashboard addTransaction={addTransactionMock} />
     </GluestackUIProvider>,
   )
 }

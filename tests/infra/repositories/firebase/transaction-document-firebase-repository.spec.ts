@@ -1,4 +1,4 @@
-import { TransactionDocumentRepository } from '@/infra/repositories/firebase'
+import { TransactionDocumentFirebaseRepository } from '@/infra/repositories/firebase'
 import { addDoc, collection } from 'firebase/firestore'
 
 jest.mock('firebase/auth', () => ({
@@ -35,7 +35,7 @@ describe('TransactionDocumentRepository', () => {
     ;(collection as jest.Mock).mockReturnValue({
       withConverter: withConverterMock,
     })
-    const sut = new TransactionDocumentRepository()
+    const sut = new TransactionDocumentFirebaseRepository()
 
     await sut.add({
       fileName: 'any_filename',
