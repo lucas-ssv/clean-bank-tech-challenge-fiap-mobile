@@ -1,5 +1,5 @@
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
-import { randomUUID } from 'node:crypto'
+import { randomUUID } from 'expo-crypto'
 
 import {
   UploadTransactionDocumentService,
