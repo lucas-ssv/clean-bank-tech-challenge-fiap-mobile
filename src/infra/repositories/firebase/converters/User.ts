@@ -15,6 +15,7 @@ export const userConverter: FirestoreDataConverter<User> = {
     return {
       name: user.name,
       email: user.email,
+      userUID: user.userUID,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     }
