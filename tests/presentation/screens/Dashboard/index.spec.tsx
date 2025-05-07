@@ -43,7 +43,7 @@ describe('<Dashboard />', () => {
     makeSut()
 
     expect(screen.getByTestId('transaction-type')).toBeTruthy()
-    expect(screen.getByTestId('input-value')).toHaveDisplayValue('R$ 0,00')
+    expect(screen.getByTestId('input-value').props.placeholder).toBe('R$ 0,00')
     expect(screen.queryByTestId('card-document')).not.toBeOnTheScreen()
     expect(
       screen.queryByTestId('loading-finish-transation'),

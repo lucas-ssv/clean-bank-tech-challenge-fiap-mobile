@@ -78,9 +78,6 @@ export function NewTransaction({ addTransaction, className, ...rest }: Props) {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: {
-      value: 'R$0,00',
-    },
   })
   const [transactionDocuments, setTransactionDocuments] = useState<
     Omit<TransactionDocumentModel, 'transactionId'>[]
@@ -246,6 +243,7 @@ export function NewTransaction({ addTransaction, className, ...rest }: Props) {
                 <MaskInput
                   testID="input-value"
                   value={value}
+                  placeholder="R$ 0,00"
                   onChangeText={onChange}
                   onBlur={onBlur}
                   style={{

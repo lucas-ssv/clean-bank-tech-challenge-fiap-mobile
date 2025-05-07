@@ -50,21 +50,24 @@ export function ModalLogin({ authentication }: Props) {
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
   })
   const toast = useToast()
   const [showModal, setShowModal] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const onLogin = async (data: LoginData) => {
     const { email, password } = data
     try {
+      setIsLoading(true)
       await authentication.execute({
         email,
         password,
       })
     } catch (error) {
+      setIsLoading(false)
       switch (error.code) {
         case 'auth/invalid-credential':
           toast('error', 'E-mail ou senha inválidas.', error.code)
@@ -194,9 +197,9 @@ export function ModalLogin({ authentication }: Props) {
                 testID="submit-button"
                 className="h-12 bg-custom-my-orange rounded-lg mt-8"
                 onPress={handleSubmit(onLogin)}
-                isDisabled={isSubmitting}
+                isDisabled={isLoading}
               >
-                {isSubmitting && (
+                {isLoading && (
                   <ButtonSpinner
                     testID="submit-button-loading"
                     className="text-white"

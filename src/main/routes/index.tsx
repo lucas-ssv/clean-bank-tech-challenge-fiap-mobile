@@ -4,7 +4,6 @@ import { AppRoutes } from './app'
 
 export function Routes() {
   const { user } = useAuth()
-  console.log('user', user)
 
   return user?.userUID ? <AppRoutes /> : <AuthRoutes />
 }
