@@ -1,11 +1,11 @@
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
-import { randomUUID } from 'node:crypto'
+import { randomUUID } from 'expo-crypto'
 
 import { storage } from '@/main/config/firebase'
 import { uriToBlob } from '@/infra/utils'
 import { UploadFirebaseService } from '@/infra/services/firebase'
 
-jest.mock('node:crypto', () => ({
+jest.mock('expo-crypto', () => ({
   randomUUID: jest.fn().mockReturnValue('any_filename'),
 }))
 
