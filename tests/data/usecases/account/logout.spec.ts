@@ -16,11 +16,24 @@ class LogoutAccountRepositoryMock {
   async logout(): Promise<void> {}
 }
 
+type SutTypes = {
+  sut: LogoutImpl
+  logoutAccountRepositoryMock: LogoutAccountRepositoryMock
+}
+
+const makeSut = (): SutTypes => {
+  const logoutAccountRepositoryMock = new LogoutAccountRepositoryMock()
+  const sut = new LogoutImpl(logoutAccountRepositoryMock)
+  return {
+    sut,
+    logoutAccountRepositoryMock,
+  }
+}
+
 describe('Logout usecase', () => {
   it('should call LogoutAccountRepository with correct values', async () => {
-    const logoutAccountRepositoryMock = new LogoutAccountRepositoryMock()
+    const { sut, logoutAccountRepositoryMock } = makeSut()
     const logoutSpy = jest.spyOn(logoutAccountRepositoryMock, 'logout')
-    const sut = new LogoutImpl(logoutAccountRepositoryMock)
 
     await sut.execute()
 
