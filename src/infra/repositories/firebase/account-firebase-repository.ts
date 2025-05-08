@@ -4,6 +4,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   User as FirebaseUser,
+  signOut,
 } from 'firebase/auth'
 import {
   addDoc,
@@ -23,6 +24,7 @@ import {
   LoadAccountByEmailRepositoryResult,
   LoadAccountRepository,
   LoadAccountRepositoryParams,
+  LogoutAccountRepository,
   SaveUserRepository,
   SaveUserRepositoryParams,
 } from '@/data/contracts/account'
@@ -34,7 +36,8 @@ export class AccountFirebaseRepository
     AuthRepository<NextOrObserver<FirebaseUser>>,
     LoadAccountByEmailRepository,
     AddAccountRepository,
-    SaveUserRepository
+    SaveUserRepository,
+    LogoutAccountRepository
 {
   async auth(user: LoadAccountRepositoryParams): Promise<void> {
     await signInWithEmailAndPassword(auth, user.email, user.password)
@@ -77,5 +80,9 @@ export class AccountFirebaseRepository
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
     })
+  }
+
+  async logout(): Promise<void> {
+    await signOut(auth)
   }
 }
