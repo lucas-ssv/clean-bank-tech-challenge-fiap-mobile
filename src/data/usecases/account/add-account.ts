@@ -17,8 +17,9 @@ export class AddAccountImpl implements AddAccount {
   }
 
   async execute(account: AddAccountParams): Promise<void> {
-    await this.addAccountRepository.add(account)
+    const userUID = await this.addAccountRepository.add(account)
     await this.saveUserRepository.save({
+      userUID,
       name: account.name,
       email: account.email,
     })

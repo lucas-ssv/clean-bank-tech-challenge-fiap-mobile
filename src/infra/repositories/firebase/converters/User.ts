@@ -5,7 +5,7 @@ import {
   Timestamp,
 } from 'firebase/firestore'
 
-type User = SaveUserRepositoryParams & {
+export type User = SaveUserRepositoryParams & {
   createdAt: Timestamp
   updatedAt: Timestamp
 }
@@ -15,6 +15,7 @@ export const userConverter: FirestoreDataConverter<User> = {
     return {
       name: user.name,
       email: user.email,
+      userUID: user.userUID,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     }

@@ -1,5 +1,6 @@
 import { getFirestore } from 'firebase/firestore'
 import { initializeApp } from 'firebase/app'
+import { getStorage } from 'firebase/storage'
 import {
   initializeAuth,
   getReactNativePersistence,
@@ -22,3 +23,5 @@ export const auth = initializeAuth(app, {
 setPersistence(auth, inMemoryPersistence)
 
 export const db = getFirestore()
+
+export const storage = getStorage(app, ENV.BUCKET_URL)
