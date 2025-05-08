@@ -39,4 +39,17 @@ describe('Logout usecase', () => {
 
     expect(logoutSpy).toHaveBeenCalled()
   })
+
+  it('should throw if LogoutAccountRepository throws', async () => {
+    const { sut, logoutAccountRepositoryMock } = makeSut()
+    jest
+      .spyOn(logoutAccountRepositoryMock, 'logout')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+    const promise = sut.execute()
+
+    expect(promise).rejects.toThrow()
+  })
 })
