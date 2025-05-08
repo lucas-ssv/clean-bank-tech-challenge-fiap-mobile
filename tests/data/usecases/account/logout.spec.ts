@@ -1,20 +1,5 @@
-import { Logout } from '@/domain/usecases/account'
-
-class LogoutImpl implements Logout {
-  private logoutAccountRepository
-
-  constructor(logoutAccountRepository: LogoutAccountRepositoryMock) {
-    this.logoutAccountRepository = logoutAccountRepository
-  }
-
-  async execute(): Promise<void> {
-    await this.logoutAccountRepository.logout()
-  }
-}
-
-class LogoutAccountRepositoryMock {
-  async logout(): Promise<void> {}
-}
+import { LogoutImpl } from '@/data/usecases/account'
+import { LogoutAccountRepositoryMock } from '@tests/data/mocks/account'
 
 type SutTypes = {
   sut: LogoutImpl
