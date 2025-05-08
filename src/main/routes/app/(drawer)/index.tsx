@@ -3,9 +3,9 @@ import { createDrawerNavigator } from '@react-navigation/drawer'
 import Feather from '@expo/vector-icons/Feather'
 
 import { StackRoutes } from '@/main/routes/app/(stack)'
-import { AvatarMenu } from '@/main/routes/app/(stack)/components'
 import { DrawerParamList } from '@/presentation/@types/navigation'
 import { DrawerContent } from '@/main/routes/app/(drawer)/components'
+import { MakeAvatarMenu } from '@/main/factories/screens'
 
 const { Navigator, Screen } = createDrawerNavigator<DrawerParamList>()
 
@@ -39,7 +39,7 @@ export function DrawerRoutes() {
         },
         headerTintColor: '#FF5031',
         headerRight() {
-          return <AvatarMenu />
+          return <MakeAvatarMenu />
         },
         drawerItemStyle: {
           borderRadius: 8,

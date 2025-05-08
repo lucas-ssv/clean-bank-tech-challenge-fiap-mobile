@@ -3,6 +3,7 @@ import { Pressable } from 'react-native'
 import Feather from '@expo/vector-icons/Feather'
 import { useNavigation } from '@react-navigation/native'
 
+import { Logout } from '@/domain/usecases/account'
 import {
   Menu,
   Icon,
@@ -11,13 +12,15 @@ import {
 } from '@/presentation/components/ui'
 import Avatar from '@/presentation/assets/avatar.svg'
 
-type Props = Omit<ComponentProps<typeof Menu>, 'trigger'>
+type Props = Omit<ComponentProps<typeof Menu>, 'trigger'> & {
+  logout: Logout
+}
 
-export function AvatarMenu({ ...rest }: Props) {
+export function AvatarMenu({ logout, ...rest }: Props) {
   const navigation = useNavigation()
 
   const handleLogout = async () => {
-    // await logout()
+    await logout.execute()
   }
 
   return (

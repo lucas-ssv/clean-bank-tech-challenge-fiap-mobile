@@ -4,8 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Feather from '@expo/vector-icons/Feather'
 
 import { DrawerParamList } from '@/presentation/@types/navigation'
-import { AvatarMenu } from './components'
-import { MakeDashboard } from '@/main/factories/screens'
+import { MakeAvatarMenu, MakeDashboard } from '@/main/factories/screens'
 
 type Props = DrawerScreenProps<DrawerParamList, 'StackRoutes'>
 
@@ -23,7 +22,7 @@ export function StackRoutes({ navigation }: Props) {
         headerBackButtonDisplayMode: 'minimal',
         headerBackVisible: true,
         headerRight() {
-          return <AvatarMenu />
+          return <MakeAvatarMenu />
         },
       }}
     >
