@@ -26,7 +26,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('ObserveAuthState', () => {
+describe('ObserveAndLoadAccountByEmail usecase', () => {
   it('should call AuthRepository with correct values', async () => {
     const { sut, authRepositoryStub } = makeSut()
     const authSpy = jest.spyOn(authRepositoryStub, 'onAuthStateChanged')
@@ -47,7 +47,7 @@ describe('ObserveAuthState', () => {
     expect(loadSpy).toHaveBeenCalledWith('any_email@mail.com')
   })
 
-  it('should call callback with the result from LoadAccountByEmailRepository', async () => {
+  it('should call callback with the result from LoadAccountByEmailRepository if user is not null', async () => {
     const { sut } = makeSut()
 
     const callbackResult = new Promise((resolve) => {
@@ -61,6 +61,24 @@ describe('ObserveAuthState', () => {
       email: 'any_email@mail.com',
       userUID: 'any_user_uid',
     })
+  })
+
+  it('should call callback with null if user returns null', async () => {
+    const { sut, authRepositoryStub } = makeSut()
+    jest
+      .spyOn(authRepositoryStub, 'onAuthStateChanged')
+      .mockImplementationOnce((callback) => {
+        callback(null)
+        return () => {}
+      })
+
+    const callbackResult = new Promise((resolve) => {
+      sut.execute((account) => {
+        resolve(account)
+      })
+    })
+
+    await expect(callbackResult).resolves.toBeNull()
   })
 
   it('should return a void function on success', async () => {
