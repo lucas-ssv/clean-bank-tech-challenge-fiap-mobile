@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth'
 import { addDoc, collection } from 'firebase/firestore'
 
@@ -18,6 +19,7 @@ jest.mock('firebase/auth', () => ({
   getReactNativePersistence: jest.fn(),
   setPersistence: jest.fn(),
   onAuthStateChanged: jest.fn().mockReturnValue(() => {}),
+  signOut: jest.fn(),
 }))
 
 jest.mock('firebase/firestore', () => ({
@@ -158,6 +160,16 @@ describe('AccountFirebaseRepository', () => {
         createdAt: 'any_timestamp',
         updatedAt: 'any_timestamp',
       })
+    })
+  })
+
+  describe('logout', () => {
+    it('should call signOut on success', async () => {
+      const sut = new AccountFirebaseRepository()
+
+      await sut.logout()
+
+      expect(signOut).toHaveBeenCalledWith(auth)
     })
   })
 })
