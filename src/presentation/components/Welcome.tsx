@@ -8,12 +8,7 @@ import {
   Text,
 } from '@/presentation/components/ui'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
-import Pixels from '@/presentation/assets/pixels.svg'
-import Illustration from '@/presentation/assets/ilustracao.svg'
-// import { useAuth } from '@/presentation/contexts'
-import { getFormattedDate } from '@/presentation/utils'
 import { BlurView } from 'expo-blur'
-// import { getStorageBalanceBlurred } from '@/storage'
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -21,10 +16,16 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 
+import { useAuth } from '@/presentation/contexts'
+import { getFormattedDate } from '@/presentation/utils'
+import Pixels from '@/presentation/assets/pixels.svg'
+import Illustration from '@/presentation/assets/ilustracao.svg'
+// import { getStorageBalanceBlurred } from '@/storage'
+
 type Props = ComponentProps<typeof Box>
 
 export function Welcome({ ...rest }: Props) {
-  // const { userData } = useAuth()
+  const { user } = useAuth()
   const [balanceBlurred, setBalanceBlurred] = useState(true)
 
   const opacity = useSharedValue(0)
@@ -98,7 +99,7 @@ export function Welcome({ ...rest }: Props) {
           }}
         />
         <Heading className="text-white text-center font-semibold text-xl">
-          Olá, John Due :)
+          Olá, {user?.name} :)
         </Heading>
         <Text className="text-white text-center text-sm mt-6">
           {getFormattedDate()}
