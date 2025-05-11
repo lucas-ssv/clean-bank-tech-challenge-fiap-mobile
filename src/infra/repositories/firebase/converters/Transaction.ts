@@ -13,7 +13,7 @@ type Transaction = AddTransactionRepositoryParams & {
 export const transactionConverter: FirestoreDataConverter<Transaction> = {
   toFirestore: (transaction: Transaction): DocumentData => {
     return {
-      userUid: transaction.userUID,
+      userUID: transaction.userUID,
       transactionType: transaction.transactionType,
       date: transaction.date,
       value: transaction.value,

@@ -1,9 +1,10 @@
 import { Dimensions, ScrollView } from 'react-native'
-import { ComponentProps, useState } from 'react'
+import { ComponentProps, useCallback, useEffect, useState } from 'react'
 import { BarChart } from 'react-native-chart-kit'
 import { LinearGradient } from 'expo-linear-gradient'
-// import { collection, onSnapshot, query, where } from 'firebase/firestore'
 
+import { TransactionModel } from '@/domain/models/transaction'
+import { LoadTransactionsByDate } from '@/domain/usecases/transaction'
 import {
   Box,
   FormControl,
@@ -14,15 +15,14 @@ import {
   VStack,
 } from '@/presentation/components/ui'
 import { InputDate } from '@/presentation/components'
-// import { useAuth } from '@/presentation/contexts'
-// import { db } from '@/firebase/config'
-// import { transactionConverter } from '@/firebase/converters'
-// import { Transaction } from '@/models'
+import { useToast } from '@/presentation/hooks'
 
-type Props = ComponentProps<typeof Box>
+type Props = ComponentProps<typeof Box> & {
+  loadTransactionsByDate: LoadTransactionsByDate
+}
 
-export function FinancialFlowChart({ ...rest }: Props) {
-  // const { user } = useAuth()
+export function FinancialFlowChart({ loadTransactionsByDate, ...rest }: Props) {
+  const toast = useToast()
   const screenWidth = Dimensions.get('window').width
   const [startDate, setStartDate] = useState<Date>(() => {
     const today = new Date()
@@ -30,47 +30,30 @@ export function FinancialFlowChart({ ...rest }: Props) {
   })
   const [endDate, setEndDate] = useState<Date>(new Date())
 
-  // const [transactions, setTransactions] = useState<Transaction[]>([])
-  // const labels = transactions.map((transaction) => transaction.transactionType)
-  // const datasets = transactions.map((transaction) => transaction.value)
+  const [transactions, setTransactions] = useState<TransactionModel[]>([])
+  const labels = transactions.map((transaction) => transaction.transactionType)
+  const datasets = transactions.map((transaction) => transaction.value)
 
-  // useEffect(() => {
-  //   const transactionsRef = collection(db, 'transactions').withConverter(
-  //     transactionConverter,
-  //   )
+  const loadTransactions = useCallback(async () => {
+    try {
+      const startOfDay = new Date(startDate)
+      startOfDay.setHours(0, 0, 0, 0)
+      const endOfDay = new Date(endDate)
+      endOfDay.setHours(23, 59, 59, 999)
 
-  //   const startOfDay = new Date(startDate)
-  //   startOfDay.setHours(0, 0, 0, 0)
+      const transactions = await loadTransactionsByDate.execute(
+        startOfDay,
+        endOfDay,
+      )
+      setTransactions(transactions)
+    } catch (error) {
+      toast('error', 'Erro ao carregar transações', error.code)
+    }
+  }, [loadTransactionsByDate, startDate, endDate, toast])
 
-  //   const endOfDay = new Date(endDate)
-  //   endOfDay.setHours(23, 59, 59, 999)
-
-  //   const q = query(
-  //     transactionsRef,
-  //     where('userUid', '==', user?.uid),
-  //     where('date', '>=', startOfDay),
-  //     where('date', '<=', endOfDay),
-  //   )
-  //   const unsubscribe = onSnapshot(q, async (querySnapshot) => {
-  //     if (querySnapshot.empty) return
-
-  //     const transactions: Transaction[] = await Promise.all(
-  //       querySnapshot.docs.map(async (doc) => {
-  //         const transactionId = doc.id
-  //         const transaction = doc.data()
-
-  //         return {
-  //           id: transactionId,
-  //           ...transaction,
-  //         }
-  //       }),
-  //     )
-
-  //     setTransactions(transactions)
-  //   })
-
-  //   return () => unsubscribe()
-  // }, [user, startDate, endDate])
+  useEffect(() => {
+    loadTransactions()
+  }, [loadTransactions])
 
   return (
     <Box className="flex-1 w-full mx-auto shadow-hard-3 mt-6" {...rest}>
@@ -122,36 +105,10 @@ export function FinancialFlowChart({ ...rest }: Props) {
         >
           <BarChart
             data={{
-              labels: [
-                'Jan',
-                'Feb',
-                'Mar',
-                'Apr',
-                'May',
-                'Jun',
-                'Jul',
-                'Aug',
-                'Sep',
-                'Oct',
-                'Nov',
-                'Dec',
-              ],
+              labels,
               datasets: [
                 {
-                  data: [
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                    Math.random() * 100,
-                  ],
+                  data: datasets,
                 },
               ],
             }}

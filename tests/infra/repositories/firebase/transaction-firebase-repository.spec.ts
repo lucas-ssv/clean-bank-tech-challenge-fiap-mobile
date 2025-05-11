@@ -17,8 +17,31 @@ jest.mock('firebase/firestore', () => ({
   addDoc: jest.fn().mockResolvedValue({ id: 'any_transaction_id' }),
   collection: jest.fn(),
   getFirestore: jest.fn(),
+  where: jest.fn(),
+  query: jest.fn(),
+  getDocs: jest.fn().mockResolvedValue({
+    forEach: (callback: (doc: any) => void) => {
+      callback({
+        data: () => {
+          return {
+            transactionType: 'cambio',
+            date: new Date(),
+            value: 100,
+            userUID: 'any_user_uid',
+            createdAt: {
+              toDate: () => 'any_timestamp',
+            },
+            updatedAt: {
+              toDate: () => 'any_timestamp',
+            },
+          }
+        },
+      })
+    },
+  }),
   Timestamp: {
     now: jest.fn(() => 'any_timestamp'),
+    toDate: jest.fn(),
   },
 }))
 
@@ -30,51 +53,80 @@ jest.mock('firebase/storage', () => ({
   getStorage: jest.fn(),
 }))
 
+jest.mock('@/main/config/firebase', () => ({
+  auth: {
+    currentUser: {
+      uid: 'any_user_uid',
+    },
+  },
+}))
+
 describe('TransactionFirebaseRepository', () => {
-  it('should add a transaction on success', async () => {
-    const mockedCollectionWithConverter = 'mockedCollectionWithConverter'
-    const withConverterMock = jest
-      .fn()
-      .mockReturnValue(mockedCollectionWithConverter)
-    ;(collection as jest.Mock).mockReturnValue({
-      withConverter: withConverterMock,
-    })
-    const sut = new TransactionFirebaseRepository()
+  describe('add()', () => {
+    it('should add a transaction on success', async () => {
+      const mockedCollectionWithConverter = 'mockedCollectionWithConverter'
+      const withConverterMock = jest
+        .fn()
+        .mockReturnValue(mockedCollectionWithConverter)
+      ;(collection as jest.Mock).mockReturnValue({
+        withConverter: withConverterMock,
+      })
+      const sut = new TransactionFirebaseRepository()
 
-    await sut.add({
-      transactionType: TransactionType.CAMBIO_DE_MOEDA,
-      date: new Date(),
-      value: 100,
-      userUID: 'any_user_uid',
+      await sut.add({
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        date: new Date(),
+        value: 100,
+        userUID: 'any_user_uid',
+      })
+
+      expect(addDoc).toHaveBeenCalledWith(mockedCollectionWithConverter, {
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        date: new Date(),
+        value: 100,
+        userUID: 'any_user_uid',
+        createdAt: 'any_timestamp',
+        updatedAt: 'any_timestamp',
+      })
     })
 
-    expect(addDoc).toHaveBeenCalledWith(mockedCollectionWithConverter, {
-      transactionType: TransactionType.CAMBIO_DE_MOEDA,
-      date: new Date(),
-      value: 100,
-      userUID: 'any_user_uid',
-      createdAt: 'any_timestamp',
-      updatedAt: 'any_timestamp',
+    it('should return a transaction id on success', async () => {
+      const mockedCollectionWithConverter = 'mockedCollectionWithConverter'
+      const withConverterMock = jest
+        .fn()
+        .mockReturnValue(mockedCollectionWithConverter)
+      ;(collection as jest.Mock).mockReturnValue({
+        withConverter: withConverterMock,
+      })
+      const sut = new TransactionFirebaseRepository()
+
+      const transactionId = await sut.add({
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        date: new Date(),
+        value: 100,
+        userUID: 'any_user_uid',
+      })
+
+      expect(transactionId).toBe('any_transaction_id')
     })
   })
 
-  it('should return a transaction id on success', async () => {
-    const mockedCollectionWithConverter = 'mockedCollectionWithConverter'
-    const withConverterMock = jest
-      .fn()
-      .mockReturnValue(mockedCollectionWithConverter)
-    ;(collection as jest.Mock).mockReturnValue({
-      withConverter: withConverterMock,
-    })
-    const sut = new TransactionFirebaseRepository()
+  describe('loadByDate()', () => {
+    it('should load transactions by date on success', async () => {
+      const sut = new TransactionFirebaseRepository()
 
-    const transactionId = await sut.add({
-      transactionType: TransactionType.CAMBIO_DE_MOEDA,
-      date: new Date(),
-      value: 100,
-      userUID: 'any_user_uid',
-    })
+      const transactions = await sut.loadByDate(new Date(), new Date())
 
-    expect(transactionId).toBe('any_transaction_id')
+      expect(transactions).toEqual([
+        {
+          transactionType: TransactionType.CAMBIO_DE_MOEDA,
+          date: new Date(),
+          value: 100,
+          userUID: 'any_user_uid',
+          createdAt: 'any_timestamp',
+          updatedAt: 'any_timestamp',
+        },
+      ])
+    })
   })
 })
