@@ -58,7 +58,7 @@ const schema = z.object({
     message: 'O tipo da transação é obrigatório',
   }),
   value: z
-    .string()
+    .string({ message: 'O valor é obrigatório' })
     .min(1, 'O valor é obrigatório')
     .refine((value) => {
       const numericValue = Number(
