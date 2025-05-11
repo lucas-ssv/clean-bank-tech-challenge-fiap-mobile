@@ -1,5 +1,8 @@
 import { TransactionModel } from '@/domain/models/transaction'
-import { LoadTransactionsByDate } from '@/domain/usecases/transaction'
+import {
+  LoadTransactionsByDate,
+  TransactionType,
+} from '@/domain/usecases/transaction'
 
 class LoadTransactionByDateImpl implements LoadTransactionsByDate {
   private loadTransactionsByDateRepository
@@ -11,13 +14,27 @@ class LoadTransactionByDateImpl implements LoadTransactionsByDate {
   }
 
   async execute(startDate: Date, endDate: Date): Promise<TransactionModel[]> {
-    await this.loadTransactionsByDateRepository.loadByDate(startDate, endDate)
-    return Promise.resolve([])
+    const transactions = await this.loadTransactionsByDateRepository.loadByDate(
+      startDate,
+      endDate,
+    )
+    return transactions
   }
 }
 
 class LoadTransactionsByDateRepositoryMock {
-  async loadByDate(startDate: Date, endDate: Date): Promise<void> {}
+  async loadByDate(startDate: Date, endDate: Date): Promise<any[]> {
+    return Promise.resolve([
+      {
+        date: new Date(),
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        value: 100,
+        userUID: 'any_user_uid',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ])
+  }
 }
 
 type SutTypes = {
@@ -50,5 +67,22 @@ describe('LoadTransactionByDate usecase', () => {
     await sut.execute(fakeStartDate, fakeEndDate)
 
     expect(loadSpy).toHaveBeenCalledWith(fakeStartDate, fakeEndDate)
+  })
+
+  it('should return a list of transactions on success', async () => {
+    const { sut } = makeSut()
+
+    const transactions = await sut.execute(new Date(), new Date())
+
+    expect(transactions).toEqual([
+      {
+        date: new Date(),
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        value: 100,
+        userUID: 'any_user_uid',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ])
   })
 })
