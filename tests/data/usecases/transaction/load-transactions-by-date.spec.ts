@@ -99,4 +99,17 @@ describe('LoadTransactionByDate usecase', () => {
       },
     ])
   })
+
+  it('should throw if LoadTransactionsByDateRepository throws', async () => {
+    const { sut, loadTransactionsByDateRepositoryMock } = makeSut()
+    jest
+      .spyOn(loadTransactionsByDateRepositoryMock, 'loadByDate')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+    const promise = sut.execute(new Date(), new Date())
+
+    await expect(promise).rejects.toThrow()
+  })
 })
