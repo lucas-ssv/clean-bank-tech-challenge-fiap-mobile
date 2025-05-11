@@ -20,16 +20,29 @@ class LoadTransactionsByDateRepositoryMock {
   async loadByDate(startDate: Date, endDate: Date): Promise<void> {}
 }
 
+type SutTypes = {
+  sut: LoadTransactionByDateImpl
+  loadTransactionsByDateRepositoryMock: LoadTransactionsByDateRepositoryMock
+}
+
+const makeSut = (): SutTypes => {
+  const loadTransactionsByDateRepositoryMock =
+    new LoadTransactionsByDateRepositoryMock()
+  const sut = new LoadTransactionByDateImpl(
+    loadTransactionsByDateRepositoryMock,
+  )
+  return {
+    sut,
+    loadTransactionsByDateRepositoryMock,
+  }
+}
+
 describe('LoadTransactionByDate usecase', () => {
   it('should call LoadTransactionsByDateRepository with correct values', async () => {
-    const loadTransactionsByDateRepositoryMock =
-      new LoadTransactionsByDateRepositoryMock()
+    const { sut, loadTransactionsByDateRepositoryMock } = makeSut()
     const loadSpy = jest.spyOn(
       loadTransactionsByDateRepositoryMock,
       'loadByDate',
-    )
-    const sut = new LoadTransactionByDateImpl(
-      loadTransactionsByDateRepositoryMock,
     )
     const fakeStartDate = new Date()
     const fakeEndDate = new Date()
