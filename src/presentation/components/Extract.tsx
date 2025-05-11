@@ -29,7 +29,7 @@ export function Extract({ className, ...rest }: Props) {
 
   return (
     <Box
-      className={`bg-white rounded-lg py-8 pl-6 pr-12 mt-6 ${className}`}
+      className={`bg-white rounded-lg py-8 px-6 mt-6 ${className}`}
       {...rest}
     >
       <HStack className="items-center justify-between gap-12">
