@@ -1,55 +1,8 @@
-import { TransactionModel } from '@/domain/models/transaction'
-import {
-  LoadTransactionsByDate,
-  TransactionType,
-} from '@/domain/usecases/transaction'
+import { LoadTransactionByDateImpl } from '@/data/usecases/transaction'
+import { TransactionType } from '@/domain/usecases/transaction'
+import { LoadTransactionsByDateRepositoryMock } from '@tests/data/mocks/transaction'
 
-class LoadTransactionByDateImpl implements LoadTransactionsByDate {
-  private loadTransactionsByDateRepository
-
-  constructor(
-    loadTransactionsByDateRepository: LoadTransactionsByDateRepository,
-  ) {
-    this.loadTransactionsByDateRepository = loadTransactionsByDateRepository
-  }
-
-  async execute(startDate: Date, endDate: Date): Promise<TransactionModel[]> {
-    const transactions = await this.loadTransactionsByDateRepository.loadByDate(
-      startDate,
-      endDate,
-    )
-    return transactions
-  }
-}
-
-type LoadTransactionsByDateRepositoryResult = TransactionModel
-
-interface LoadTransactionsByDateRepository {
-  loadByDate: (
-    startDate: Date,
-    endDate: Date,
-  ) => Promise<LoadTransactionsByDateRepositoryResult[]>
-}
-
-class LoadTransactionsByDateRepositoryMock
-  implements LoadTransactionsByDateRepository
-{
-  async loadByDate(
-    startDate: Date,
-    endDate: Date,
-  ): Promise<LoadTransactionsByDateRepositoryResult[]> {
-    return Promise.resolve([
-      {
-        date: new Date(),
-        transactionType: TransactionType.CAMBIO_DE_MOEDA,
-        value: 100,
-        userUID: 'any_user_uid',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    ])
-  }
-}
+jest.useFakeTimers()
 
 type SutTypes = {
   sut: LoadTransactionByDateImpl
