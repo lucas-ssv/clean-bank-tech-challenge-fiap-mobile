@@ -8,7 +8,7 @@ class LoadTransactionByDateImpl implements LoadTransactionsByDate {
   private loadTransactionsByDateRepository
 
   constructor(
-    loadTransactionsByDateRepository: LoadTransactionsByDateRepositoryMock,
+    loadTransactionsByDateRepository: LoadTransactionsByDateRepository,
   ) {
     this.loadTransactionsByDateRepository = loadTransactionsByDateRepository
   }
@@ -22,8 +22,22 @@ class LoadTransactionByDateImpl implements LoadTransactionsByDate {
   }
 }
 
-class LoadTransactionsByDateRepositoryMock {
-  async loadByDate(startDate: Date, endDate: Date): Promise<any[]> {
+type LoadTransactionsByDateRepositoryResult = TransactionModel
+
+interface LoadTransactionsByDateRepository {
+  loadByDate: (
+    startDate: Date,
+    endDate: Date,
+  ) => Promise<LoadTransactionsByDateRepositoryResult[]>
+}
+
+class LoadTransactionsByDateRepositoryMock
+  implements LoadTransactionsByDateRepository
+{
+  async loadByDate(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<LoadTransactionsByDateRepositoryResult[]> {
     return Promise.resolve([
       {
         date: new Date(),
