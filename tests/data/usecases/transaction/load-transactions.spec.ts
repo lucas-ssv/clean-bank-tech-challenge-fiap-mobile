@@ -18,11 +18,16 @@ class LoadTransactionsImpl implements LoadTransactions {
   }
 
   async execute(): Promise<LoadTransactionsResult[]> {
-    const { transactionId } = await this.loadTransactionsRepository.loadAll()
-    await this.loadTransactionDocumentsRepository.loadByTransactionId(
-      transactionId,
-    )
-    return []
+    const { transactionId, transactions } =
+      await this.loadTransactionsRepository.loadAll()
+    const documents =
+      await this.loadTransactionDocumentsRepository.loadByTransactionId(
+        transactionId,
+      )
+    return transactions.map((transaction) => ({
+      ...transaction,
+      documents,
+    }))
   }
 }
 
@@ -67,7 +72,13 @@ class LoadTransactionDocumentsRepositoryMock
   async loadByTransactionId(
     transactionId: string,
   ): Promise<LoadTransactionDocumentsRepositoryResult> {
-    return Promise.resolve([])
+    return Promise.resolve([
+      {
+        name: 'any_document_name',
+        mimeType: 'any_mime_type',
+        uri: 'any_uri',
+      },
+    ])
   }
 }
 
@@ -112,5 +123,29 @@ describe('LoadTransactions usecase', () => {
     await sut.execute()
 
     expect(loadSpy).toHaveBeenCalledWith('any_transaction_id')
+  })
+
+  it('should return a list of transactions with documents', async () => {
+    const { sut } = makeSut()
+
+    const transactions = await sut.execute()
+
+    expect(transactions).toEqual([
+      {
+        date: new Date(),
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        value: 100,
+        userUID: 'any_user_uid',
+        documents: [
+          {
+            name: 'any_document_name',
+            mimeType: 'any_mime_type',
+            uri: 'any_uri',
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ])
   })
 })
