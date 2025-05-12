@@ -13,6 +13,25 @@ jest.mock('firebase/firestore', () => ({
   addDoc: jest.fn().mockResolvedValue({ id: 'any_transaction_id' }),
   collection: jest.fn(),
   getFirestore: jest.fn(),
+  where: jest.fn(),
+  query: jest.fn(),
+  getDocs: jest.fn().mockResolvedValue({
+    forEach: (callback: (doc: any) => void) => {
+      callback({
+        data: () => {
+          return {
+            id: 'any_transaction_id',
+            fileName: 'any_filename',
+            transactionId: 'any_transaction_id',
+            mimeType: 'any_mimetype',
+            url: 'any_url',
+            createdAt: 'any_timestamp',
+            updatedAt: 'any_timestamp',
+          }
+        },
+      })
+    },
+  }),
   Timestamp: {
     now: jest.fn(() => 'any_timestamp'),
   },
@@ -53,6 +72,22 @@ describe('TransactionDocumentRepository', () => {
         createdAt: 'any_timestamp',
         updatedAt: 'any_timestamp',
       })
+    })
+  })
+
+  describe('loadByTransactionId', () => {
+    it('should load transaction documents by transaction id', async () => {
+      const sut = new TransactionDocumentFirebaseRepository()
+
+      const documents = await sut.loadByTransactionId('any_transaction_id')
+
+      expect(documents).toEqual([
+        {
+          fileName: 'any_filename',
+          mimeType: 'any_mimetype',
+          url: 'any_url',
+        },
+      ])
     })
   })
 })
