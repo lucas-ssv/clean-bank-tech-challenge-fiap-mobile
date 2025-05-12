@@ -27,30 +27,32 @@ jest.mock('firebase/storage', () => ({
 }))
 
 describe('TransactionDocumentRepository', () => {
-  it('should add a transaction document on success', async () => {
-    const mockedCollectionWithConverter = 'mockedCollectionWithConverter'
-    const withConverterMock = jest
-      .fn()
-      .mockReturnValue(mockedCollectionWithConverter)
-    ;(collection as jest.Mock).mockReturnValue({
-      withConverter: withConverterMock,
-    })
-    const sut = new TransactionDocumentFirebaseRepository()
+  describe('add()', () => {
+    it('should add a transaction document on success', async () => {
+      const mockedCollectionWithConverter = 'mockedCollectionWithConverter'
+      const withConverterMock = jest
+        .fn()
+        .mockReturnValue(mockedCollectionWithConverter)
+      ;(collection as jest.Mock).mockReturnValue({
+        withConverter: withConverterMock,
+      })
+      const sut = new TransactionDocumentFirebaseRepository()
 
-    await sut.add({
-      fileName: 'any_filename',
-      transactionId: 'any_transaction_id',
-      mimeType: 'any_mimetype',
-      url: 'any_url',
-    })
+      await sut.add({
+        fileName: 'any_filename',
+        transactionId: 'any_transaction_id',
+        mimeType: 'any_mimetype',
+        url: 'any_url',
+      })
 
-    expect(addDoc).toHaveBeenCalledWith(mockedCollectionWithConverter, {
-      fileName: 'any_filename',
-      transactionId: 'any_transaction_id',
-      mimeType: 'any_mimetype',
-      url: 'any_url',
-      createdAt: 'any_timestamp',
-      updatedAt: 'any_timestamp',
+      expect(addDoc).toHaveBeenCalledWith(mockedCollectionWithConverter, {
+        fileName: 'any_filename',
+        transactionId: 'any_transaction_id',
+        mimeType: 'any_mimetype',
+        url: 'any_url',
+        createdAt: 'any_timestamp',
+        updatedAt: 'any_timestamp',
+      })
     })
   })
 })
