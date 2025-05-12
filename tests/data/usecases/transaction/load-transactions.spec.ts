@@ -1,36 +1,79 @@
+import { TransactionModel, TransactionType } from '@/domain/models/transaction'
 import {
   LoadTransactions,
   LoadTransactionsResult,
 } from '@/domain/usecases/transaction'
 
-class LoadTransactionImpl implements LoadTransactions {
+class LoadTransactionsImpl implements LoadTransactions {
   private loadTransactionsRepository
+  private loadTransactionDocumentsRepository
 
-  constructor(loadTransactionsRepository: LoadTransactionsRepositoryMock) {
+  constructor(
+    loadTransactionsRepository: LoadTransactionsRepositoryMock,
+    loadTransactionDocumentsRepository: LoadTransactionDocumentsRepositoryMock,
+  ) {
+    this.loadTransactionDocumentsRepository = loadTransactionDocumentsRepository
     this.loadTransactionsRepository = loadTransactionsRepository
   }
 
   async execute(): Promise<LoadTransactionsResult[]> {
-    await this.loadTransactionsRepository.loadAll()
+    const { transactionId } = await this.loadTransactionsRepository.loadAll()
+    await this.loadTransactionDocumentsRepository.loadByTransactionId(
+      transactionId,
+    )
     return []
   }
 }
 
-class LoadTransactionsRepositoryMock {
-  async loadAll(): Promise<void> {}
+type LoadTransactionsRepositoryResult = {
+  transactionId: string
+  transactions: TransactionModel[]
+}
+
+interface LoadTransactionsRepository {
+  loadAll: () => Promise<LoadTransactionsRepositoryResult>
+}
+
+class LoadTransactionsRepositoryMock implements LoadTransactionsRepository {
+  loadAll(): Promise<LoadTransactionsRepositoryResult> {
+    return Promise.resolve({
+      transactionId: 'any_transaction_id',
+      transactions: [
+        {
+          date: new Date(),
+          transactionType: TransactionType.CAMBIO_DE_MOEDA,
+          value: 100,
+          userUID: 'any_user_uid',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+    })
+  }
+}
+
+class LoadTransactionDocumentsRepositoryMock {
+  async loadByTransactionId(transactionId: string): Promise<void> {}
 }
 
 type SutTypes = {
-  sut: LoadTransactionImpl
+  sut: LoadTransactionsImpl
   loadTransactionsRepositoryMock: LoadTransactionsRepositoryMock
+  loadTransactionDocumentsRepositoryMock: LoadTransactionDocumentsRepositoryMock
 }
 
 const makeSut = (): SutTypes => {
   const loadTransactionsRepositoryMock = new LoadTransactionsRepositoryMock()
-  const sut = new LoadTransactionImpl(loadTransactionsRepositoryMock)
+  const loadTransactionDocumentsRepositoryMock =
+    new LoadTransactionDocumentsRepositoryMock()
+  const sut = new LoadTransactionsImpl(
+    loadTransactionsRepositoryMock,
+    loadTransactionDocumentsRepositoryMock,
+  )
   return {
     sut,
     loadTransactionsRepositoryMock,
+    loadTransactionDocumentsRepositoryMock,
   }
 }
 
@@ -42,5 +85,17 @@ describe('LoadTransactions usecase', () => {
     await sut.execute()
 
     expect(loadSpy).toHaveBeenCalled()
+  })
+
+  it('should call LoadTransactionDocumentsRepository with correct transactionId', async () => {
+    const { sut, loadTransactionDocumentsRepositoryMock } = makeSut()
+    const loadSpy = jest.spyOn(
+      loadTransactionDocumentsRepositoryMock,
+      'loadByTransactionId',
+    )
+
+    await sut.execute()
+
+    expect(loadSpy).toHaveBeenCalledWith('any_transaction_id')
   })
 })
