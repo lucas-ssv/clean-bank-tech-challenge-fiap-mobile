@@ -109,8 +109,8 @@ export function NewTransaction({ addTransaction, className, ...rest }: Props) {
             setTransactionDocuments((prevState) => [
               ...prevState,
               {
-                name: asset.name,
-                uri: assetInfo.uri,
+                fileName: asset.name,
+                url: assetInfo.uri,
                 mimeType: asset.mimeType!,
               },
             ])
@@ -151,7 +151,7 @@ export function NewTransaction({ addTransaction, className, ...rest }: Props) {
 
   const handleRemoveDocument = (documentUri: string) => {
     const newTransactionDocuments = transactionDocuments.filter(
-      (document) => document.uri !== documentUri,
+      (document) => document.url !== documentUri,
     )
     setTransactionDocuments(newTransactionDocuments)
   }
@@ -295,23 +295,23 @@ export function NewTransaction({ addTransaction, className, ...rest }: Props) {
         {transactionDocuments.map((document) => (
           <Box
             testID="card-document"
-            key={document.uri}
+            key={document.url}
             className="bg-custom-my-light-gray rounded-lg p-2 pr-4 mt-2"
           >
             <HStack className="items-center justify-between">
               <HStack className="items-center gap-4">
                 {document.mimeType.includes('image') ? (
-                  <ModalImage uri={document.uri} />
+                  <ModalImage uri={document.url} />
                 ) : (
                   <Feather name="file-text" size={24} />
                 )}
                 <Text className="text-sm text-custom-my-gray font-body">
-                  {document.name}
+                  {document.fileName}
                 </Text>
               </HStack>
               <Button
                 variant="link"
-                onPress={() => handleRemoveDocument(document.uri)}
+                onPress={() => handleRemoveDocument(document.url)}
               >
                 <Feather name="x" size={24} color="#000000" />
               </Button>
