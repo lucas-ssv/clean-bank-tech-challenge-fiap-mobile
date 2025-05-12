@@ -5,6 +5,8 @@ import {
   LoadTransactionsResult,
 } from '@/domain/usecases/transaction'
 
+jest.useFakeTimers()
+
 class LoadTransactionsImpl implements LoadTransactions {
   private loadTransactionsRepository
   private loadTransactionDocumentsRepository
@@ -147,5 +149,18 @@ describe('LoadTransactions usecase', () => {
         updatedAt: new Date(),
       },
     ])
+  })
+
+  it('should throw if LoadTransactionsRepository throws', async () => {
+    const { sut, loadTransactionsRepositoryMock } = makeSut()
+    jest
+      .spyOn(loadTransactionsRepositoryMock, 'loadAll')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+    const promise = sut.execute()
+
+    await expect(promise).rejects.toThrow()
   })
 })
