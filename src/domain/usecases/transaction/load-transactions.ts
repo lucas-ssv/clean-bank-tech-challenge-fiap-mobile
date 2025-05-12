@@ -5,5 +5,6 @@ export interface LoadTransactions {
   execute: () => Promise<LoadTransactionsResult[]>
 }
 
-export type LoadTransactionsResult = TransactionModel &
-  TransactionDocumentModel[]
+export type LoadTransactionsResult = TransactionModel & {
+  documents: TransactionDocumentModel[]
+}

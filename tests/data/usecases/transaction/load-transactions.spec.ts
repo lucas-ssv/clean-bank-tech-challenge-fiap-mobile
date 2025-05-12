@@ -12,7 +12,7 @@ class LoadTransactionImpl implements LoadTransactions {
 
   async execute(): Promise<LoadTransactionsResult[]> {
     await this.loadTransactionsRepository.loadAll()
-    return Promise.resolve([])
+    return []
   }
 }
 
