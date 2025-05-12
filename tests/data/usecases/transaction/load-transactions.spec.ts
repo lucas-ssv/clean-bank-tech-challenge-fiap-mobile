@@ -163,4 +163,17 @@ describe('LoadTransactions usecase', () => {
 
     await expect(promise).rejects.toThrow()
   })
+
+  it('should throw if LoadTransactionDocumentsRepository throws', async () => {
+    const { sut, loadTransactionDocumentsRepositoryMock } = makeSut()
+    jest
+      .spyOn(loadTransactionDocumentsRepositoryMock, 'loadByTransactionId')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+    const promise = sut.execute()
+
+    await expect(promise).rejects.toThrow()
+  })
 })
