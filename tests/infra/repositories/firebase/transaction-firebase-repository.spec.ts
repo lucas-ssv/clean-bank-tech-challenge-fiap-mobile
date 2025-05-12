@@ -20,6 +20,11 @@ jest.mock('firebase/firestore', () => ({
   where: jest.fn(),
   query: jest.fn(),
   getDocs: jest.fn().mockResolvedValue({
+    docs: [
+      {
+        id: 'any_transaction_id',
+      },
+    ],
     forEach: (callback: (doc: any) => void) => {
       callback({
         data: () => {
@@ -127,6 +132,28 @@ describe('TransactionFirebaseRepository', () => {
           updatedAt: 'any_timestamp',
         },
       ])
+    })
+  })
+
+  describe('loadAll()', () => {
+    it('should load all transactions on success', async () => {
+      const sut = new TransactionFirebaseRepository()
+
+      const transactions = await sut.loadAll()
+
+      expect(transactions).toEqual({
+        transactionId: 'any_transaction_id',
+        transactions: [
+          {
+            transactionType: TransactionType.CAMBIO_DE_MOEDA,
+            date: new Date(),
+            value: 100,
+            userUID: 'any_user_uid',
+            createdAt: 'any_timestamp',
+            updatedAt: 'any_timestamp',
+          },
+        ],
+      })
     })
   })
 })
