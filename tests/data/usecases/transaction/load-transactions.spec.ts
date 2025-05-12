@@ -1,4 +1,5 @@
 import { TransactionModel, TransactionType } from '@/domain/models/transaction'
+import { TransactionDocumentModel } from '@/domain/models/transaction-document'
 import {
   LoadTransactions,
   LoadTransactionsResult,
@@ -9,8 +10,8 @@ class LoadTransactionsImpl implements LoadTransactions {
   private loadTransactionDocumentsRepository
 
   constructor(
-    loadTransactionsRepository: LoadTransactionsRepositoryMock,
-    loadTransactionDocumentsRepository: LoadTransactionDocumentsRepositoryMock,
+    loadTransactionsRepository: LoadTransactionsRepository,
+    loadTransactionDocumentsRepository: LoadTransactionDocumentsRepository,
   ) {
     this.loadTransactionDocumentsRepository = loadTransactionDocumentsRepository
     this.loadTransactionsRepository = loadTransactionsRepository
@@ -52,8 +53,22 @@ class LoadTransactionsRepositoryMock implements LoadTransactionsRepository {
   }
 }
 
-class LoadTransactionDocumentsRepositoryMock {
-  async loadByTransactionId(transactionId: string): Promise<void> {}
+type LoadTransactionDocumentsRepositoryResult = TransactionDocumentModel[]
+
+interface LoadTransactionDocumentsRepository {
+  loadByTransactionId: (
+    transactionId: string,
+  ) => Promise<LoadTransactionDocumentsRepositoryResult>
+}
+
+class LoadTransactionDocumentsRepositoryMock
+  implements LoadTransactionDocumentsRepository
+{
+  async loadByTransactionId(
+    transactionId: string,
+  ): Promise<LoadTransactionDocumentsRepositoryResult> {
+    return Promise.resolve([])
+  }
 }
 
 type SutTypes = {
