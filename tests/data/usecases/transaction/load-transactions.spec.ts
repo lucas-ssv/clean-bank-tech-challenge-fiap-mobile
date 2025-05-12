@@ -1,88 +1,9 @@
-import { TransactionModel, TransactionType } from '@/domain/models/transaction'
-import { TransactionDocumentModel } from '@/domain/models/transaction-document'
-import {
-  LoadTransactions,
-  LoadTransactionsResult,
-} from '@/domain/usecases/transaction'
+import { LoadTransactionsImpl } from '@/data/usecases/transaction'
+import { TransactionType } from '@/domain/models/transaction'
+import { LoadTransactionsRepositoryMock } from '@tests/data/mocks/transaction'
+import { LoadTransactionDocumentsRepositoryMock } from '@tests/data/mocks/transaction-document'
 
 jest.useFakeTimers()
-
-class LoadTransactionsImpl implements LoadTransactions {
-  private loadTransactionsRepository
-  private loadTransactionDocumentsRepository
-
-  constructor(
-    loadTransactionsRepository: LoadTransactionsRepository,
-    loadTransactionDocumentsRepository: LoadTransactionDocumentsRepository,
-  ) {
-    this.loadTransactionDocumentsRepository = loadTransactionDocumentsRepository
-    this.loadTransactionsRepository = loadTransactionsRepository
-  }
-
-  async execute(): Promise<LoadTransactionsResult[]> {
-    const { transactionId, transactions } =
-      await this.loadTransactionsRepository.loadAll()
-    const documents =
-      await this.loadTransactionDocumentsRepository.loadByTransactionId(
-        transactionId,
-      )
-    return transactions.map((transaction) => ({
-      ...transaction,
-      documents,
-    }))
-  }
-}
-
-type LoadTransactionsRepositoryResult = {
-  transactionId: string
-  transactions: TransactionModel[]
-}
-
-interface LoadTransactionsRepository {
-  loadAll: () => Promise<LoadTransactionsRepositoryResult>
-}
-
-class LoadTransactionsRepositoryMock implements LoadTransactionsRepository {
-  loadAll(): Promise<LoadTransactionsRepositoryResult> {
-    return Promise.resolve({
-      transactionId: 'any_transaction_id',
-      transactions: [
-        {
-          date: new Date(),
-          transactionType: TransactionType.CAMBIO_DE_MOEDA,
-          value: 100,
-          userUID: 'any_user_uid',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-    })
-  }
-}
-
-type LoadTransactionDocumentsRepositoryResult = TransactionDocumentModel[]
-
-interface LoadTransactionDocumentsRepository {
-  loadByTransactionId: (
-    transactionId: string,
-  ) => Promise<LoadTransactionDocumentsRepositoryResult>
-}
-
-class LoadTransactionDocumentsRepositoryMock
-  implements LoadTransactionDocumentsRepository
-{
-  async loadByTransactionId(
-    transactionId: string,
-  ): Promise<LoadTransactionDocumentsRepositoryResult> {
-    return Promise.resolve([
-      {
-        name: 'any_document_name',
-        mimeType: 'any_mime_type',
-        uri: 'any_uri',
-      },
-    ])
-  }
-}
 
 type SutTypes = {
   sut: LoadTransactionsImpl
