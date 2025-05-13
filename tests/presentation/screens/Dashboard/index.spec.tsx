@@ -55,26 +55,29 @@ const makeSut = () => {
 }
 
 describe('<Dashboard />', () => {
-  it('should render correctly on start', () => {
+  it('should render correctly on start', async () => {
     makeSut()
-
-    expect(screen.getByTestId('transaction-type')).toBeTruthy()
-    expect(screen.getByTestId('input-value').props.placeholder).toBe('R$ 0,00')
-    expect(screen.queryByTestId('card-document')).not.toBeOnTheScreen()
-    expect(
-      screen.queryByTestId('loading-finish-transation'),
-    ).not.toBeOnTheScreen()
-    expect(screen.queryByTestId('transaction-type-error')).not.toBeOnTheScreen()
-    expect(screen.queryByTestId('input-value-error')).not.toBeOnTheScreen()
+    await waitFor(() => {
+      expect(screen.getByTestId('transaction-type')).toBeTruthy()
+      expect(screen.getByTestId('input-value').props.placeholder).toBe(
+        'R$ 0,00',
+      )
+      expect(screen.queryByTestId('card-document')).not.toBeOnTheScreen()
+      expect(
+        screen.queryByTestId('loading-finish-transation'),
+      ).not.toBeOnTheScreen()
+      expect(
+        screen.queryByTestId('transaction-type-error'),
+      ).not.toBeOnTheScreen()
+      expect(screen.queryByTestId('input-value-error')).not.toBeOnTheScreen()
+    })
   })
 
   it('should show transactionTypeError if field transactionType is empty', async () => {
     makeSut()
     const submitButton = screen.getByTestId('submit-button')
-    await waitFor(() => {
-      fireEvent(submitButton, 'press')
-    })
-
+    await waitFor(() => {})
+    fireEvent(submitButton, 'press')
     await waitFor(() => {
       expect(screen.getByTestId('transaction-type-error').props.children).toBe(
         'O tipo da transação é obrigatório',
@@ -84,14 +87,11 @@ describe('<Dashboard />', () => {
 
   it('should show valueError if field value is empty', async () => {
     makeSut()
-
     const inputValue = screen.getByTestId('input-value')
     fireEvent(inputValue, 'changeText', '')
     const submitButton = screen.getByTestId('submit-button')
-    await waitFor(() => {
-      fireEvent(submitButton, 'press')
-    })
-
+    await waitFor(() => {})
+    fireEvent(submitButton, 'press')
     await waitFor(() => {
       expect(screen.getByTestId('input-value-error').props.children).toBe(
         'O valor é obrigatório',
@@ -101,14 +101,11 @@ describe('<Dashboard />', () => {
 
   it('should show valueError if field value is less than 1', async () => {
     makeSut()
-
     const inputValue = screen.getByTestId('input-value')
     fireEvent(inputValue, 'changeText', '00.01')
     const submitButton = screen.getByTestId('submit-button')
-    await waitFor(() => {
-      fireEvent(submitButton, 'press')
-    })
-
+    await waitFor(() => {})
+    fireEvent(submitButton, 'press')
     await waitFor(() => {
       expect(screen.getByTestId('input-value-error').props.children).toBe(
         'O valor mínimo é R$1,00',
