@@ -1,4 +1,11 @@
-import { addDoc, collection, getDocs, query, where } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  getDocs,
+  query,
+  Timestamp,
+  where,
+} from 'firebase/firestore'
 
 import {
   AddTransactionRepository,
@@ -14,7 +21,7 @@ import { transactionConverter } from './converters'
 export class TransactionFirebaseRepository
   implements
     AddTransactionRepository,
-    LoadTransactionsRepository,
+    LoadTransactionsRepository<Timestamp>,
     LoadTransactionsByDateRepository
 {
   async add(transaction: AddTransactionRepositoryParams): Promise<string> {
@@ -32,7 +39,7 @@ export class TransactionFirebaseRepository
     return transactionRef.id
   }
 
-  async loadAll(): Promise<LoadTransactionsRepositoryResult> {
+  async loadAll(): Promise<LoadTransactionsRepositoryResult<Timestamp>> {
     const q = query(
       collection(db, 'transactions').withConverter(transactionConverter),
       where('userUID', '==', auth.currentUser?.uid),

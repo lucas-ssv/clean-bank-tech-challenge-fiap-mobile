@@ -20,13 +20,14 @@ import {
 import Pencil from '@/presentation/assets/lapis.svg'
 import Trash from '@/presentation/assets/lixeira.svg'
 import {
-  formatDate,
   formatMonth,
+  formattedDate,
   formattedMoney,
   getIncomeOutcomeTransaction,
 } from '@/presentation/utils'
+import { Timestamp } from 'firebase/firestore'
 
-type TransactionProps = LoadTransactionsResult & {
+type TransactionProps = LoadTransactionsResult<Timestamp> & {
   type: 'income' | 'outcome'
 }
 
@@ -46,6 +47,7 @@ export function Extract({ loadTransactions, className, ...rest }: Props) {
         const type = getIncomeOutcomeTransaction(transaction.transactionType)
         return {
           ...transaction,
+          date: transaction.date as unknown as Timestamp,
           type,
         }
       })
@@ -93,20 +95,20 @@ export function Extract({ loadTransactions, className, ...rest }: Props) {
               <HStack className="gap-6">
                 <VStack className="gap-2">
                   <Text className="text-sm font-semibold text-custom-my-green">
-                    {formatMonth(item.date)}
+                    {formatMonth(item.date.toDate())}
                   </Text>
                   <HStack className="items-center justify-between gap-6">
                     <Text className="text-md font-body text-black">
                       {item.transactionType}
                     </Text>
                     <Text className="text-sm font-body text-custom-my-extract-date-color">
-                      {formatDate(item.date)}
+                      {formattedDate.format(item.date.toDate())}
                     </Text>
                   </HStack>
                   <Text
                     className={`text-md font-semibold ${item.type === 'income' ? 'text-custom-my-green' : 'text-custom-my-dark-red'}`}
                   >
-                    {item.type === 'outcome' ? '-' : '+'}
+                    {item.type === 'outcome' ? '-' : '+'}{' '}
                     {formattedMoney.format(item.value)}
                   </Text>
                   <Divider className="w-3/4 border border-custom-my-green" />

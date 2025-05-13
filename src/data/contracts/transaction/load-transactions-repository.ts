@@ -1,10 +1,10 @@
 import { TransactionModel } from '@/domain/models/transaction'
 
-export type LoadTransactionsRepositoryResult = {
+export type LoadTransactionsRepositoryResult<T = Date> = {
   transactionId: string
-  transactions: TransactionModel[]
+  transactions: TransactionModel<T>[]
 }
 
-export interface LoadTransactionsRepository {
-  loadAll: () => Promise<LoadTransactionsRepositoryResult>
+export interface LoadTransactionsRepository<T = Date> {
+  loadAll: () => Promise<LoadTransactionsRepositoryResult<T>>
 }
