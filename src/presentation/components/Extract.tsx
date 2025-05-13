@@ -20,8 +20,8 @@ import {
 import Pencil from '@/presentation/assets/lapis.svg'
 import Trash from '@/presentation/assets/lixeira.svg'
 import {
+  formatDate,
   formatMonth,
-  formattedDate,
   formattedMoney,
   getIncomeOutcomeTransaction,
 } from '@/presentation/utils'
@@ -89,8 +89,8 @@ export function Extract({ loadTransactions, className, ...rest }: Props) {
         {transactions.length > 0 ? (
           <FlatList
             data={transactions}
-            renderItem={({ item }) => (
-              <HStack className="gap-4">
+            renderItem={({ item, index }) => (
+              <HStack className="gap-6">
                 <VStack className="gap-2">
                   <Text className="text-sm font-semibold text-custom-my-green">
                     {formatMonth(item.date)}
@@ -100,7 +100,7 @@ export function Extract({ loadTransactions, className, ...rest }: Props) {
                       {item.transactionType}
                     </Text>
                     <Text className="text-sm font-body text-custom-my-extract-date-color">
-                      {formattedDate.format(item.date)}
+                      {formatDate(item.date)}
                     </Text>
                   </HStack>
                   <Text
@@ -111,12 +111,20 @@ export function Extract({ loadTransactions, className, ...rest }: Props) {
                   </Text>
                   <Divider className="w-3/4 border border-custom-my-green" />
                 </VStack>
-                <Divider orientation="vertical" />
+                {index !== transactions.length - 1 && (
+                  <VStack className="flex-1 items-center justify-center">
+                    <Divider
+                      className="h-2 w-2 items-center justify-center bg-custom-my-green"
+                      orientation="vertical"
+                    />
+                  </VStack>
+                )}
               </HStack>
             )}
             contentContainerStyle={{
               gap: 16,
             }}
+            className="mt-2"
             horizontal
             showsHorizontalScrollIndicator={false}
           />

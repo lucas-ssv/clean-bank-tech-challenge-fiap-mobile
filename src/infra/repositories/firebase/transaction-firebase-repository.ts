@@ -1,11 +1,4 @@
-import {
-  addDoc,
-  collection,
-  getDocs,
-  query,
-  Timestamp,
-  where,
-} from 'firebase/firestore'
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore'
 
 import {
   AddTransactionRepository,
@@ -32,8 +25,8 @@ export class TransactionFirebaseRepository
         date: transaction.date,
         value: transaction.value,
         userUID: transaction.userUID,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     )
     return transactionRef.id
@@ -44,8 +37,17 @@ export class TransactionFirebaseRepository
       collection(db, 'transactions').withConverter(transactionConverter),
       where('userUID', '==', auth.currentUser?.uid),
     )
+    let transactionId: string = ''
     const querySnapshot = await getDocs(q)
-    const transactionId: string = querySnapshot.docs[0].id
+
+    if (querySnapshot.empty) {
+      return {
+        transactionId,
+        transactions: [],
+      }
+    }
+
+    transactionId = querySnapshot.docs[0].id
     const transactions: any[] = []
     querySnapshot.forEach((doc) => {
       const transaction = doc.data()
@@ -54,8 +56,8 @@ export class TransactionFirebaseRepository
         transactionType: transaction.transactionType,
         value: transaction.value,
         userUID: transaction.userUID,
-        createdAt: transaction.createdAt.toDate(),
-        updatedAt: transaction.updatedAt.toDate(),
+        createdAt: transaction.createdAt,
+        updatedAt: transaction.updatedAt,
       })
     })
     return {
@@ -83,8 +85,8 @@ export class TransactionFirebaseRepository
         transactionType: transaction.transactionType,
         value: transaction.value,
         userUID: transaction.userUID,
-        createdAt: transaction.createdAt.toDate(),
-        updatedAt: transaction.updatedAt.toDate(),
+        createdAt: transaction.createdAt,
+        updatedAt: transaction.updatedAt,
       })
     })
     return transactions

@@ -1,4 +1,4 @@
-import { addDoc, collection } from 'firebase/firestore'
+import { addDoc, collection, getDocs } from 'firebase/firestore'
 
 import { TransactionType } from '@/data/contracts/transaction'
 import { TransactionFirebaseRepository } from '@/infra/repositories/firebase'
@@ -33,12 +33,8 @@ jest.mock('firebase/firestore', () => ({
             date: new Date(),
             value: 100,
             userUID: 'any_user_uid',
-            createdAt: {
-              toDate: () => 'any_timestamp',
-            },
-            updatedAt: {
-              toDate: () => 'any_timestamp',
-            },
+            createdAt: 'any_timestamp',
+            updatedAt: 'any_timestamp',
           }
         },
       })
@@ -90,8 +86,8 @@ describe('TransactionFirebaseRepository', () => {
         date: new Date(),
         value: 100,
         userUID: 'any_user_uid',
-        createdAt: 'any_timestamp',
-        updatedAt: 'any_timestamp',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       })
     })
 
@@ -153,6 +149,20 @@ describe('TransactionFirebaseRepository', () => {
             updatedAt: 'any_timestamp',
           },
         ],
+      })
+    })
+
+    it('should return an empty array if no transactions are found', async () => {
+      ;(getDocs as jest.Mock).mockResolvedValueOnce({
+        empty: true,
+      })
+      const sut = new TransactionFirebaseRepository()
+
+      const transactions = await sut.loadAll()
+
+      expect(transactions).toEqual({
+        transactionId: '',
+        transactions: [],
       })
     })
   })
