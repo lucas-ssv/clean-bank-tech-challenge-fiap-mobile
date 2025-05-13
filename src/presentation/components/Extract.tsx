@@ -1,4 +1,12 @@
-import { ComponentProps } from 'react'
+import { FlatList } from 'react-native'
+import { ComponentProps, useCallback, useEffect, useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
+
+import { useToast } from '@/presentation/hooks'
+import {
+  LoadTransactions,
+  LoadTransactionsResult,
+} from '@/domain/usecases/transaction'
 import {
   Box,
   Button,
@@ -11,21 +19,45 @@ import {
 } from './ui'
 import Pencil from '@/presentation/assets/lapis.svg'
 import Trash from '@/presentation/assets/lixeira.svg'
-// import { useTransaction } from '@/contexts'
-import { FlatList } from 'react-native'
 import {
   formatMonth,
   formattedDate,
   formattedMoney,
+  getIncomeOutcomeTransaction,
 } from '@/presentation/utils'
-// import { useNavigation } from '@react-navigation/native'
 
-type Props = ComponentProps<typeof Box>
+type TransactionProps = LoadTransactionsResult & {
+  type: 'income' | 'outcome'
+}
 
-export function Extract({ className, ...rest }: Props) {
-  // const { transactions } = useTransaction()
-  const transactions: any[] = []
-  // const navigation = useNavigation()
+type Props = ComponentProps<typeof Box> & {
+  loadTransactions: LoadTransactions
+}
+
+export function Extract({ loadTransactions, className, ...rest }: Props) {
+  const toast = useToast()
+  const [transactions, setTransactions] = useState<TransactionProps[]>([])
+  const navigation = useNavigation()
+
+  const fetchTransactions = useCallback(async () => {
+    try {
+      const transactions = await loadTransactions.execute()
+      const formattedTransactions = transactions.map((transaction) => {
+        const type = getIncomeOutcomeTransaction(transaction.transactionType)
+        return {
+          ...transaction,
+          type,
+        }
+      })
+      setTransactions(formattedTransactions)
+    } catch (error) {
+      toast('error', 'Erro ao buscar transações', error.code)
+    }
+  }, [loadTransactions, toast])
+
+  useEffect(() => {
+    fetchTransactions()
+  }, [fetchTransactions])
 
   return (
     <Box
@@ -37,17 +69,17 @@ export function Extract({ className, ...rest }: Props) {
         <ButtonGroup className="flex-row gap-2">
           <Button
             className="h-12 w-12 bg-custom-my-dark-green rounded-full"
-            // onPress={() =>
-            //   navigation.navigate('StackRoutes', { screen: 'Transacoes' })
-            // }
+            onPress={() =>
+              navigation.navigate('StackRoutes', { screen: 'Transacoes' })
+            }
           >
             <Pencil />
           </Button>
           <Button
             className="h-12 w-12 bg-custom-my-dark-green rounded-full"
-            // onPress={() =>
-            //   navigation.navigate('StackRoutes', { screen: 'Transacoes' })
-            // }
+            onPress={() =>
+              navigation.navigate('StackRoutes', { screen: 'Transacoes' })
+            }
           >
             <Trash />
           </Button>
@@ -57,19 +89,18 @@ export function Extract({ className, ...rest }: Props) {
         {transactions.length > 0 ? (
           <FlatList
             data={transactions}
-            keyExtractor={(item) => item.id!}
             renderItem={({ item }) => (
               <HStack className="gap-4">
                 <VStack className="gap-2">
                   <Text className="text-sm font-semibold text-custom-my-green">
-                    {formatMonth(item.date.toDate())}
+                    {formatMonth(item.date)}
                   </Text>
                   <HStack className="items-center justify-between gap-6">
                     <Text className="text-md font-body text-black">
                       {item.transactionType}
                     </Text>
                     <Text className="text-sm font-body text-custom-my-extract-date-color">
-                      {formattedDate.format(item.date.toDate())}
+                      {formattedDate.format(item.date)}
                     </Text>
                   </HStack>
                   <Text

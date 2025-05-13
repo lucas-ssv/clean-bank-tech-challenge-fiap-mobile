@@ -8,6 +8,7 @@ import {
 import {
   AddTransactionMock,
   LoadTransactionsByDateStub,
+  LoadTransactionsMock,
 } from '@tests/domain/usecases/transaction'
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
 import { Dashboard } from '@/presentation/screens'
@@ -25,6 +26,12 @@ jest.mock('nativewind', () => {
   }
 })
 
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: jest.fn(() => ({
+    navigate: jest.fn(),
+  })),
+}))
+
 jest.mock('firebase/firestore', () => ({
   Timestamp: jest.fn(),
 }))
@@ -35,11 +42,13 @@ jest.mock('@expo/vector-icons/MaterialIcons')
 const makeSut = () => {
   const addTransactionMock = new AddTransactionMock()
   const loadTransactionsByDateStub = new LoadTransactionsByDateStub()
+  const loadTransactionsMock = new LoadTransactionsMock()
   render(
     <GluestackUIProvider>
       <Dashboard
         addTransaction={addTransactionMock}
         loadTransactionsByDate={loadTransactionsByDateStub}
+        loadTransactions={loadTransactionsMock}
       />
     </GluestackUIProvider>,
   )
