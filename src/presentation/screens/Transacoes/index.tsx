@@ -1,7 +1,12 @@
 // import { useEffect } from 'react'
+import { useState } from 'react'
 import { ScrollView } from 'react-native'
+import { Timestamp } from 'firebase/firestore'
 
-import { LoadTransactions } from '@/domain/usecases/transaction'
+import {
+  LoadTransactions,
+  LoadTransactionsResult,
+} from '@/domain/usecases/transaction'
 import { Extract, Welcome } from '@/presentation/components'
 import {
   Box,
@@ -14,13 +19,18 @@ import Pixels from '@/presentation/assets/pixels-servicos.svg'
 import { CardTransaction, ModalFilters } from './components'
 // import { useTransaction } from '@/contexts'
 
+type TransactionProps = LoadTransactionsResult<Timestamp> & {
+  type: 'income' | 'outcome'
+}
+
 type Props = {
   loadTransactions: LoadTransactions
 }
 
 export function Transacoes({ loadTransactions }: Props) {
   // const { transactions, fetchTransactions } = useTransaction()
-  const transactions: any[] = []
+  // const transactions: any[] = []
+  const [transactions] = useState<TransactionProps[]>([])
 
   // useEffect(() => {
   //   fetchTransactions()
