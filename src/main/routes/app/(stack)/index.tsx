@@ -5,6 +5,7 @@ import Feather from '@expo/vector-icons/Feather'
 
 import { DrawerParamList } from '@/presentation/@types/navigation'
 import { MakeAvatarMenu, MakeDashboard } from '@/main/factories/screens'
+import { Transacoes } from '@/presentation/screens'
 
 type Props = DrawerScreenProps<DrawerParamList, 'StackRoutes'>
 
@@ -70,14 +71,14 @@ export function StackRoutes({ navigation }: Props) {
         options={{
           title: 'Meu perfil',
         }}
-      />
+      /> */}
       <Screen
         name="Transacoes"
         component={Transacoes}
         options={{
           title: 'Transações',
         }}
-      /> */}
+      />
     </Navigator>
   )
 }
