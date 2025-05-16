@@ -18,7 +18,6 @@ import Pixels from '@/presentation/assets/pixels-servicos.svg'
 import { CardTransaction, ModalFilters } from './components'
 import { useToast } from '@/presentation/hooks'
 import { getIncomeOutcomeTransaction } from '@/presentation/utils'
-// import { useTransaction } from '@/contexts'
 
 type TransactionProps = LoadTransactionsResult<Timestamp> & {
   type: 'income' | 'outcome'
