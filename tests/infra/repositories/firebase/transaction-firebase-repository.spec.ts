@@ -1,9 +1,14 @@
 import { addDoc, collection, getDocs } from 'firebase/firestore'
+import { randomUUID } from 'expo-crypto'
 
 import { TransactionType } from '@/data/contracts/transaction'
 import { TransactionFirebaseRepository } from '@/infra/repositories/firebase'
 
 jest.useFakeTimers()
+
+jest.mock('expo-crypto', () => ({
+  randomUUID: jest.fn(() => 'any_transaction_id'),
+}))
 
 jest.mock('firebase/auth', () => ({
   signInWithEmailAndPassword: jest.fn(),
@@ -29,6 +34,7 @@ jest.mock('firebase/firestore', () => ({
       callback({
         data: () => {
           return {
+            id: 'any_transaction_id',
             transactionType: 'cambio',
             date: new Date(),
             value: 100,
@@ -73,6 +79,7 @@ describe('TransactionFirebaseRepository', () => {
         withConverter: withConverterMock,
       })
       const sut = new TransactionFirebaseRepository()
+      const fakeId = randomUUID()
 
       await sut.add({
         transactionType: TransactionType.CAMBIO_DE_MOEDA,
@@ -82,6 +89,7 @@ describe('TransactionFirebaseRepository', () => {
       })
 
       expect(addDoc).toHaveBeenCalledWith(mockedCollectionWithConverter, {
+        id: fakeId,
         transactionType: TransactionType.CAMBIO_DE_MOEDA,
         date: new Date(),
         value: 100,
@@ -120,6 +128,7 @@ describe('TransactionFirebaseRepository', () => {
 
       expect(transactions).toEqual([
         {
+          id: randomUUID(),
           transactionType: TransactionType.CAMBIO_DE_MOEDA,
           date: new Date(),
           value: 100,
@@ -141,6 +150,7 @@ describe('TransactionFirebaseRepository', () => {
         transactionId: 'any_transaction_id',
         transactions: [
           {
+            id: randomUUID(),
             transactionType: TransactionType.CAMBIO_DE_MOEDA,
             date: new Date(),
             value: 100,

@@ -6,6 +6,7 @@ import {
   Timestamp,
   where,
 } from 'firebase/firestore'
+import { randomUUID } from 'expo-crypto'
 
 import {
   AddTransactionRepository,
@@ -28,6 +29,7 @@ export class TransactionFirebaseRepository
     const transactionRef = await addDoc(
       collection(db, 'transactions').withConverter(transactionConverter),
       {
+        id: randomUUID(),
         transactionType: transaction.transactionType,
         date: transaction.date,
         value: transaction.value,
@@ -59,6 +61,7 @@ export class TransactionFirebaseRepository
     querySnapshot.forEach((doc) => {
       const transaction = doc.data()
       transactions.push({
+        id: transaction.id,
         date: transaction.date,
         transactionType: transaction.transactionType,
         value: transaction.value,
@@ -88,6 +91,7 @@ export class TransactionFirebaseRepository
     querySnapshot.forEach((doc) => {
       const transaction = doc.data()
       transactions.push({
+        id: transaction.id,
         date: transaction.date,
         transactionType: transaction.transactionType,
         value: transaction.value,

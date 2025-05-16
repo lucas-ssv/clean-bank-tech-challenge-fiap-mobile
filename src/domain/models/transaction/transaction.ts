@@ -1,4 +1,5 @@
 export interface TransactionModel<T = Date> {
+  id: string
   date: T
   transactionType: TransactionType
   value: number
