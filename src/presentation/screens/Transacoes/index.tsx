@@ -1,5 +1,4 @@
-// import { useEffect } from 'react'
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { ScrollView } from 'react-native'
 import { Timestamp } from 'firebase/firestore'
 
@@ -17,6 +16,8 @@ import {
 } from '@/presentation/components/ui'
 import Pixels from '@/presentation/assets/pixels-servicos.svg'
 import { CardTransaction, ModalFilters } from './components'
+import { useToast } from '@/presentation/hooks'
+import { getIncomeOutcomeTransaction } from '@/presentation/utils'
 // import { useTransaction } from '@/contexts'
 
 type TransactionProps = LoadTransactionsResult<Timestamp> & {
@@ -28,13 +29,29 @@ type Props = {
 }
 
 export function Transacoes({ loadTransactions }: Props) {
-  // const { transactions, fetchTransactions } = useTransaction()
-  // const transactions: any[] = []
-  const [transactions] = useState<TransactionProps[]>([])
+  const toast = useToast()
+  const [transactions, setTransactions] = useState<TransactionProps[]>([])
 
-  // useEffect(() => {
-  //   fetchTransactions()
-  // }, [fetchTransactions])
+  const fetchTransactions = useCallback(async () => {
+    try {
+      const transactions = await loadTransactions.execute()
+      const formattedTransactions = transactions.map((transaction) => {
+        const type = getIncomeOutcomeTransaction(transaction.transactionType)
+        return {
+          ...transaction,
+          date: transaction.date as unknown as Timestamp,
+          type,
+        }
+      })
+      setTransactions(formattedTransactions)
+    } catch (error) {
+      toast('error', 'Erro ao buscar transações', error.code)
+    }
+  }, [loadTransactions, toast])
+
+  useEffect(() => {
+    fetchTransactions()
+  }, [fetchTransactions])
 
   return (
     <ScrollView
@@ -68,6 +85,7 @@ export function Transacoes({ loadTransactions }: Props) {
             {transactions.length > 0 ? (
               transactions.map((transaction, index) => (
                 <CardTransaction
+                  testID="card-transaction"
                   key={transaction.id}
                   transaction={transaction}
                   index={index}

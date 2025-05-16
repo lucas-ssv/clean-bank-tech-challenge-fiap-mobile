@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { ComponentProps, useEffect } from 'react'
 import { View } from 'react-native'
 import Animated, {
   useAnimatedStyle,
@@ -24,7 +24,7 @@ import { formattedDateTime, formattedMoney } from '@/presentation/utils'
 // import { useTransaction } from '@/contexts'
 // import { useToast } from '@/presentation/hooks'
 
-type Props = {
+type Props = ComponentProps<typeof Card> & {
   transaction: TransactionModel<Timestamp> & {
     documents?: TransactionDocumentModel[]
     type: string
@@ -32,7 +32,7 @@ type Props = {
   index: number
 }
 
-export function CardTransaction({ transaction, index }: Props) {
+export function CardTransaction({ transaction, index, ...rest }: Props) {
   // const { removeTransaction } = useTransaction()
   // const toast = useToast()
 
@@ -86,7 +86,7 @@ export function CardTransaction({ transaction, index }: Props) {
 
   return (
     <Animated.View style={[animatedStyle]}>
-      <Card variant="elevated">
+      <Card variant="elevated" {...rest}>
         <HStack className="justify-between items-end gap-4">
           <VStack className="gap-2">
             <View>
