@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react-native'
+import { render, screen, waitFor } from '@testing-library/react-native'
 
 import { LoadTransactionsMock } from '@tests/domain/usecases/transaction'
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
@@ -29,14 +29,26 @@ jest.mock('@react-navigation/native', () => ({
   })),
 }))
 
+type SutTypes = {
+  loadTransactionsMock: LoadTransactionsMock
+}
+
+const makeSut = (): SutTypes => {
+  const loadTransactionsMock = new LoadTransactionsMock()
+  render(
+    <GluestackUIProvider>
+      <Transacoes loadTransactions={loadTransactionsMock} />
+    </GluestackUIProvider>,
+  )
+  return {
+    loadTransactionsMock,
+  }
+}
+
 describe('<Transacoes />', () => {
-  it('should show the extract empty message if there are no transactions', () => {
-    const loadTransactions = new LoadTransactionsMock()
-    render(
-      <GluestackUIProvider>
-        <Transacoes loadTransactions={loadTransactions} />
-      </GluestackUIProvider>,
-    )
+  it('should show the extract empty message if there are no transactions', async () => {
+    makeSut()
+    await waitFor(() => {})
 
     expect(screen.getAllByText('Nenhuma transação para mostrar.')).toBeTruthy()
   })
