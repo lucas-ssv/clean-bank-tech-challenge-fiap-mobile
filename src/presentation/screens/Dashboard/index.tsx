@@ -2,6 +2,7 @@ import { ScrollView } from 'react-native'
 
 import {
   AddTransaction,
+  LoadTransactions,
   LoadTransactionsByDate,
 } from '@/domain/usecases/transaction'
 import { FinancialFlowChart, NewTransaction } from './components'
@@ -11,9 +12,14 @@ import { Extract, Welcome } from '@/presentation/components'
 type Props = {
   addTransaction: AddTransaction
   loadTransactionsByDate: LoadTransactionsByDate
+  loadTransactions: LoadTransactions
 }
 
-export function Dashboard({ addTransaction, loadTransactionsByDate }: Props) {
+export function Dashboard({
+  addTransaction,
+  loadTransactionsByDate,
+  loadTransactions,
+}: Props) {
   return (
     <ScrollView
       className="bg-custom-my-light-green"
@@ -23,7 +29,7 @@ export function Dashboard({ addTransaction, loadTransactionsByDate }: Props) {
         <Welcome />
         <NewTransaction addTransaction={addTransaction} />
         <FinancialFlowChart loadTransactionsByDate={loadTransactionsByDate} />
-        <Extract />
+        <Extract loadTransactions={loadTransactions} />
       </VStack>
     </ScrollView>
   )

@@ -1,4 +1,12 @@
-import { ComponentProps } from 'react'
+import { FlatList } from 'react-native'
+import { ComponentProps, useCallback, useEffect, useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
+
+import { useToast } from '@/presentation/hooks'
+import {
+  LoadTransactions,
+  LoadTransactionsResult,
+} from '@/domain/usecases/transaction'
 import {
   Box,
   Button,
@@ -11,21 +19,47 @@ import {
 } from './ui'
 import Pencil from '@/presentation/assets/lapis.svg'
 import Trash from '@/presentation/assets/lixeira.svg'
-// import { useTransaction } from '@/contexts'
-import { FlatList } from 'react-native'
 import {
   formatMonth,
   formattedDate,
   formattedMoney,
+  getIncomeOutcomeTransaction,
 } from '@/presentation/utils'
-// import { useNavigation } from '@react-navigation/native'
+import { Timestamp } from 'firebase/firestore'
 
-type Props = ComponentProps<typeof Box>
+type TransactionProps = LoadTransactionsResult<Timestamp> & {
+  type: 'income' | 'outcome'
+}
 
-export function Extract({ className, ...rest }: Props) {
-  // const { transactions } = useTransaction()
-  const transactions: any[] = []
-  // const navigation = useNavigation()
+type Props = ComponentProps<typeof Box> & {
+  loadTransactions: LoadTransactions
+}
+
+export function Extract({ loadTransactions, className, ...rest }: Props) {
+  const toast = useToast()
+  const [transactions, setTransactions] = useState<TransactionProps[]>([])
+  const navigation = useNavigation()
+
+  const fetchTransactions = useCallback(async () => {
+    try {
+      const transactions = await loadTransactions.execute()
+      const formattedTransactions = transactions.map((transaction) => {
+        const type = getIncomeOutcomeTransaction(transaction.transactionType)
+        return {
+          ...transaction,
+          date: transaction.date as unknown as Timestamp,
+          type,
+        }
+      })
+      setTransactions(formattedTransactions)
+    } catch (error) {
+      toast('error', 'Erro ao buscar transações', error.code)
+    }
+  }, [loadTransactions, toast])
+
+  useEffect(() => {
+    fetchTransactions()
+  }, [fetchTransactions])
 
   return (
     <Box
@@ -37,17 +71,17 @@ export function Extract({ className, ...rest }: Props) {
         <ButtonGroup className="flex-row gap-2">
           <Button
             className="h-12 w-12 bg-custom-my-dark-green rounded-full"
-            // onPress={() =>
-            //   navigation.navigate('StackRoutes', { screen: 'Transacoes' })
-            // }
+            onPress={() =>
+              navigation.navigate('StackRoutes', { screen: 'Transacoes' })
+            }
           >
             <Pencil />
           </Button>
           <Button
             className="h-12 w-12 bg-custom-my-dark-green rounded-full"
-            // onPress={() =>
-            //   navigation.navigate('StackRoutes', { screen: 'Transacoes' })
-            // }
+            onPress={() =>
+              navigation.navigate('StackRoutes', { screen: 'Transacoes' })
+            }
           >
             <Trash />
           </Button>
@@ -57,9 +91,8 @@ export function Extract({ className, ...rest }: Props) {
         {transactions.length > 0 ? (
           <FlatList
             data={transactions}
-            keyExtractor={(item) => item.id!}
-            renderItem={({ item }) => (
-              <HStack className="gap-4">
+            renderItem={({ item, index }) => (
+              <HStack className="gap-6">
                 <VStack className="gap-2">
                   <Text className="text-sm font-semibold text-custom-my-green">
                     {formatMonth(item.date.toDate())}
@@ -75,17 +108,25 @@ export function Extract({ className, ...rest }: Props) {
                   <Text
                     className={`text-md font-semibold ${item.type === 'income' ? 'text-custom-my-green' : 'text-custom-my-dark-red'}`}
                   >
-                    {item.type === 'outcome' ? '-' : '+'}
+                    {item.type === 'outcome' ? '-' : '+'}{' '}
                     {formattedMoney.format(item.value)}
                   </Text>
                   <Divider className="w-3/4 border border-custom-my-green" />
                 </VStack>
-                <Divider orientation="vertical" />
+                {index !== transactions.length - 1 && (
+                  <VStack className="flex-1 items-center justify-center">
+                    <Divider
+                      className="h-2 w-2 items-center justify-center bg-custom-my-green"
+                      orientation="vertical"
+                    />
+                  </VStack>
+                )}
               </HStack>
             )}
             contentContainerStyle={{
               gap: 16,
             }}
+            className="mt-2"
             horizontal
             showsHorizontalScrollIndicator={false}
           />

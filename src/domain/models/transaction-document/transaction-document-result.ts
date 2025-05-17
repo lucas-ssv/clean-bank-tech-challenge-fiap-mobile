@@ -1,5 +1,5 @@
 export type TransactionDocumentModel = {
-  name: string
+  fileName: string
   mimeType: string
-  uri: string
+  url: string
 }

@@ -6,32 +6,74 @@ import {
   Timestamp,
   where,
 } from 'firebase/firestore'
+import { randomUUID } from 'expo-crypto'
 
 import {
   AddTransactionRepository,
   AddTransactionRepositoryParams,
   LoadTransactionsByDateRepository,
   LoadTransactionsByDateRepositoryResult,
+  LoadTransactionsRepository,
+  LoadTransactionsRepositoryResult,
 } from '@/data/contracts/transaction'
 import { auth, db } from '@/main/config/firebase'
 import { transactionConverter } from './converters'
 
 export class TransactionFirebaseRepository
-  implements AddTransactionRepository, LoadTransactionsByDateRepository
+  implements
+    AddTransactionRepository,
+    LoadTransactionsRepository<Timestamp>,
+    LoadTransactionsByDateRepository
 {
   async add(transaction: AddTransactionRepositoryParams): Promise<string> {
     const transactionRef = await addDoc(
       collection(db, 'transactions').withConverter(transactionConverter),
       {
+        id: randomUUID(),
         transactionType: transaction.transactionType,
         date: transaction.date,
         value: transaction.value,
         userUID: transaction.userUID,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     )
     return transactionRef.id
+  }
+
+  async loadAll(): Promise<LoadTransactionsRepositoryResult<Timestamp>> {
+    const q = query(
+      collection(db, 'transactions').withConverter(transactionConverter),
+      where('userUID', '==', auth.currentUser?.uid),
+    )
+    let transactionId: string = ''
+    const querySnapshot = await getDocs(q)
+
+    if (querySnapshot.empty) {
+      return {
+        transactionId,
+        transactions: [],
+      }
+    }
+
+    transactionId = querySnapshot.docs[0].id
+    const transactions: any[] = []
+    querySnapshot.forEach((doc) => {
+      const transaction = doc.data()
+      transactions.push({
+        id: transaction.id,
+        date: transaction.date,
+        transactionType: transaction.transactionType,
+        value: transaction.value,
+        userUID: transaction.userUID,
+        createdAt: transaction.createdAt,
+        updatedAt: transaction.updatedAt,
+      })
+    })
+    return {
+      transactionId,
+      transactions,
+    }
   }
 
   async loadByDate(
@@ -49,12 +91,13 @@ export class TransactionFirebaseRepository
     querySnapshot.forEach((doc) => {
       const transaction = doc.data()
       transactions.push({
+        id: transaction.id,
         date: transaction.date,
         transactionType: transaction.transactionType,
         value: transaction.value,
         userUID: transaction.userUID,
-        createdAt: transaction.createdAt.toDate(),
-        updatedAt: transaction.updatedAt.toDate(),
+        createdAt: transaction.createdAt,
+        updatedAt: transaction.updatedAt,
       })
     })
     return transactions

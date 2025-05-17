@@ -1,18 +1,16 @@
 import { AddTransactionRepositoryParams } from '@/data/contracts/transaction'
-import {
-  DocumentData,
-  FirestoreDataConverter,
-  Timestamp,
-} from 'firebase/firestore'
+import { DocumentData, FirestoreDataConverter } from 'firebase/firestore'
 
 type Transaction = AddTransactionRepositoryParams & {
-  createdAt: Timestamp
-  updatedAt: Timestamp
+  id: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 export const transactionConverter: FirestoreDataConverter<Transaction> = {
   toFirestore: (transaction: Transaction): DocumentData => {
     return {
+      id: transaction.id,
       userUID: transaction.userUID,
       transactionType: transaction.transactionType,
       date: transaction.date,

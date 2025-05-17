@@ -1,5 +1,6 @@
-export interface TransactionModel {
-  date: Date
+export interface TransactionModel<T = Date> {
+  id: string
+  date: T
   transactionType: TransactionType
   value: number
   userUID: string

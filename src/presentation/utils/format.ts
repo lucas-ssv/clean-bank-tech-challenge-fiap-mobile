@@ -13,6 +13,10 @@ export const formattedDate = new Intl.DateTimeFormat('pt-br', {
   day: '2-digit',
 })
 
+export const formatDate = (date: any) => {
+  return date.toDate().toLocaleDateString('pt-BR')
+}
+
 export const formattedMoney = new Intl.NumberFormat('pt-br', {
   style: 'currency',
   currency: 'BRL',

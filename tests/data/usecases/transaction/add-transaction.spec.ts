@@ -44,8 +44,8 @@ describe('AddTransaction usecase', () => {
       transactionDocuments: [
         {
           mimeType: 'any_mimetype',
-          name: 'any_name',
-          uri: 'any_uri',
+          fileName: 'any_name',
+          url: 'any_uri',
         },
       ],
       date: new Date(),
@@ -58,8 +58,8 @@ describe('AddTransaction usecase', () => {
       transactionDocuments: [
         {
           mimeType: 'any_mimetype',
-          name: 'any_name',
-          uri: 'any_uri',
+          fileName: 'any_name',
+          url: 'any_uri',
         },
       ],
       date: new Date(),
@@ -77,8 +77,8 @@ describe('AddTransaction usecase', () => {
       transactionDocuments: [
         {
           mimeType: 'any_mimetype',
-          name: 'any_name',
-          uri: 'any_uri',
+          fileName: 'any_name',
+          url: 'any_uri',
         },
       ],
       date: new Date(),
@@ -99,8 +99,8 @@ describe('AddTransaction usecase', () => {
       transactionDocuments: [
         {
           mimeType: 'any_mimetype',
-          name: 'any_name',
-          uri: 'any_uri',
+          fileName: 'any_name',
+          url: 'any_uri',
         },
       ],
       date: new Date(),
@@ -129,8 +129,8 @@ describe('AddTransaction usecase', () => {
       transactionDocuments: [
         {
           mimeType: 'any_mimetype',
-          name: 'any_name',
-          uri: 'any_uri',
+          fileName: 'any_name',
+          url: 'any_uri',
         },
       ],
       date: new Date(),
@@ -154,8 +154,8 @@ describe('AddTransaction usecase', () => {
       transactionDocuments: [
         {
           mimeType: 'any_mimetype',
-          name: 'any_name',
-          uri: 'any_uri',
+          fileName: 'any_name',
+          url: 'any_uri',
         },
       ],
       date: new Date(),
@@ -179,8 +179,8 @@ describe('AddTransaction usecase', () => {
       transactionDocuments: [
         {
           mimeType: 'any_mimetype',
-          name: 'any_name',
-          uri: 'any_uri',
+          fileName: 'any_name',
+          url: 'any_uri',
         },
       ],
       date: new Date(),
