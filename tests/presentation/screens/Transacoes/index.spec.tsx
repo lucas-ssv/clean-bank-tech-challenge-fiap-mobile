@@ -22,7 +22,7 @@ jest.mock('nativewind', () => {
 jest.mock('firebase/firestore', () => ({
   Timestamp: {
     now: jest.fn().mockReturnValue({
-      toDate: jest.fn(),
+      toDate: jest.fn().mockReturnValue(new Date('2025-05-17T23:59:59Z')),
     }),
   },
 }))
@@ -80,6 +80,15 @@ describe('<Transacoes />', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('card-transaction')).toBeTruthy()
+      expect(screen.getByTestId('transaction-type')).toHaveTextContent(
+        TransactionType.CAMBIO_DE_MOEDA,
+      )
+      expect(screen.getByTestId('transaction-value')).toHaveTextContent(
+        '+ R$ 100,00',
+      )
+      expect(screen.getByTestId('transaction-date')).toHaveTextContent(
+        '17/05/2025, 20:59:59',
+      )
     })
   })
 })
