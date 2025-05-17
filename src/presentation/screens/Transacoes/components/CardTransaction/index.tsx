@@ -93,7 +93,10 @@ export function CardTransaction({ transaction, index, ...rest }: Props) {
               <Text size="sm" className="text-black">
                 Tipo
               </Text>
-              <Text className="text-md text-black font-semibold mt-1">
+              <Text
+                testID="transaction-type"
+                className="text-md text-black font-semibold mt-1"
+              >
                 {transaction.transactionType}
               </Text>
             </View>
@@ -102,9 +105,10 @@ export function CardTransaction({ transaction, index, ...rest }: Props) {
                 Valor
               </Text>
               <Text
+                testID="transaction-value"
                 className={`text-md ${transaction.type === 'income' ? 'text-custom-my-green' : 'text-custom-my-dark-red'} font-semibold mt-1`}
               >
-                {transaction.type === 'outcome' ? '-' : '+'}
+                {transaction.type === 'outcome' ? '-' : '+'}{' '}
                 {formattedMoney.format(transaction.value)}
               </Text>
             </View>
@@ -112,7 +116,10 @@ export function CardTransaction({ transaction, index, ...rest }: Props) {
               <Text size="sm" className="text-black">
                 Data da transação
               </Text>
-              <Text className="text-md text-black font-semibold mt-1">
+              <Text
+                testID="transaction-date"
+                className="text-md text-black font-semibold mt-1"
+              >
                 {formattedDateTime.format(transaction.date.toDate())}
               </Text>
             </View>
