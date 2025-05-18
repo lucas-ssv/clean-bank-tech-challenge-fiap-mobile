@@ -55,6 +55,10 @@ export class TransactionFirebaseRepository
       conditions.push(where('date', '==', filters.date))
     }
 
+    if (filters?.minimumValue) {
+      conditions.push(where('value', '>=', filters.minimumValue))
+    }
+
     const q = query(
       collection(db, 'transactions').withConverter(transactionConverter),
       ...conditions,
