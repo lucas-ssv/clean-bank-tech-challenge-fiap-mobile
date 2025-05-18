@@ -175,5 +175,20 @@ describe('TransactionFirebaseRepository', () => {
         transactions: [],
       })
     })
+
+    it('should call where with transactionType if it is provided', async () => {
+      const sut = new TransactionFirebaseRepository()
+      const whereSpy = jest.spyOn(require('firebase/firestore'), 'where')
+
+      await sut.loadAll({
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+      })
+
+      expect(whereSpy).toHaveBeenCalledWith(
+        'transactionType',
+        '==',
+        TransactionType.CAMBIO_DE_MOEDA,
+      )
+    })
   })
 })
