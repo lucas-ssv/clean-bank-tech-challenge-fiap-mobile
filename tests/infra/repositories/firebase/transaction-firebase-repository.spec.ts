@@ -214,5 +214,17 @@ describe('TransactionFirebaseRepository', () => {
 
       expect(whereSpy).toHaveBeenCalledWith('value', '>=', fakeMinumumValue)
     })
+
+    it('should call where with maximumValue if it is provided', async () => {
+      const sut = new TransactionFirebaseRepository()
+      const whereSpy = jest.spyOn(require('firebase/firestore'), 'where')
+      const fakeMaximumValue = 100
+
+      await sut.loadAll({
+        maximumValue: fakeMaximumValue,
+      })
+
+      expect(whereSpy).toHaveBeenCalledWith('value', '<=', fakeMaximumValue)
+    })
   })
 })
