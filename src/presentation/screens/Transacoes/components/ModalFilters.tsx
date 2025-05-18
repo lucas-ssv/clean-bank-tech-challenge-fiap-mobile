@@ -5,6 +5,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import MaskInput, { Masks } from 'react-native-mask-input'
 
+import { LoadTransactionsFilterParams } from '@/domain/usecases/transaction'
 import { TransactionType } from '@/domain/models/transaction'
 import {
   Button,
@@ -38,9 +39,11 @@ import {
 import Close from '@/presentation/assets/close-black.svg'
 import ArrowDropdown from '@/presentation/assets/arrow-dropdown.svg'
 import { InputDate } from '@/presentation/components'
-// import { TransactionType } from '@/models'
-// import { useTransaction } from '@/contexts'
 import { useToast } from '@/presentation/hooks'
+
+type Props = {
+  onFetchTransactions: (filters?: LoadTransactionsFilterParams) => void
+}
 
 type FilterTransactionData = z.infer<typeof schema>
 
@@ -50,13 +53,12 @@ const schema = z.object({
   maxValue: z.string().nullish(),
 })
 
-export function ModalFilters() {
-  // const { fetchTransactions, filterTransactions } = useTransaction()
+export function ModalFilters({ onFetchTransactions }: Props) {
   const toast = useToast()
   const {
     control,
     handleSubmit,
-    // reset,
+    reset,
     formState: { isSubmitting },
   } = useForm({
     resolver: zodResolver(schema),
@@ -69,21 +71,21 @@ export function ModalFilters() {
 
   const onFilterTransaction = async (data: FilterTransactionData) => {
     try {
-      console.log('data', data)
-      // const { transactionType, minValue, maxValue } = data
-      // const numericMinValue = Number(
-      //   minValue!.replace(/[^0-9,]/g, '').replace(',', '.'),
-      // )
-      // const numericMaxValue = Number(
-      //   maxValue!.replace(/[^0-9,]/g, '').replace(',', '.'),
-      // )
+      const { transactionType, minValue, maxValue } = data
+      const numericMinValue = Number(
+        minValue?.replace(/[^0-9,]/g, '')?.replace(',', '.'),
+      )
+      const numericMaxValue = Number(
+        maxValue?.replace(/[^0-9,]/g, '')?.replace(',', '.'),
+      )
 
-      // await filterTransactions({
-      //   transactionType,
-      //   minValue: numericMinValue,
-      //   maxValue: numericMaxValue,
-      //   date,
-      // })
+      const filters: LoadTransactionsFilterParams = {
+        transactionType: transactionType as TransactionType,
+        minimumValue: numericMinValue,
+        maximumValue: numericMaxValue,
+        date,
+      }
+      onFetchTransactions(filters)
 
       setIsOpen(false)
     } catch (error) {
@@ -91,11 +93,11 @@ export function ModalFilters() {
     }
   }
 
-  // const handleResetFields = () => {
-  //   fetchTransactions()
-  //   reset()
-  //   setIsOpen(false)
-  // }
+  const handleResetFields = () => {
+    onFetchTransactions()
+    reset()
+    setIsOpen(false)
+  }
 
   return (
     <>
@@ -243,7 +245,7 @@ export function ModalFilters() {
               <Button
                 className="flex-1 h-12 bg-custom-my-extract-date-color rounded-lg"
                 variant="solid"
-                // onPress={handleResetFields}
+                onPress={handleResetFields}
               >
                 <ButtonText className="text-md">Limpar</ButtonText>
               </Button>

@@ -52,7 +52,14 @@ export class TransactionFirebaseRepository
     }
 
     if (filters?.date) {
-      conditions.push(where('date', '==', filters.date))
+      const startOfDay = new Date(filters.date)
+      startOfDay.setUTCHours(0, 0, 0, 0)
+
+      const endOfDay = new Date(filters.date)
+      endOfDay.setUTCHours(23, 59, 59, 999)
+
+      conditions.push(where('date', '>=', startOfDay))
+      conditions.push(where('date', '<=', endOfDay))
     }
 
     if (filters?.minimumValue) {

@@ -195,12 +195,17 @@ describe('TransactionFirebaseRepository', () => {
       const sut = new TransactionFirebaseRepository()
       const whereSpy = jest.spyOn(require('firebase/firestore'), 'where')
       const fakeDate = new Date()
+      const startOfDay = new Date(fakeDate)
+      startOfDay.setUTCHours(0, 0, 0, 0)
+      const endOfDay = new Date(fakeDate)
+      endOfDay.setUTCHours(23, 59, 59, 999)
 
       await sut.loadAll({
         date: fakeDate,
       })
 
-      expect(whereSpy).toHaveBeenCalledWith('date', '==', fakeDate)
+      expect(whereSpy).toHaveBeenCalledWith('date', '>=', startOfDay)
+      expect(whereSpy).toHaveBeenCalledWith('date', '<=', endOfDay)
     })
 
     it('should call where with minimumValue if it is provided', async () => {
@@ -231,6 +236,10 @@ describe('TransactionFirebaseRepository', () => {
       const sut = new TransactionFirebaseRepository()
       const whereSpy = jest.spyOn(require('firebase/firestore'), 'where')
       const fakeDate = new Date()
+      const startOfDay = new Date(fakeDate)
+      startOfDay.setUTCHours(0, 0, 0, 0)
+      const endOfDay = new Date(fakeDate)
+      endOfDay.setUTCHours(23, 59, 59, 999)
       const fakeMinimumValue = 100
       const fakeMaximumValue = 200
 
@@ -246,7 +255,8 @@ describe('TransactionFirebaseRepository', () => {
         '==',
         TransactionType.CAMBIO_DE_MOEDA,
       )
-      expect(whereSpy).toHaveBeenCalledWith('date', '==', fakeDate)
+      expect(whereSpy).toHaveBeenCalledWith('date', '>=', startOfDay)
+      expect(whereSpy).toHaveBeenCalledWith('date', '<=', endOfDay)
       expect(whereSpy).toHaveBeenCalledWith('value', '>=', fakeMinimumValue)
       expect(whereSpy).toHaveBeenCalledWith('value', '<=', fakeMaximumValue)
     })
