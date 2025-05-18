@@ -19,7 +19,7 @@ jest.mock('firebase/auth', () => ({
 }))
 
 jest.mock('firebase/firestore', () => ({
-  addDoc: jest.fn().mockResolvedValue({ id: 'any_transaction_id' }),
+  addDoc: jest.fn(),
   collection: jest.fn(),
   getFirestore: jest.fn(),
   where: jest.fn(),

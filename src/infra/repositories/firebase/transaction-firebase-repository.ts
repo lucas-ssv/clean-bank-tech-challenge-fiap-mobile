@@ -27,10 +27,11 @@ export class TransactionFirebaseRepository
     LoadTransactionsByDateRepository
 {
   async add(transaction: AddTransactionRepositoryParams): Promise<string> {
-    const transactionRef = await addDoc(
+    const transactionId = randomUUID()
+    await addDoc(
       collection(db, 'transactions').withConverter(transactionConverter),
       {
-        id: randomUUID(),
+        id: transactionId,
         transactionType: transaction.transactionType,
         date: transaction.date,
         value: transaction.value,
@@ -39,7 +40,7 @@ export class TransactionFirebaseRepository
         updatedAt: new Date(),
       },
     )
-    return transactionRef.id
+    return transactionId
   }
 
   async loadAll(
