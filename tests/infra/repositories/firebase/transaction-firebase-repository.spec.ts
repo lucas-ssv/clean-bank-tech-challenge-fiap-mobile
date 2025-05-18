@@ -146,20 +146,17 @@ describe('TransactionFirebaseRepository', () => {
 
       const transactions = await sut.loadAll()
 
-      expect(transactions).toEqual({
-        transactionId: 'any_transaction_id',
-        transactions: [
-          {
-            id: randomUUID(),
-            transactionType: TransactionType.CAMBIO_DE_MOEDA,
-            date: new Date(),
-            value: 100,
-            userUID: 'any_user_uid',
-            createdAt: 'any_timestamp',
-            updatedAt: 'any_timestamp',
-          },
-        ],
-      })
+      expect(transactions).toEqual([
+        {
+          id: randomUUID(),
+          transactionType: TransactionType.CAMBIO_DE_MOEDA,
+          date: new Date(),
+          value: 100,
+          userUID: 'any_user_uid',
+          createdAt: 'any_timestamp',
+          updatedAt: 'any_timestamp',
+        },
+      ])
     })
 
     it('should return an empty array if no transactions are found', async () => {
@@ -170,10 +167,7 @@ describe('TransactionFirebaseRepository', () => {
 
       const transactions = await sut.loadAll()
 
-      expect(transactions).toEqual({
-        transactionId: '',
-        transactions: [],
-      })
+      expect(transactions).toEqual([])
     })
 
     it('should call where with transactionType if it is provided', async () => {
