@@ -202,5 +202,17 @@ describe('TransactionFirebaseRepository', () => {
 
       expect(whereSpy).toHaveBeenCalledWith('date', '==', fakeDate)
     })
+
+    it('should call where with minimumValue if it is provided', async () => {
+      const sut = new TransactionFirebaseRepository()
+      const whereSpy = jest.spyOn(require('firebase/firestore'), 'where')
+      const fakeMinumumValue = 100
+
+      await sut.loadAll({
+        minimumValue: fakeMinumumValue,
+      })
+
+      expect(whereSpy).toHaveBeenCalledWith('value', '>=', fakeMinumumValue)
+    })
   })
 })
