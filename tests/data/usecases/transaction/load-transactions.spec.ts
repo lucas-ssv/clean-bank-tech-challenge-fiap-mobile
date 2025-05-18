@@ -27,13 +27,19 @@ const makeSut = (): SutTypes => {
 }
 
 describe('LoadTransactions usecase', () => {
-  it('should call LoadTransactionsRepository', async () => {
+  it('should call LoadTransactionsRepository with correct values', async () => {
     const { sut, loadTransactionsRepositoryMock } = makeSut()
     const loadSpy = jest.spyOn(loadTransactionsRepositoryMock, 'loadAll')
+    const fakeFilters = {
+      transactionType: TransactionType.CAMBIO_DE_MOEDA,
+      date: new Date(),
+      minimumValue: 100,
+      maximumValue: 200,
+    }
 
-    await sut.execute()
+    await sut.execute(fakeFilters)
 
-    expect(loadSpy).toHaveBeenCalled()
+    expect(loadSpy).toHaveBeenCalledWith(fakeFilters)
   })
 
   it('should call LoadTransactionDocumentsRepository with correct transactionId', async () => {

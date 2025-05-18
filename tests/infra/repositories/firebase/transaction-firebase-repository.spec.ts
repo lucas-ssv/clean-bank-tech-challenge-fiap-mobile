@@ -175,5 +175,90 @@ describe('TransactionFirebaseRepository', () => {
         transactions: [],
       })
     })
+
+    it('should call where with transactionType if it is provided', async () => {
+      const sut = new TransactionFirebaseRepository()
+      const whereSpy = jest.spyOn(require('firebase/firestore'), 'where')
+
+      await sut.loadAll({
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+      })
+
+      expect(whereSpy).toHaveBeenCalledWith(
+        'transactionType',
+        '==',
+        TransactionType.CAMBIO_DE_MOEDA,
+      )
+    })
+
+    it('should call where with transactionDate if it is provided', async () => {
+      const sut = new TransactionFirebaseRepository()
+      const whereSpy = jest.spyOn(require('firebase/firestore'), 'where')
+      const fakeDate = new Date()
+      const startOfDay = new Date(fakeDate)
+      startOfDay.setUTCHours(0, 0, 0, 0)
+      const endOfDay = new Date(fakeDate)
+      endOfDay.setUTCHours(23, 59, 59, 999)
+
+      await sut.loadAll({
+        date: fakeDate,
+      })
+
+      expect(whereSpy).toHaveBeenCalledWith('date', '>=', startOfDay)
+      expect(whereSpy).toHaveBeenCalledWith('date', '<=', endOfDay)
+    })
+
+    it('should call where with minimumValue if it is provided', async () => {
+      const sut = new TransactionFirebaseRepository()
+      const whereSpy = jest.spyOn(require('firebase/firestore'), 'where')
+      const fakeMinumumValue = 100
+
+      await sut.loadAll({
+        minimumValue: fakeMinumumValue,
+      })
+
+      expect(whereSpy).toHaveBeenCalledWith('value', '>=', fakeMinumumValue)
+    })
+
+    it('should call where with maximumValue if it is provided', async () => {
+      const sut = new TransactionFirebaseRepository()
+      const whereSpy = jest.spyOn(require('firebase/firestore'), 'where')
+      const fakeMaximumValue = 100
+
+      await sut.loadAll({
+        maximumValue: fakeMaximumValue,
+      })
+
+      expect(whereSpy).toHaveBeenCalledWith('value', '<=', fakeMaximumValue)
+    })
+
+    it('should call all filters if they are provided', async () => {
+      const sut = new TransactionFirebaseRepository()
+      const whereSpy = jest.spyOn(require('firebase/firestore'), 'where')
+      const fakeDate = new Date()
+      const startOfDay = new Date(fakeDate)
+      startOfDay.setUTCHours(0, 0, 0, 0)
+      const endOfDay = new Date(fakeDate)
+      endOfDay.setUTCHours(23, 59, 59, 999)
+      const fakeMinimumValue = 100
+      const fakeMaximumValue = 200
+
+      await sut.loadAll({
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        date: fakeDate,
+        minimumValue: fakeMinimumValue,
+        maximumValue: fakeMaximumValue,
+      })
+
+      expect(whereSpy).toHaveBeenCalledWith(
+        'transactionType',
+        '==',
+        TransactionType.CAMBIO_DE_MOEDA,
+      )
+      expect(whereSpy).toHaveBeenCalledWith('date', '>=', startOfDay)
+      expect(whereSpy).toHaveBeenCalledWith('date', '<=', endOfDay)
+      expect(whereSpy).toHaveBeenCalledWith('value', '>=', fakeMinimumValue)
+      expect(whereSpy).toHaveBeenCalledWith('value', '<=', fakeMaximumValue)
+    })
   })
 })

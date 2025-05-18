@@ -2,6 +2,7 @@ import { LoadTransactionsRepository } from '@/data/contracts/transaction'
 import { LoadTransactionDocumentsRepository } from '@/data/contracts/transaction-document'
 import {
   LoadTransactions,
+  LoadTransactionsFilterParams,
   LoadTransactionsResult,
 } from '@/domain/usecases/transaction'
 
@@ -17,9 +18,11 @@ export class LoadTransactionsImpl implements LoadTransactions {
     this.loadTransactionsRepository = loadTransactionsRepository
   }
 
-  async execute(): Promise<LoadTransactionsResult[]> {
+  async execute(
+    filters?: LoadTransactionsFilterParams,
+  ): Promise<LoadTransactionsResult[]> {
     const { transactionId, transactions } =
-      await this.loadTransactionsRepository.loadAll()
+      await this.loadTransactionsRepository.loadAll(filters)
     const documents =
       await this.loadTransactionDocumentsRepository.loadByTransactionId(
         transactionId,

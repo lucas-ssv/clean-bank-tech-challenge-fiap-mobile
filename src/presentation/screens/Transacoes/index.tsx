@@ -4,6 +4,7 @@ import { Timestamp } from 'firebase/firestore'
 
 import {
   LoadTransactions,
+  LoadTransactionsFilterParams,
   LoadTransactionsResult,
 } from '@/domain/usecases/transaction'
 import { Extract, Welcome } from '@/presentation/components'
@@ -31,22 +32,25 @@ export function Transacoes({ loadTransactions }: Props) {
   const toast = useToast()
   const [transactions, setTransactions] = useState<TransactionProps[]>([])
 
-  const fetchTransactions = useCallback(async () => {
-    try {
-      const transactions = await loadTransactions.execute()
-      const formattedTransactions = transactions.map((transaction) => {
-        const type = getIncomeOutcomeTransaction(transaction.transactionType)
-        return {
-          ...transaction,
-          date: transaction.date as unknown as Timestamp,
-          type,
-        }
-      })
-      setTransactions(formattedTransactions)
-    } catch (error) {
-      toast('error', 'Erro ao buscar transações', error.code)
-    }
-  }, [loadTransactions, toast])
+  const fetchTransactions = useCallback(
+    async (filters?: LoadTransactionsFilterParams) => {
+      try {
+        const transactions = await loadTransactions.execute(filters)
+        const formattedTransactions = transactions.map((transaction) => {
+          const type = getIncomeOutcomeTransaction(transaction.transactionType)
+          return {
+            ...transaction,
+            date: transaction.date as unknown as Timestamp,
+            type,
+          }
+        })
+        setTransactions(formattedTransactions)
+      } catch (error) {
+        toast('error', 'Erro ao buscar transações', error.code)
+      }
+    },
+    [loadTransactions, toast],
+  )
 
   useEffect(() => {
     fetchTransactions()
@@ -77,7 +81,7 @@ export function Transacoes({ loadTransactions }: Props) {
             <Heading className="text-black text-xl font-heading">
               Transações
             </Heading>
-            <ModalFilters />
+            <ModalFilters onFetchTransactions={fetchTransactions} />
           </HStack>
 
           <VStack className="gap-4 mt-8">
