@@ -61,6 +61,7 @@ describe('LoadTransactions usecase', () => {
 
     expect(transactions).toEqual([
       {
+        id: 'any_transaction_id',
         date: new Date(),
         transactionType: TransactionType.CAMBIO_DE_MOEDA,
         value: 100,

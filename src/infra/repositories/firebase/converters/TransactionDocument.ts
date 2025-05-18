@@ -15,7 +15,8 @@ export const transactionDocumentConverter: FirestoreDataConverter<TransactionDoc
     toFirestore: (transactionDocument: TransactionDocument): DocumentData => {
       return {
         transactionId: transactionDocument.transactionId,
-        uri: transactionDocument.url,
+        fileName: transactionDocument.fileName,
+        url: transactionDocument.url,
         mimeType: transactionDocument.mimeType,
         createdAt: transactionDocument.createdAt,
         updatedAt: transactionDocument.updatedAt,

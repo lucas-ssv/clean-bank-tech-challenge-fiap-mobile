@@ -1,10 +1,5 @@
 import { TransactionModel, TransactionType } from '@/domain/models/transaction'
 
-export type LoadTransactionsRepositoryResult<T = any> = {
-  transactionId: string
-  transactions: TransactionModel<T>[]
-}
-
 export type LoadTransactionsFilterParams = {
   transactionType?: TransactionType
   date?: Date
@@ -15,5 +10,5 @@ export type LoadTransactionsFilterParams = {
 export interface LoadTransactionsRepository<T = any> {
   loadAll: (
     filters?: LoadTransactionsFilterParams,
-  ) => Promise<LoadTransactionsRepositoryResult<T>>
+  ) => Promise<TransactionModel<T>[]>
 }

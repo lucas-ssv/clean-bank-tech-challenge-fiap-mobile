@@ -21,15 +21,20 @@ export class LoadTransactionsImpl implements LoadTransactions {
   async execute(
     filters?: LoadTransactionsFilterParams,
   ): Promise<LoadTransactionsResult[]> {
-    const { transactionId, transactions } =
-      await this.loadTransactionsRepository.loadAll(filters)
-    const documents =
-      await this.loadTransactionDocumentsRepository.loadByTransactionId(
-        transactionId,
-      )
-    return transactions.map((transaction) => ({
-      ...transaction,
-      documents,
-    }))
+    const transactions = await this.loadTransactionsRepository.loadAll(filters)
+    const transactionsWithDocuments: LoadTransactionsResult[] = []
+
+    for (const transaction of transactions) {
+      const documents =
+        await this.loadTransactionDocumentsRepository.loadByTransactionId(
+          transaction.id,
+        )
+      transactionsWithDocuments.push({
+        ...transaction,
+        documents,
+      })
+    }
+
+    return transactionsWithDocuments
   }
 }

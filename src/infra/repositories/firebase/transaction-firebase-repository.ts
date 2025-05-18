@@ -15,10 +15,10 @@ import {
   LoadTransactionsByDateRepositoryResult,
   LoadTransactionsFilterParams,
   LoadTransactionsRepository,
-  LoadTransactionsRepositoryResult,
 } from '@/data/contracts/transaction'
 import { auth, db } from '@/main/config/firebase'
 import { transactionConverter } from './converters'
+import { TransactionModel } from '@/domain/models/transaction'
 
 export class TransactionFirebaseRepository
   implements
@@ -27,10 +27,11 @@ export class TransactionFirebaseRepository
     LoadTransactionsByDateRepository
 {
   async add(transaction: AddTransactionRepositoryParams): Promise<string> {
-    const transactionRef = await addDoc(
+    const transactionId = randomUUID()
+    await addDoc(
       collection(db, 'transactions').withConverter(transactionConverter),
       {
-        id: randomUUID(),
+        id: transactionId,
         transactionType: transaction.transactionType,
         date: transaction.date,
         value: transaction.value,
@@ -39,12 +40,12 @@ export class TransactionFirebaseRepository
         updatedAt: new Date(),
       },
     )
-    return transactionRef.id
+    return transactionId
   }
 
   async loadAll(
     filters?: LoadTransactionsFilterParams,
-  ): Promise<LoadTransactionsRepositoryResult<Timestamp>> {
+  ): Promise<TransactionModel<Timestamp>[]> {
     const conditions = [where('userUID', '==', auth.currentUser?.uid)]
 
     if (filters?.transactionType) {
@@ -74,17 +75,12 @@ export class TransactionFirebaseRepository
       collection(db, 'transactions').withConverter(transactionConverter),
       ...conditions,
     )
-    let transactionId: string = ''
     const querySnapshot = await getDocs(q)
 
     if (querySnapshot.empty) {
-      return {
-        transactionId,
-        transactions: [],
-      }
+      return []
     }
 
-    transactionId = querySnapshot.docs[0].id
     const transactions: any[] = []
     querySnapshot.forEach((doc) => {
       const transaction = doc.data()
@@ -98,10 +94,7 @@ export class TransactionFirebaseRepository
         updatedAt: transaction.updatedAt,
       })
     })
-    return {
-      transactionId,
-      transactions,
-    }
+    return transactions
   }
 
   async loadByDate(
