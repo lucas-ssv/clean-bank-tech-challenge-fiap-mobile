@@ -190,5 +190,17 @@ describe('TransactionFirebaseRepository', () => {
         TransactionType.CAMBIO_DE_MOEDA,
       )
     })
+
+    it('should call where with transactionDate if it is provided', async () => {
+      const sut = new TransactionFirebaseRepository()
+      const whereSpy = jest.spyOn(require('firebase/firestore'), 'where')
+      const fakeDate = new Date()
+
+      await sut.loadAll({
+        date: fakeDate,
+      })
+
+      expect(whereSpy).toHaveBeenCalledWith('date', '==', fakeDate)
+    })
   })
 })

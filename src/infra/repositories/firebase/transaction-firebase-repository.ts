@@ -51,6 +51,10 @@ export class TransactionFirebaseRepository
       conditions.push(where('transactionType', '==', filters.transactionType))
     }
 
+    if (filters?.date) {
+      conditions.push(where('date', '==', filters.date))
+    }
+
     const q = query(
       collection(db, 'transactions').withConverter(transactionConverter),
       ...conditions,
