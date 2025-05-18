@@ -59,6 +59,10 @@ export class TransactionFirebaseRepository
       conditions.push(where('value', '>=', filters.minimumValue))
     }
 
+    if (filters?.maximumValue) {
+      conditions.push(where('value', '<=', filters.maximumValue))
+    }
+
     const q = query(
       collection(db, 'transactions').withConverter(transactionConverter),
       ...conditions,
