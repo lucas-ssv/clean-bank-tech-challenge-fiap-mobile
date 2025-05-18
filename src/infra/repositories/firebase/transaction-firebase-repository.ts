@@ -13,6 +13,7 @@ import {
   AddTransactionRepositoryParams,
   LoadTransactionsByDateRepository,
   LoadTransactionsByDateRepositoryResult,
+  LoadTransactionsFilterParams,
   LoadTransactionsRepository,
   LoadTransactionsRepositoryResult,
 } from '@/data/contracts/transaction'
@@ -41,10 +42,18 @@ export class TransactionFirebaseRepository
     return transactionRef.id
   }
 
-  async loadAll(): Promise<LoadTransactionsRepositoryResult<Timestamp>> {
+  async loadAll(
+    filters?: LoadTransactionsFilterParams,
+  ): Promise<LoadTransactionsRepositoryResult<Timestamp>> {
+    const conditions = [where('userUID', '==', auth.currentUser?.uid)]
+
+    if (filters?.transactionType) {
+      conditions.push(where('transactionType', '==', filters.transactionType))
+    }
+
     const q = query(
       collection(db, 'transactions').withConverter(transactionConverter),
-      where('userUID', '==', auth.currentUser?.uid),
+      ...conditions,
     )
     let transactionId: string = ''
     const querySnapshot = await getDocs(q)
