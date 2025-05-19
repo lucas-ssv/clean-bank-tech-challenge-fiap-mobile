@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs } from 'firebase/firestore'
+import { addDoc, collection, doc, getDocs, updateDoc } from 'firebase/firestore'
 import { randomUUID } from 'expo-crypto'
 
 import { TransactionType } from '@/data/contracts/transaction'
@@ -20,6 +20,8 @@ jest.mock('firebase/auth', () => ({
 
 jest.mock('firebase/firestore', () => ({
   addDoc: jest.fn(),
+  updateDoc: jest.fn(),
+  doc: jest.fn(),
   collection: jest.fn(),
   getFirestore: jest.fn(),
   where: jest.fn(),
@@ -253,6 +255,31 @@ describe('TransactionFirebaseRepository', () => {
       expect(whereSpy).toHaveBeenCalledWith('date', '<=', endOfDay)
       expect(whereSpy).toHaveBeenCalledWith('value', '>=', fakeMinimumValue)
       expect(whereSpy).toHaveBeenCalledWith('value', '<=', fakeMaximumValue)
+    })
+  })
+
+  describe('update()', () => {
+    it('should update a transaction on success', async () => {
+      const mockedCollectionWithConverter = 'mockedCollectionWithConverter'
+      const withConverterMock = jest
+        .fn()
+        .mockReturnValue(mockedCollectionWithConverter)
+      ;(doc as jest.Mock).mockReturnValue({
+        withConverter: withConverterMock,
+      })
+      const sut = new TransactionFirebaseRepository()
+
+      await sut.update('any_transaction_id', {
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        value: 200,
+        date: new Date(),
+      })
+
+      expect(updateDoc).toHaveBeenCalledWith(mockedCollectionWithConverter, {
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        value: 200,
+        date: new Date(),
+      })
     })
   })
 })
