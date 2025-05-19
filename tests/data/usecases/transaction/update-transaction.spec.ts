@@ -24,8 +24,24 @@ class UpdateTransactionImpl implements UpdateTransaction {
   }
 }
 
-class UpdateTransactionRepositoryMock {
-  async update(transactionId: string, transactionData: any): Promise<void> {}
+type UpdateTransactionRepositoryData = {
+  transactionType: TransactionType
+  value: number
+  date: Date
+}
+
+interface UpdateTransactionRepository {
+  update: (
+    transactionId: string,
+    transactionData: UpdateTransactionRepositoryData,
+  ) => Promise<void>
+}
+
+class UpdateTransactionRepositoryMock implements UpdateTransactionRepository {
+  async update(
+    transactionId: string,
+    transactionData: UpdateTransactionRepositoryData,
+  ): Promise<void> {}
 }
 
 type SutTypes = {
