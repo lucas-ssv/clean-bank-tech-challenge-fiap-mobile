@@ -7,6 +7,7 @@ import MaskInput, { Masks } from 'react-native-mask-input'
 import { Timestamp } from 'firebase/firestore'
 
 import { useToast } from '@/presentation/hooks'
+import { UpdateTransaction } from '@/domain/usecases/transaction'
 import { TransactionModel, TransactionType } from '@/domain/models/transaction'
 import { TransactionDocumentModel } from '@/domain/models/transaction-document'
 import {
@@ -46,15 +47,14 @@ import { InputDate, ModalImage } from '@/presentation/components'
 import Pencil from '@/presentation/assets/lapis.svg'
 import Close from '@/presentation/assets/close-black.svg'
 import ArrowDropdown from '@/presentation/assets/arrow-dropdown.svg'
-// import { Transaction, TransactionDocument, TransactionType } from '@/models'
 import { formattedMoney } from '@/presentation/utils'
-// import { useTransaction } from '@/contexts'
 
 type Props = {
   transaction: TransactionModel<Timestamp> & {
     documents?: TransactionDocumentModel[]
     type: string
   }
+  updateTransaction: UpdateTransaction
 }
 
 type UpdateTransactionData = z.infer<typeof schema>
@@ -73,8 +73,10 @@ const schema = z.object({
     .nullish(),
 })
 
-export function ModalUpdateTransaction({ transaction }: Props) {
-  // const { updateTransaction } = useTransaction()
+export function ModalUpdateTransaction({
+  transaction,
+  updateTransaction,
+}: Props) {
   const toast = useToast()
   const {
     control,
@@ -92,20 +94,21 @@ export function ModalUpdateTransaction({ transaction }: Props) {
 
   const onUpdateTransaction = async (data: UpdateTransactionData) => {
     try {
-      console.log('data', data)
-      // const { transactionType, value } = data
-      // const numericValue = Number(
-      //   value!.replace(/[^0-9,]/g, '').replace(',', '.'),
-      // )
-      // await updateTransaction(transaction.id!, {
-      //   transactionType: transactionType!,
-      //   value: numericValue,
-      //   date,
-      // })
+      const { transactionType, value } = data
+      const numericValue = Number(
+        value!.replace(/[^0-9,]/g, '').replace(',', '.'),
+      )
+
+      await updateTransaction.execute(transaction.id, {
+        date,
+        transactionType: transactionType as TransactionType,
+        value: numericValue,
+      })
 
       toast('success', 'Transação atualizada com sucesso!')
       setIsOpen(false)
     } catch (error) {
+      console.error(error)
       toast('error', 'Ocorreu um erro ao atualizar a transação', error.code)
     }
   }
@@ -113,12 +116,18 @@ export function ModalUpdateTransaction({ transaction }: Props) {
   return (
     <>
       <Button
+        testID="edit-button"
         className="h-12 w-12 bg-custom-my-dark-green rounded-full p-0"
         onPress={() => setIsOpen(true)}
       >
         <Pencil />
       </Button>
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} size="lg">
+      <Modal
+        testID="modal-update-transaction"
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        size="lg"
+      >
         <ModalBackdrop />
         <ModalContent>
           <ModalHeader>
@@ -204,7 +213,7 @@ export function ModalUpdateTransaction({ transaction }: Props) {
               />
             </FormControl>
 
-            <FormControl className="mt-4">
+            <FormControl className="mt-4" isInvalid={!!errors.value}>
               <FormControlLabel>
                 <FormControlLabelText className="text-md text-black">
                   Valor
@@ -216,6 +225,7 @@ export function ModalUpdateTransaction({ transaction }: Props) {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <Input className="h-12 bg-white border border-custom-my-dark-green rounded-lg">
                     <MaskInput
+                      testID="edit-transaction-value"
                       value={value!}
                       placeholder="R$ 0,00"
                       onChangeText={onChange}
@@ -231,6 +241,13 @@ export function ModalUpdateTransaction({ transaction }: Props) {
                   </Input>
                 )}
               />
+              {errors.value && (
+                <FormControlError>
+                  <FormControlErrorText>
+                    {errors.value.message}
+                  </FormControlErrorText>
+                </FormControlError>
+              )}
             </FormControl>
 
             {transaction.documents && transaction.documents.length > 0 && (
@@ -252,12 +269,15 @@ export function ModalUpdateTransaction({ transaction }: Props) {
           </ModalBody>
           <ModalFooter>
             <Button
+              testID="submit-button"
               className="flex-1 h-12 bg-custom-my-dark-green rounded-lg"
               variant="solid"
               onPress={handleSubmit(onUpdateTransaction)}
               isDisabled={isSubmitting}
             >
-              {isSubmitting && <ButtonSpinner className="text-white" />}
+              {isSubmitting && (
+                <ButtonSpinner testID="loading" className="text-white" />
+              )}
               <ButtonText className="text-md">Editar transação</ButtonText>
             </Button>
           </ModalFooter>

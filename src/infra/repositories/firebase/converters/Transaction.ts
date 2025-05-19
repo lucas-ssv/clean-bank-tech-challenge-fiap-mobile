@@ -2,7 +2,6 @@ import { AddTransactionRepositoryParams } from '@/data/contracts/transaction'
 import { DocumentData, FirestoreDataConverter } from 'firebase/firestore'
 
 type Transaction = AddTransactionRepositoryParams & {
-  id: string
   createdAt: Date
   updatedAt: Date
 }
@@ -10,7 +9,6 @@ type Transaction = AddTransactionRepositoryParams & {
 export const transactionConverter: FirestoreDataConverter<Transaction> = {
   toFirestore: (transaction: Transaction): DocumentData => {
     return {
-      id: transaction.id,
       userUID: transaction.userUID,
       transactionType: transaction.transactionType,
       date: transaction.date,

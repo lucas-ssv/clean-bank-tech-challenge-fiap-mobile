@@ -1,7 +1,15 @@
-import { render, screen, waitFor } from '@testing-library/react-native'
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react-native'
 import { Timestamp } from 'firebase/firestore'
 
-import { LoadTransactionsMock } from '@tests/domain/usecases/transaction'
+import {
+  LoadTransactionsMock,
+  UpdateTransactionMock,
+} from '@tests/domain/usecases/transaction'
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
 import { Transacoes } from '@/presentation/screens'
 import { TransactionType } from '@/domain/models/transaction'
@@ -39,9 +47,13 @@ describe('<Transacoes />', () => {
   it('should show the extract empty message if there are no transactions', async () => {
     const loadTransactionsMock = new LoadTransactionsMock()
     jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([])
+    const updateTransactionMock = new UpdateTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes loadTransactions={loadTransactionsMock} />
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+        />
       </GluestackUIProvider>,
     )
 
@@ -72,9 +84,13 @@ describe('<Transacoes />', () => {
         updatedAt: new Date(),
       },
     ])
+    const updateTransactionMock = new UpdateTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes loadTransactions={loadTransactionsMock} />
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+        />
       </GluestackUIProvider>,
     )
 
@@ -89,6 +105,183 @@ describe('<Transacoes />', () => {
       expect(screen.getByTestId('transaction-date')).toHaveTextContent(
         '17/05/2025, 20:59:59',
       )
+    })
+  })
+
+  it('should show modal filters when clicking on the filter button', async () => {
+    const loadTransactionsMock = new LoadTransactionsMock()
+    jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([])
+    const updateTransactionMock = new UpdateTransactionMock()
+    render(
+      <GluestackUIProvider>
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+        />
+      </GluestackUIProvider>,
+    )
+
+    const filterButton = screen.getByTestId('filter-button')
+    fireEvent(filterButton, 'press')
+
+    await waitFor(() => {
+      expect(screen.getByTestId('modal-filters')).toBeTruthy()
+    })
+  })
+
+  it('should show loading when fetching transactions', async () => {
+    const loadTransactionsMock = new LoadTransactionsMock()
+    jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([])
+    const updateTransactionMock = new UpdateTransactionMock()
+    render(
+      <GluestackUIProvider>
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+        />
+      </GluestackUIProvider>,
+    )
+
+    const filterButton = screen.getByTestId('filter-button')
+    fireEvent(filterButton, 'press')
+
+    const submitButton = screen.getByTestId('submit-button')
+    fireEvent(submitButton, 'press')
+
+    await waitFor(() => {
+      expect(screen.getByTestId('loading')).toBeTruthy()
+    })
+  })
+
+  it('should show ModalUpdateTransaction when clicking on the edit button', async () => {
+    const loadTransactionsMock = new LoadTransactionsMock()
+    jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([
+      {
+        id: 'any_id',
+        date: Timestamp.now() as any,
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        userUID: 'any_user_uid',
+        value: 100,
+        documents: [
+          {
+            fileName: 'any_file_name',
+            mimeType: 'any_mime_type',
+            url: 'any_url',
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ])
+    const updateTransactionMock = new UpdateTransactionMock()
+    render(
+      <GluestackUIProvider>
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+        />
+      </GluestackUIProvider>,
+    )
+
+    await waitFor(() => {
+      const editButton = screen.getByTestId('edit-button')
+      fireEvent(editButton, 'press')
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('modal-update-transaction')).toBeTruthy()
+    })
+  })
+
+  it('should show a valueError if the value is less than 1', async () => {
+    const loadTransactionsMock = new LoadTransactionsMock()
+    jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([
+      {
+        id: 'any_id',
+        date: Timestamp.now() as any,
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        userUID: 'any_user_uid',
+        value: 100,
+        documents: [
+          {
+            fileName: 'any_file_name',
+            mimeType: 'any_mime_type',
+            url: 'any_url',
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ])
+    const updateTransactionMock = new UpdateTransactionMock()
+    render(
+      <GluestackUIProvider>
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+        />
+      </GluestackUIProvider>,
+    )
+
+    await waitFor(() => {
+      const editButton = screen.getByTestId('edit-button')
+      fireEvent(editButton, 'press')
+    })
+    fireEvent(
+      screen.getByTestId('edit-transaction-value'),
+      'changeText',
+      '0,50',
+    )
+    fireEvent(screen.getByTestId('submit-button'), 'press')
+
+    await waitFor(() => {
+      expect(screen.getByText('O valor mínimo é R$1,00')).toBeTruthy()
+    })
+  })
+
+  it('should show loading when updating transaction', async () => {
+    const loadTransactionsMock = new LoadTransactionsMock()
+    jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([
+      {
+        id: 'any_id',
+        date: Timestamp.now() as any,
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        userUID: 'any_user_uid',
+        value: 100,
+        documents: [
+          {
+            fileName: 'any_file_name',
+            mimeType: 'any_mime_type',
+            url: 'any_url',
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ])
+    const updateTransactionMock = new UpdateTransactionMock()
+    render(
+      <GluestackUIProvider>
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+        />
+      </GluestackUIProvider>,
+    )
+
+    await waitFor(() => {
+      const editButton = screen.getByTestId('edit-button')
+      fireEvent(editButton, 'press')
+    })
+    fireEvent(
+      screen.getByTestId('edit-transaction-value'),
+      'changeText',
+      '100,00',
+    )
+    fireEvent(screen.getByTestId('submit-button'), 'press')
+
+    await waitFor(() => {
+      expect(screen.getByTestId('loading')).toBeTruthy()
     })
   })
 })

@@ -102,12 +102,18 @@ export function ModalFilters({ onFetchTransactions }: Props) {
   return (
     <>
       <Button
+        testID="filter-button"
         className="h-12 w-12 bg-custom-my-dark-green rounded-full p-0"
         onPress={() => setIsOpen(true)}
       >
         <MaterialIcons name="tune" color="#FFFFFF" size={24} />
       </Button>
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} size="lg">
+      <Modal
+        testID="modal-filters"
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        size="lg"
+      >
         <ModalBackdrop />
         <ModalContent>
           <ModalHeader>
@@ -250,12 +256,15 @@ export function ModalFilters({ onFetchTransactions }: Props) {
                 <ButtonText className="text-md">Limpar</ButtonText>
               </Button>
               <Button
+                testID="submit-button"
                 className="flex-1 h-12 bg-custom-my-dark-green rounded-lg"
                 variant="solid"
                 onPress={handleSubmit(onFilterTransaction)}
                 isDisabled={isSubmitting}
               >
-                {isSubmitting && <ButtonSpinner className="text-white" />}
+                {isSubmitting && (
+                  <ButtonSpinner testID="loading" className="text-white" />
+                )}
                 <ButtonText className="text-md">Filtrar</ButtonText>
               </Button>
             </HStack>

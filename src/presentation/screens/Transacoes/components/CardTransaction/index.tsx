@@ -21,6 +21,7 @@ import { ModalUpdateTransaction } from './components'
 import Trash from '@/presentation/assets/lixeira.svg'
 // import { Transaction, TransactionDocument } from '@/models'
 import { formattedDateTime, formattedMoney } from '@/presentation/utils'
+import { UpdateTransaction } from '@/domain/usecases/transaction'
 // import { useTransaction } from '@/contexts'
 // import { useToast } from '@/presentation/hooks'
 
@@ -29,10 +30,16 @@ type Props = ComponentProps<typeof Card> & {
     documents?: TransactionDocumentModel[]
     type: string
   }
+  updateTransaction: UpdateTransaction
   index: number
 }
 
-export function CardTransaction({ transaction, index, ...rest }: Props) {
+export function CardTransaction({
+  transaction,
+  updateTransaction,
+  index,
+  ...rest
+}: Props) {
   // const { removeTransaction } = useTransaction()
   // const toast = useToast()
 
@@ -126,7 +133,10 @@ export function CardTransaction({ transaction, index, ...rest }: Props) {
           </VStack>
 
           <HStack className="justify-end gap-2">
-            <ModalUpdateTransaction transaction={transaction} />
+            <ModalUpdateTransaction
+              transaction={transaction}
+              updateTransaction={updateTransaction}
+            />
             <Button
               className="h-12 w-12 bg-custom-my-dark-green rounded-full p-0"
               // onPress={() => handleRemoveTransaction(transaction.id!)}
