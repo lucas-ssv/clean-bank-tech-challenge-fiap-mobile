@@ -1,4 +1,9 @@
-import { render, screen, waitFor } from '@testing-library/react-native'
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react-native'
 import { Timestamp } from 'firebase/firestore'
 
 import { LoadTransactionsMock } from '@tests/domain/usecases/transaction'
@@ -89,6 +94,23 @@ describe('<Transacoes />', () => {
       expect(screen.getByTestId('transaction-date')).toHaveTextContent(
         '17/05/2025, 20:59:59',
       )
+    })
+  })
+
+  it('should show modal filters when clicking on the filter button', async () => {
+    const loadTransactionsMock = new LoadTransactionsMock()
+    jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([])
+    render(
+      <GluestackUIProvider>
+        <Transacoes loadTransactions={loadTransactionsMock} />
+      </GluestackUIProvider>,
+    )
+
+    const filterButton = screen.getByTestId('filter-button')
+    fireEvent(filterButton, 'press')
+
+    await waitFor(() => {
+      expect(screen.getByTestId('modal-filters')).toBeTruthy()
     })
   })
 })
