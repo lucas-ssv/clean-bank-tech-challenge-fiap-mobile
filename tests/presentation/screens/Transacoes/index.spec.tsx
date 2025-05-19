@@ -113,4 +113,24 @@ describe('<Transacoes />', () => {
       expect(screen.getByTestId('modal-filters')).toBeTruthy()
     })
   })
+
+  it('should show loading when fetching transactions', async () => {
+    const loadTransactionsMock = new LoadTransactionsMock()
+    jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([])
+    render(
+      <GluestackUIProvider>
+        <Transacoes loadTransactions={loadTransactionsMock} />
+      </GluestackUIProvider>,
+    )
+
+    const filterButton = screen.getByTestId('filter-button')
+    fireEvent(filterButton, 'press')
+
+    const submitButton = screen.getByTestId('submit-button')
+    fireEvent(submitButton, 'press')
+
+    await waitFor(() => {
+      expect(screen.getByTestId('loading')).toBeTruthy()
+    })
+  })
 })
