@@ -1,48 +1,8 @@
+import { UpdateTransactionImpl } from '@/data/usecases/transaction'
 import { TransactionType } from '@/domain/models/transaction'
-import {
-  UpdateTransaction,
-  UpdateTransactionData,
-} from '@/domain/usecases/transaction'
+import { UpdateTransactionRepositoryMock } from '@tests/data/mocks/transaction'
 
 jest.useFakeTimers()
-
-class UpdateTransactionImpl implements UpdateTransaction {
-  private updateTransactionRepository: UpdateTransactionRepositoryMock
-
-  constructor(updateTransactionRepository: UpdateTransactionRepositoryMock) {
-    this.updateTransactionRepository = updateTransactionRepository
-  }
-
-  async execute(
-    transactionId: string,
-    transactionData: UpdateTransactionData,
-  ): Promise<void> {
-    await this.updateTransactionRepository.update(
-      transactionId,
-      transactionData,
-    )
-  }
-}
-
-type UpdateTransactionRepositoryData = {
-  transactionType: TransactionType
-  value: number
-  date: Date
-}
-
-interface UpdateTransactionRepository {
-  update: (
-    transactionId: string,
-    transactionData: UpdateTransactionRepositoryData,
-  ) => Promise<void>
-}
-
-class UpdateTransactionRepositoryMock implements UpdateTransactionRepository {
-  async update(
-    transactionId: string,
-    transactionData: UpdateTransactionRepositoryData,
-  ): Promise<void> {}
-}
 
 type SutTypes = {
   sut: UpdateTransactionImpl
