@@ -11,13 +11,6 @@ import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-p
 import { Transacoes } from '@/presentation/screens'
 import { TransactionType } from '@/domain/models/transaction'
 
-jest.mock('@/presentation/hooks', () => {
-  const mockToast = jest.fn()
-  return {
-    useToast: mockToast,
-  }
-})
-
 jest.mock('nativewind', () => {
   const setColorSchemeMock = jest.fn()
 
@@ -174,6 +167,48 @@ describe('<Transacoes />', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('modal-update-transaction')).toBeTruthy()
+    })
+  })
+
+  it('should show a valueError if the value is less than 1', async () => {
+    const loadTransactionsMock = new LoadTransactionsMock()
+    jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([
+      {
+        id: 'any_id',
+        date: Timestamp.now() as any,
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        userUID: 'any_user_uid',
+        value: 100,
+        documents: [
+          {
+            fileName: 'any_file_name',
+            mimeType: 'any_mime_type',
+            url: 'any_url',
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ])
+    render(
+      <GluestackUIProvider>
+        <Transacoes loadTransactions={loadTransactionsMock} />
+      </GluestackUIProvider>,
+    )
+
+    await waitFor(() => {
+      const editButton = screen.getByTestId('edit-button')
+      fireEvent(editButton, 'press')
+    })
+    fireEvent(
+      screen.getByTestId('edit-transaction-value'),
+      'changeText',
+      '0,50',
+    )
+    fireEvent(screen.getByTestId('submit-button'), 'press')
+
+    await waitFor(() => {
+      expect(screen.getByText('O valor mínimo é R$1,00')).toBeTruthy()
     })
   })
 })
