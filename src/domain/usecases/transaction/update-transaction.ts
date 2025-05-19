@@ -8,7 +8,7 @@ export interface UpdateTransaction {
 }
 
 export type UpdateTransactionData = {
-  transactionType: TransactionType
-  value: number
-  date: Date
+  transactionType?: TransactionType
+  value?: number
+  date?: Date
 }

@@ -1,9 +1,9 @@
 import { TransactionType } from '@/domain/models/transaction'
 
 export type UpdateTransactionRepositoryData = {
-  transactionType: TransactionType
-  value: number
-  date: Date
+  transactionType?: TransactionType
+  value?: number
+  date?: Date
 }
 
 export interface UpdateTransactionRepository {

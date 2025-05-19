@@ -1,9 +1,11 @@
 import {
   addDoc,
   collection,
+  doc,
   getDocs,
   query,
   Timestamp,
+  updateDoc,
   where,
 } from 'firebase/firestore'
 import { randomUUID } from 'expo-crypto'
@@ -15,6 +17,8 @@ import {
   LoadTransactionsByDateRepositoryResult,
   LoadTransactionsFilterParams,
   LoadTransactionsRepository,
+  UpdateTransactionRepository,
+  UpdateTransactionRepositoryData,
 } from '@/data/contracts/transaction'
 import { auth, db } from '@/main/config/firebase'
 import { transactionConverter } from './converters'
@@ -24,7 +28,8 @@ export class TransactionFirebaseRepository
   implements
     AddTransactionRepository,
     LoadTransactionsRepository<Timestamp>,
-    LoadTransactionsByDateRepository
+    LoadTransactionsByDateRepository,
+    UpdateTransactionRepository
 {
   async add(transaction: AddTransactionRepositoryParams): Promise<string> {
     const transactionId = randomUUID()
@@ -122,5 +127,17 @@ export class TransactionFirebaseRepository
       })
     })
     return transactions
+  }
+
+  async update(
+    transactionId: string,
+    transactionData: UpdateTransactionRepositoryData,
+  ): Promise<void> {
+    await updateDoc(
+      doc(db, 'transactions', transactionId).withConverter(
+        transactionConverter,
+      ),
+      transactionData,
+    )
   }
 }
