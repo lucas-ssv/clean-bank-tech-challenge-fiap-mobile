@@ -272,7 +272,9 @@ export function ModalUpdateTransaction({ transaction }: Props) {
               onPress={handleSubmit(onUpdateTransaction)}
               isDisabled={isSubmitting}
             >
-              {isSubmitting && <ButtonSpinner className="text-white" />}
+              {isSubmitting && (
+                <ButtonSpinner testID="loading" className="text-white" />
+              )}
               <ButtonText className="text-md">Editar transação</ButtonText>
             </Button>
           </ModalFooter>
