@@ -8,7 +8,6 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore'
-import { randomUUID } from 'expo-crypto'
 
 import {
   AddTransactionRepository,
@@ -32,11 +31,9 @@ export class TransactionFirebaseRepository
     UpdateTransactionRepository
 {
   async add(transaction: AddTransactionRepositoryParams): Promise<string> {
-    const transactionId = randomUUID()
-    await addDoc(
+    const result = await addDoc(
       collection(db, 'transactions').withConverter(transactionConverter),
       {
-        id: transactionId,
         transactionType: transaction.transactionType,
         date: transaction.date,
         value: transaction.value,
@@ -45,7 +42,7 @@ export class TransactionFirebaseRepository
         updatedAt: new Date(),
       },
     )
-    return transactionId
+    return result.id
   }
 
   async loadAll(
@@ -88,9 +85,10 @@ export class TransactionFirebaseRepository
 
     const transactions: any[] = []
     querySnapshot.forEach((doc) => {
+      const transactionId = doc.id
       const transaction = doc.data()
       transactions.push({
-        id: transaction.id,
+        id: transactionId,
         date: transaction.date,
         transactionType: transaction.transactionType,
         value: transaction.value,
@@ -115,9 +113,10 @@ export class TransactionFirebaseRepository
     const querySnapshot = await getDocs(q)
     const transactions: LoadTransactionsByDateRepositoryResult[] = []
     querySnapshot.forEach((doc) => {
+      const transactionId = doc.id
       const transaction = doc.data()
       transactions.push({
-        id: transaction.id,
+        id: transactionId,
         date: transaction.date,
         transactionType: transaction.transactionType,
         value: transaction.value,

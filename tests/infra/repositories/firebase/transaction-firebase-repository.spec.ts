@@ -19,7 +19,9 @@ jest.mock('firebase/auth', () => ({
 }))
 
 jest.mock('firebase/firestore', () => ({
-  addDoc: jest.fn(),
+  addDoc: jest.fn().mockResolvedValue({
+    id: 'any_transaction_id',
+  }),
   updateDoc: jest.fn(),
   doc: jest.fn(),
   collection: jest.fn(),
@@ -34,6 +36,7 @@ jest.mock('firebase/firestore', () => ({
     ],
     forEach: (callback: (doc: any) => void) => {
       callback({
+        id: 'any_transaction_id',
         data: () => {
           return {
             id: 'any_transaction_id',
@@ -81,7 +84,6 @@ describe('TransactionFirebaseRepository', () => {
         withConverter: withConverterMock,
       })
       const sut = new TransactionFirebaseRepository()
-      const fakeId = randomUUID()
 
       await sut.add({
         transactionType: TransactionType.CAMBIO_DE_MOEDA,
@@ -91,7 +93,6 @@ describe('TransactionFirebaseRepository', () => {
       })
 
       expect(addDoc).toHaveBeenCalledWith(mockedCollectionWithConverter, {
-        id: fakeId,
         transactionType: TransactionType.CAMBIO_DE_MOEDA,
         date: new Date(),
         value: 100,
@@ -150,7 +151,7 @@ describe('TransactionFirebaseRepository', () => {
 
       expect(transactions).toEqual([
         {
-          id: randomUUID(),
+          id: 'any_transaction_id',
           transactionType: TransactionType.CAMBIO_DE_MOEDA,
           date: new Date(),
           value: 100,
