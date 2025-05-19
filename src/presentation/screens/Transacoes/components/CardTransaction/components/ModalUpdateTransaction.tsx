@@ -113,12 +113,18 @@ export function ModalUpdateTransaction({ transaction }: Props) {
   return (
     <>
       <Button
+        testID="edit-button"
         className="h-12 w-12 bg-custom-my-dark-green rounded-full p-0"
         onPress={() => setIsOpen(true)}
       >
         <Pencil />
       </Button>
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} size="lg">
+      <Modal
+        testID="modal-update-transaction"
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        size="lg"
+      >
         <ModalBackdrop />
         <ModalContent>
           <ModalHeader>
