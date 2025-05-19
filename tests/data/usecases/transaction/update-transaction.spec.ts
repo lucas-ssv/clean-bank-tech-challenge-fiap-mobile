@@ -28,12 +28,25 @@ class UpdateTransactionRepositoryMock {
   async update(transactionId: string, transactionData: any): Promise<void> {}
 }
 
+type SutTypes = {
+  sut: UpdateTransactionImpl
+  updateTransactionRepositoryMock: UpdateTransactionRepositoryMock
+}
+
+const makeSut = (): SutTypes => {
+  const updateTransactionRepositoryMock = new UpdateTransactionRepositoryMock()
+  const sut = new UpdateTransactionImpl(updateTransactionRepositoryMock)
+
+  return {
+    sut,
+    updateTransactionRepositoryMock,
+  }
+}
+
 describe('UpdateTransaction usecase', () => {
   it('should call UpdateTransactionRepository with correct values', async () => {
-    const updateTransactionRepositoryMock =
-      new UpdateTransactionRepositoryMock()
+    const { sut, updateTransactionRepositoryMock } = makeSut()
     const updateSpy = jest.spyOn(updateTransactionRepositoryMock, 'update')
-    const sut = new UpdateTransactionImpl(updateTransactionRepositoryMock)
 
     await sut.execute('any_transaction_id', {
       transactionType: TransactionType.CAMBIO_DE_MOEDA,
