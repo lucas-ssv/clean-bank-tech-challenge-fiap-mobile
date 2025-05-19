@@ -60,4 +60,21 @@ describe('UpdateTransaction usecase', () => {
       date: new Date(),
     })
   })
+
+  it('should throw if UpdateTransactionRepository throws', async () => {
+    const { sut, updateTransactionRepositoryMock } = makeSut()
+    jest
+      .spyOn(updateTransactionRepositoryMock, 'update')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+    const promise = sut.execute('any_transaction_id', {
+      transactionType: TransactionType.CAMBIO_DE_MOEDA,
+      value: 100,
+      date: new Date(),
+    })
+
+    await expect(promise).rejects.toThrow()
+  })
 })
