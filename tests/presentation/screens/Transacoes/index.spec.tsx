@@ -6,7 +6,10 @@ import {
 } from '@testing-library/react-native'
 import { Timestamp } from 'firebase/firestore'
 
-import { LoadTransactionsMock } from '@tests/domain/usecases/transaction'
+import {
+  LoadTransactionsMock,
+  UpdateTransactionMock,
+} from '@tests/domain/usecases/transaction'
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
 import { Transacoes } from '@/presentation/screens'
 import { TransactionType } from '@/domain/models/transaction'
@@ -44,9 +47,13 @@ describe('<Transacoes />', () => {
   it('should show the extract empty message if there are no transactions', async () => {
     const loadTransactionsMock = new LoadTransactionsMock()
     jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([])
+    const updateTransactionMock = new UpdateTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes loadTransactions={loadTransactionsMock} />
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+        />
       </GluestackUIProvider>,
     )
 
@@ -77,9 +84,13 @@ describe('<Transacoes />', () => {
         updatedAt: new Date(),
       },
     ])
+    const updateTransactionMock = new UpdateTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes loadTransactions={loadTransactionsMock} />
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+        />
       </GluestackUIProvider>,
     )
 
@@ -100,9 +111,13 @@ describe('<Transacoes />', () => {
   it('should show modal filters when clicking on the filter button', async () => {
     const loadTransactionsMock = new LoadTransactionsMock()
     jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([])
+    const updateTransactionMock = new UpdateTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes loadTransactions={loadTransactionsMock} />
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+        />
       </GluestackUIProvider>,
     )
 
@@ -117,9 +132,13 @@ describe('<Transacoes />', () => {
   it('should show loading when fetching transactions', async () => {
     const loadTransactionsMock = new LoadTransactionsMock()
     jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([])
+    const updateTransactionMock = new UpdateTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes loadTransactions={loadTransactionsMock} />
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+        />
       </GluestackUIProvider>,
     )
 
@@ -154,9 +173,13 @@ describe('<Transacoes />', () => {
         updatedAt: new Date(),
       },
     ])
+    const updateTransactionMock = new UpdateTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes loadTransactions={loadTransactionsMock} />
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+        />
       </GluestackUIProvider>,
     )
 
@@ -190,9 +213,13 @@ describe('<Transacoes />', () => {
         updatedAt: new Date(),
       },
     ])
+    const updateTransactionMock = new UpdateTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes loadTransactions={loadTransactionsMock} />
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+        />
       </GluestackUIProvider>,
     )
 
@@ -232,9 +259,13 @@ describe('<Transacoes />', () => {
         updatedAt: new Date(),
       },
     ])
+    const updateTransactionMock = new UpdateTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes loadTransactions={loadTransactionsMock} />
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+        />
       </GluestackUIProvider>,
     )
 

@@ -6,6 +6,7 @@ import {
   LoadTransactions,
   LoadTransactionsFilterParams,
   LoadTransactionsResult,
+  UpdateTransaction,
 } from '@/domain/usecases/transaction'
 import { Extract, Welcome } from '@/presentation/components'
 import {
@@ -26,9 +27,10 @@ type TransactionProps = LoadTransactionsResult<Timestamp> & {
 
 type Props = {
   loadTransactions: LoadTransactions
+  updateTransaction: UpdateTransaction
 }
 
-export function Transacoes({ loadTransactions }: Props) {
+export function Transacoes({ loadTransactions, updateTransaction }: Props) {
   const toast = useToast()
   const [transactions, setTransactions] = useState<TransactionProps[]>([])
 
@@ -91,6 +93,7 @@ export function Transacoes({ loadTransactions }: Props) {
                   testID="card-transaction"
                   key={transaction.id}
                   transaction={transaction}
+                  updateTransaction={updateTransaction}
                   index={index}
                 />
               ))

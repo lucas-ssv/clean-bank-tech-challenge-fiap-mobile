@@ -7,6 +7,7 @@ import MaskInput, { Masks } from 'react-native-mask-input'
 import { Timestamp } from 'firebase/firestore'
 
 import { useToast } from '@/presentation/hooks'
+import { UpdateTransaction } from '@/domain/usecases/transaction'
 import { TransactionModel, TransactionType } from '@/domain/models/transaction'
 import { TransactionDocumentModel } from '@/domain/models/transaction-document'
 import {
@@ -46,15 +47,14 @@ import { InputDate, ModalImage } from '@/presentation/components'
 import Pencil from '@/presentation/assets/lapis.svg'
 import Close from '@/presentation/assets/close-black.svg'
 import ArrowDropdown from '@/presentation/assets/arrow-dropdown.svg'
-// import { Transaction, TransactionDocument, TransactionType } from '@/models'
 import { formattedMoney } from '@/presentation/utils'
-// import { useTransaction } from '@/contexts'
 
 type Props = {
   transaction: TransactionModel<Timestamp> & {
     documents?: TransactionDocumentModel[]
     type: string
   }
+  updateTransaction: UpdateTransaction
 }
 
 type UpdateTransactionData = z.infer<typeof schema>
@@ -73,8 +73,10 @@ const schema = z.object({
     .nullish(),
 })
 
-export function ModalUpdateTransaction({ transaction }: Props) {
-  // const { updateTransaction } = useTransaction()
+export function ModalUpdateTransaction({
+  transaction,
+  updateTransaction,
+}: Props) {
   const toast = useToast()
   const {
     control,
@@ -92,16 +94,16 @@ export function ModalUpdateTransaction({ transaction }: Props) {
 
   const onUpdateTransaction = async (data: UpdateTransactionData) => {
     try {
-      console.log('data', data)
-      // const { transactionType, value } = data
-      // const numericValue = Number(
-      //   value!.replace(/[^0-9,]/g, '').replace(',', '.'),
-      // )
-      // await updateTransaction(transaction.id!, {
-      //   transactionType: transactionType!,
-      //   value: numericValue,
-      //   date,
-      // })
+      const { transactionType, value } = data
+      const numericValue = Number(
+        value!.replace(/[^0-9,]/g, '').replace(',', '.'),
+      )
+
+      await updateTransaction.execute(transaction.id, {
+        date,
+        transactionType: transactionType as TransactionType,
+        value: numericValue,
+      })
 
       toast('success', 'Transação atualizada com sucesso!')
       setIsOpen(false)
