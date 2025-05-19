@@ -11,6 +11,13 @@ import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-p
 import { Transacoes } from '@/presentation/screens'
 import { TransactionType } from '@/domain/models/transaction'
 
+jest.mock('@/presentation/hooks', () => {
+  const mockToast = jest.fn()
+  return {
+    useToast: mockToast,
+  }
+})
+
 jest.mock('nativewind', () => {
   const setColorSchemeMock = jest.fn()
 
@@ -131,6 +138,42 @@ describe('<Transacoes />', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('loading')).toBeTruthy()
+    })
+  })
+
+  it('should show ModalUpdateTransaction when clicking on the edit button', async () => {
+    const loadTransactionsMock = new LoadTransactionsMock()
+    jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([
+      {
+        id: 'any_id',
+        date: Timestamp.now() as any,
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        userUID: 'any_user_uid',
+        value: 100,
+        documents: [
+          {
+            fileName: 'any_file_name',
+            mimeType: 'any_mime_type',
+            url: 'any_url',
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ])
+    render(
+      <GluestackUIProvider>
+        <Transacoes loadTransactions={loadTransactionsMock} />
+      </GluestackUIProvider>,
+    )
+
+    await waitFor(() => {
+      const editButton = screen.getByTestId('edit-button')
+      fireEvent(editButton, 'press')
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('modal-update-transaction')).toBeTruthy()
     })
   })
 })
