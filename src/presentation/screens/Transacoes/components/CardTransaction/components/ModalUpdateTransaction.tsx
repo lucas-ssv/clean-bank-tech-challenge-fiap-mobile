@@ -210,7 +210,7 @@ export function ModalUpdateTransaction({ transaction }: Props) {
               />
             </FormControl>
 
-            <FormControl className="mt-4">
+            <FormControl className="mt-4" isInvalid={!!errors.value}>
               <FormControlLabel>
                 <FormControlLabelText className="text-md text-black">
                   Valor
@@ -222,6 +222,7 @@ export function ModalUpdateTransaction({ transaction }: Props) {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <Input className="h-12 bg-white border border-custom-my-dark-green rounded-lg">
                     <MaskInput
+                      testID="edit-transaction-value"
                       value={value!}
                       placeholder="R$ 0,00"
                       onChangeText={onChange}
@@ -237,6 +238,13 @@ export function ModalUpdateTransaction({ transaction }: Props) {
                   </Input>
                 )}
               />
+              {errors.value && (
+                <FormControlError>
+                  <FormControlErrorText>
+                    {errors.value.message}
+                  </FormControlErrorText>
+                </FormControlError>
+              )}
             </FormControl>
 
             {transaction.documents && transaction.documents.length > 0 && (
@@ -258,6 +266,7 @@ export function ModalUpdateTransaction({ transaction }: Props) {
           </ModalBody>
           <ModalFooter>
             <Button
+              testID="submit-button"
               className="flex-1 h-12 bg-custom-my-dark-green rounded-lg"
               variant="solid"
               onPress={handleSubmit(onUpdateTransaction)}
