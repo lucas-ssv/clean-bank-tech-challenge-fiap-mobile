@@ -108,7 +108,6 @@ export function ModalUpdateTransaction({
       toast('success', 'Transação atualizada com sucesso!')
       setIsOpen(false)
     } catch (error) {
-      console.error(error)
       toast('error', 'Ocorreu um erro ao atualizar a transação', error.code)
     }
   }

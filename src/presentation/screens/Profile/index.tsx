@@ -12,7 +12,7 @@ import {
 import { Input } from './components'
 import Pixels from '@/presentation/assets/pixels-servicos.svg'
 import Illustration from '@/presentation/assets/ilu-profile.svg'
-import { useAuth } from '@/presentation/contexts'
+import { useAuth } from '@/presentation/hooks'
 
 export function Profile() {
   const { user } = useAuth()

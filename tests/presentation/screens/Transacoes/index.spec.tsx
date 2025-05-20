@@ -6,6 +6,7 @@ import {
 } from '@testing-library/react-native'
 import { Timestamp } from 'firebase/firestore'
 import { Alert } from 'react-native'
+import { Provider } from 'react-redux'
 
 import {
   LoadTransactionsMock,
@@ -15,6 +16,7 @@ import {
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
 import { Transacoes } from '@/presentation/screens'
 import { TransactionType } from '@/domain/models/transaction'
+import { store } from '@/presentation/app'
 
 jest.mock('nativewind', () => {
   const setColorSchemeMock = jest.fn()
@@ -53,11 +55,13 @@ describe('<Transacoes />', () => {
     const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes
-          loadTransactions={loadTransactionsMock}
-          updateTransaction={updateTransactionMock}
-          removeTransaction={removeTransactionMock}
-        />
+        <Provider store={store}>
+          <Transacoes
+            loadTransactions={loadTransactionsMock}
+            updateTransaction={updateTransactionMock}
+            removeTransaction={removeTransactionMock}
+          />
+        </Provider>
       </GluestackUIProvider>,
     )
 
@@ -92,11 +96,13 @@ describe('<Transacoes />', () => {
     const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes
-          loadTransactions={loadTransactionsMock}
-          updateTransaction={updateTransactionMock}
-          removeTransaction={removeTransactionMock}
-        />
+        <Provider store={store}>
+          <Transacoes
+            loadTransactions={loadTransactionsMock}
+            updateTransaction={updateTransactionMock}
+            removeTransaction={removeTransactionMock}
+          />
+        </Provider>
       </GluestackUIProvider>,
     )
 
@@ -121,11 +127,13 @@ describe('<Transacoes />', () => {
     const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes
-          loadTransactions={loadTransactionsMock}
-          updateTransaction={updateTransactionMock}
-          removeTransaction={removeTransactionMock}
-        />
+        <Provider store={store}>
+          <Transacoes
+            loadTransactions={loadTransactionsMock}
+            updateTransaction={updateTransactionMock}
+            removeTransaction={removeTransactionMock}
+          />
+        </Provider>
       </GluestackUIProvider>,
     )
 
@@ -144,11 +152,13 @@ describe('<Transacoes />', () => {
     const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes
-          loadTransactions={loadTransactionsMock}
-          updateTransaction={updateTransactionMock}
-          removeTransaction={removeTransactionMock}
-        />
+        <Provider store={store}>
+          <Transacoes
+            loadTransactions={loadTransactionsMock}
+            updateTransaction={updateTransactionMock}
+            removeTransaction={removeTransactionMock}
+          />
+        </Provider>
       </GluestackUIProvider>,
     )
 
@@ -187,11 +197,13 @@ describe('<Transacoes />', () => {
     const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes
-          loadTransactions={loadTransactionsMock}
-          updateTransaction={updateTransactionMock}
-          removeTransaction={removeTransactionMock}
-        />
+        <Provider store={store}>
+          <Transacoes
+            loadTransactions={loadTransactionsMock}
+            updateTransaction={updateTransactionMock}
+            removeTransaction={removeTransactionMock}
+          />
+        </Provider>
       </GluestackUIProvider>,
     )
 
@@ -229,11 +241,13 @@ describe('<Transacoes />', () => {
     const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes
-          loadTransactions={loadTransactionsMock}
-          updateTransaction={updateTransactionMock}
-          removeTransaction={removeTransactionMock}
-        />
+        <Provider store={store}>
+          <Transacoes
+            loadTransactions={loadTransactionsMock}
+            updateTransaction={updateTransactionMock}
+            removeTransaction={removeTransactionMock}
+          />
+        </Provider>
       </GluestackUIProvider>,
     )
 
@@ -277,11 +291,13 @@ describe('<Transacoes />', () => {
     const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes
-          loadTransactions={loadTransactionsMock}
-          updateTransaction={updateTransactionMock}
-          removeTransaction={removeTransactionMock}
-        />
+        <Provider store={store}>
+          <Transacoes
+            loadTransactions={loadTransactionsMock}
+            updateTransaction={updateTransactionMock}
+            removeTransaction={removeTransactionMock}
+          />
+        </Provider>
       </GluestackUIProvider>,
     )
 
@@ -326,11 +342,13 @@ describe('<Transacoes />', () => {
     const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
-        <Transacoes
-          loadTransactions={loadTransactionsMock}
-          updateTransaction={updateTransactionMock}
-          removeTransaction={removeTransactionMock}
-        />
+        <Provider store={store}>
+          <Transacoes
+            loadTransactions={loadTransactionsMock}
+            updateTransaction={updateTransactionMock}
+            removeTransaction={removeTransactionMock}
+          />
+        </Provider>
       </GluestackUIProvider>,
     )
 

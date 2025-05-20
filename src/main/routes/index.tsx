@@ -1,4 +1,4 @@
-import { useAuth } from '@/presentation/contexts'
+import { useAuth } from '@/presentation/hooks'
 import { AuthRoutes } from './auth'
 import { AppRoutes } from './app'
 
