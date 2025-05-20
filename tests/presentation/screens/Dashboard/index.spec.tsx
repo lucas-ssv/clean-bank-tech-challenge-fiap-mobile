@@ -1,3 +1,4 @@
+import { Provider } from 'react-redux'
 import {
   fireEvent,
   render,
@@ -12,6 +13,7 @@ import {
 } from '@tests/domain/usecases/transaction'
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
 import { Dashboard } from '@/presentation/screens'
+import { store } from '@/presentation/app'
 
 jest.mock('nativewind', () => {
   const setColorSchemeMock = jest.fn()
@@ -45,11 +47,13 @@ const makeSut = () => {
   const loadTransactionsMock = new LoadTransactionsMock()
   render(
     <GluestackUIProvider>
-      <Dashboard
-        addTransaction={addTransactionMock}
-        loadTransactionsByDate={loadTransactionsByDateStub}
-        loadTransactions={loadTransactionsMock}
-      />
+      <Provider store={store}>
+        <Dashboard
+          addTransaction={addTransactionMock}
+          loadTransactionsByDate={loadTransactionsByDateStub}
+          loadTransactions={loadTransactionsMock}
+        />
+      </Provider>
     </GluestackUIProvider>,
   )
 }

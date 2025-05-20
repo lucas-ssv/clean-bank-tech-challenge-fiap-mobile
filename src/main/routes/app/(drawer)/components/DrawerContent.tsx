@@ -6,7 +6,7 @@ import {
   DrawerItemList,
 } from '@react-navigation/drawer'
 
-import { useAuth } from '@/presentation/contexts'
+import { useAuth } from '@/presentation/hooks'
 import { Icon, Pressable, Text, VStack } from '@/presentation/components/ui'
 import Avatar from '@/presentation/assets/avatar.svg'
 

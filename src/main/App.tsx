@@ -9,11 +9,13 @@ import { Montserrat_400Regular } from '@expo-google-fonts/montserrat'
 import { useFonts } from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
+import { Provider } from 'react-redux'
 
+import { store } from '@/presentation/app'
+import { MakeAuthProvider } from './factories/providers'
 import { Routes } from './routes'
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
 import '@/presentation/styles'
-import { MakeAuthProvider } from './factories/contexts'
 
 export default function App() {
   const [loaded, error] = useFonts({
@@ -36,9 +38,10 @@ export default function App() {
 
   return (
     <GluestackUIProvider mode="light">
-      <MakeAuthProvider>
+      <Provider store={store}>
+        <MakeAuthProvider />
         <Routes />
-      </MakeAuthProvider>
+      </Provider>
       <StatusBar style="light" />
     </GluestackUIProvider>
   )

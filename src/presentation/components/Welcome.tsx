@@ -16,7 +16,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 
-import { useAuth } from '@/presentation/contexts'
+import { useAuth } from '@/presentation/hooks'
 import { getFormattedDate } from '@/presentation/utils'
 import Pixels from '@/presentation/assets/pixels.svg'
 import Illustration from '@/presentation/assets/ilustracao.svg'

@@ -45,7 +45,7 @@ import { ModalImage } from '@/presentation/components'
 import { useToast } from '@/presentation/hooks'
 import { AddTransaction, TransactionType } from '@/domain/usecases/transaction'
 import { TransactionDocumentModel } from '@/domain/models/transaction-document'
-import { useAuth } from '@/presentation/contexts'
+import { useAuth } from '@/presentation/hooks'
 
 type Props = ComponentProps<typeof Box> & {
   addTransaction: AddTransaction
