@@ -7,8 +7,12 @@ import { DrawerParamList } from '@/presentation/@types/navigation'
 import {
   MakeAvatarMenu,
   MakeDashboard,
+  MakeInvestimentos,
+  MakeMeusCartoes,
+  MakeServicos,
   MakeTransacoes,
 } from '@/main/factories/screens'
+import { Profile } from '@/presentation/screens'
 
 type Props = DrawerScreenProps<DrawerParamList, 'StackRoutes'>
 
@@ -47,23 +51,23 @@ export function StackRoutes({ navigation }: Props) {
           },
         }}
       />
-      {/* <Screen
+      <Screen
         name="Investimentos"
-        component={Investimentos}
+        component={MakeInvestimentos}
         options={{
           title: 'Investimentos',
         }}
       />
       <Screen
         name="Servicos"
-        component={Servicos}
+        component={MakeServicos}
         options={{
           title: 'Serviços',
         }}
       />
       <Screen
         name="MeusCartoes"
-        component={MeusCartoes}
+        component={MakeMeusCartoes}
         options={{
           title: 'Meus cartões',
         }}
@@ -74,7 +78,7 @@ export function StackRoutes({ navigation }: Props) {
         options={{
           title: 'Meu perfil',
         }}
-      /> */}
+      />
       <Screen
         name="Transacoes"
         component={MakeTransacoes}

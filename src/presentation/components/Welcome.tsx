@@ -20,7 +20,6 @@ import { useAuth } from '@/presentation/contexts'
 import { getFormattedDate } from '@/presentation/utils'
 import Pixels from '@/presentation/assets/pixels.svg'
 import Illustration from '@/presentation/assets/ilustracao.svg'
-// import { getStorageBalanceBlurred } from '@/storage'
 
 type Props = ComponentProps<typeof Box>
 
@@ -54,21 +53,6 @@ export function Welcome({ ...rest }: Props) {
   const buttonAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: buttonScale.value }],
   }))
-
-  // useEffect(() => {
-  //   const loadMoneyValue = async () => {
-  //     try {
-  //       const value = await getStorageBalanceBlurred()
-  //       if (value) {
-  //         setBalanceBlurred(balanceBlurred)
-  //       }
-  //     } catch (error) {
-  //       console.error('Erro ao carregar valor do AsyncStorage:', error)
-  //     }
-  //   }
-
-  //   loadMoneyValue()
-  // }, [balanceBlurred])
 
   return (
     <Animated.View style={[animatedStyle]}>
