@@ -1,5 +1,5 @@
 import { ComponentProps, useEffect } from 'react'
-import { View } from 'react-native'
+import { Alert, View } from 'react-native'
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -8,6 +8,10 @@ import Animated, {
 } from 'react-native-reanimated'
 import { Timestamp } from 'firebase/firestore'
 
+import {
+  RemoveTransaction,
+  UpdateTransaction,
+} from '@/domain/usecases/transaction'
 import { TransactionModel } from '@/domain/models/transaction'
 import { TransactionDocumentModel } from '@/domain/models/transaction-document'
 import {
@@ -19,11 +23,8 @@ import {
 } from '@/presentation/components/ui'
 import { ModalUpdateTransaction } from './components'
 import Trash from '@/presentation/assets/lixeira.svg'
-// import { Transaction, TransactionDocument } from '@/models'
 import { formattedDateTime, formattedMoney } from '@/presentation/utils'
-import { UpdateTransaction } from '@/domain/usecases/transaction'
-// import { useTransaction } from '@/contexts'
-// import { useToast } from '@/presentation/hooks'
+import { useToast } from '@/presentation/hooks'
 
 type Props = ComponentProps<typeof Card> & {
   transaction: TransactionModel<Timestamp> & {
@@ -31,17 +32,18 @@ type Props = ComponentProps<typeof Card> & {
     type: string
   }
   updateTransaction: UpdateTransaction
+  removeTransaction: RemoveTransaction
   index: number
 }
 
 export function CardTransaction({
   transaction,
   updateTransaction,
+  removeTransaction,
   index,
   ...rest
 }: Props) {
-  // const { removeTransaction } = useTransaction()
-  // const toast = useToast()
+  const toast = useToast()
 
   const opacity = useSharedValue(0)
   const translateY = useSharedValue(20)
@@ -57,39 +59,38 @@ export function CardTransaction({
     transform: [{ translateY: translateY.value }, { scale: scale.value }],
   }))
 
-  // const handleRemoveTransaction = async (transactionId: string) => {
-  //   Alert.alert(
-  //     'Remover transação',
-  //     'Deseja realmente remover esta transação?',
-  //     [
-  //       {
-  //         style: 'cancel',
-  //         text: 'Cancelar',
-  //       },
-  //       {
-  //         style: 'destructive',
-  //         text: 'Remover',
-  //         onPress: async () => {
-  //           opacity.value = withTiming(0, { duration: 300 })
-  //           scale.value = withTiming(0.8, { duration: 300 })
-
-  //           setTimeout(async () => {
-  //             try {
-  //               // await removeTransaction(transactionId)
-  //               toast('success', 'Transação removida com sucesso!')
-  //             } catch (error) {
-  //               toast(
-  //                 'error',
-  //                 'Ocorreu um erro ao remover a transação.',
-  //                 error.code,
-  //               )
-  //             }
-  //           }, 300)
-  //         },
-  //       },
-  //     ],
-  //   )
-  // }
+  const handleRemoveTransaction = async (transactionId: string) => {
+    Alert.alert(
+      'Remover transação',
+      'Deseja realmente remover esta transação?',
+      [
+        {
+          style: 'cancel',
+          text: 'Cancelar',
+        },
+        {
+          style: 'destructive',
+          text: 'Remover',
+          onPress: async () => {
+            opacity.value = withTiming(0, { duration: 300 })
+            scale.value = withTiming(0.8, { duration: 300 })
+            setTimeout(async () => {
+              try {
+                await removeTransaction.execute(transactionId)
+                toast('success', 'Transação removida com sucesso!')
+              } catch (error) {
+                toast(
+                  'error',
+                  'Ocorreu um erro ao remover a transação.',
+                  error.code,
+                )
+              }
+            }, 300)
+          },
+        },
+      ],
+    )
+  }
 
   return (
     <Animated.View style={[animatedStyle]}>
@@ -138,8 +139,9 @@ export function CardTransaction({
               updateTransaction={updateTransaction}
             />
             <Button
+              testID="delete-button"
               className="h-12 w-12 bg-custom-my-dark-green rounded-full p-0"
-              // onPress={() => handleRemoveTransaction(transaction.id!)}
+              onPress={() => handleRemoveTransaction(transaction.id)}
             >
               <Trash />
             </Button>

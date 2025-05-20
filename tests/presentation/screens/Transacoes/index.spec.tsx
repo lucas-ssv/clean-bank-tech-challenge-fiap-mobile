@@ -5,9 +5,11 @@ import {
   waitFor,
 } from '@testing-library/react-native'
 import { Timestamp } from 'firebase/firestore'
+import { Alert } from 'react-native'
 
 import {
   LoadTransactionsMock,
+  RemoveTransactionMock,
   UpdateTransactionMock,
 } from '@tests/domain/usecases/transaction'
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
@@ -48,11 +50,13 @@ describe('<Transacoes />', () => {
     const loadTransactionsMock = new LoadTransactionsMock()
     jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([])
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
@@ -85,11 +89,13 @@ describe('<Transacoes />', () => {
       },
     ])
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
@@ -112,11 +118,13 @@ describe('<Transacoes />', () => {
     const loadTransactionsMock = new LoadTransactionsMock()
     jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([])
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
@@ -133,11 +141,13 @@ describe('<Transacoes />', () => {
     const loadTransactionsMock = new LoadTransactionsMock()
     jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([])
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
@@ -174,11 +184,13 @@ describe('<Transacoes />', () => {
       },
     ])
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
@@ -214,11 +226,13 @@ describe('<Transacoes />', () => {
       },
     ])
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
@@ -260,11 +274,13 @@ describe('<Transacoes />', () => {
       },
     ])
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
@@ -282,6 +298,63 @@ describe('<Transacoes />', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('loading')).toBeTruthy()
+    })
+  })
+
+  it('should show alert confirmation when clicking on the delete button', async () => {
+    const loadTransactionsMock = new LoadTransactionsMock()
+    jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([
+      {
+        id: 'any_id',
+        date: Timestamp.now() as any,
+        transactionType: TransactionType.CAMBIO_DE_MOEDA,
+        userUID: 'any_user_uid',
+        value: 100,
+        documents: [
+          {
+            fileName: 'any_file_name',
+            mimeType: 'any_mime_type',
+            url: 'any_url',
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ])
+    const alertSpy = jest.spyOn(Alert, 'alert')
+    const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
+    render(
+      <GluestackUIProvider>
+        <Transacoes
+          loadTransactions={loadTransactionsMock}
+          updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
+        />
+      </GluestackUIProvider>,
+    )
+
+    await waitFor(() => {
+      const deleteButton = screen.getByTestId('delete-button')
+      fireEvent(deleteButton, 'press')
+    })
+
+    await waitFor(() => {
+      expect(alertSpy).toHaveBeenCalledWith(
+        'Remover transação',
+        'Deseja realmente remover esta transação?',
+        [
+          {
+            style: 'cancel',
+            text: 'Cancelar',
+          },
+          {
+            style: 'destructive',
+            text: 'Remover',
+            onPress: expect.any(Function),
+          },
+        ],
+      )
     })
   })
 })

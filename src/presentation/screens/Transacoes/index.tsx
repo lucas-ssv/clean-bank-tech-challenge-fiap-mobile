@@ -6,6 +6,7 @@ import {
   LoadTransactions,
   LoadTransactionsFilterParams,
   LoadTransactionsResult,
+  RemoveTransaction,
   UpdateTransaction,
 } from '@/domain/usecases/transaction'
 import { Extract, Welcome } from '@/presentation/components'
@@ -28,9 +29,14 @@ type TransactionProps = LoadTransactionsResult<Timestamp> & {
 type Props = {
   loadTransactions: LoadTransactions
   updateTransaction: UpdateTransaction
+  removeTransaction: RemoveTransaction
 }
 
-export function Transacoes({ loadTransactions, updateTransaction }: Props) {
+export function Transacoes({
+  loadTransactions,
+  updateTransaction,
+  removeTransaction,
+}: Props) {
   const toast = useToast()
   const [transactions, setTransactions] = useState<TransactionProps[]>([])
 
@@ -94,6 +100,7 @@ export function Transacoes({ loadTransactions, updateTransaction }: Props) {
                   key={transaction.id}
                   transaction={transaction}
                   updateTransaction={updateTransaction}
+                  removeTransaction={removeTransaction}
                   index={index}
                 />
               ))

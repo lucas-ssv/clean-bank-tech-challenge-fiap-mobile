@@ -1,4 +1,11 @@
-import { addDoc, collection, doc, getDocs, updateDoc } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  updateDoc,
+} from 'firebase/firestore'
 import { randomUUID } from 'expo-crypto'
 
 import { TransactionType } from '@/data/contracts/transaction'
@@ -23,6 +30,7 @@ jest.mock('firebase/firestore', () => ({
     id: 'any_transaction_id',
   }),
   updateDoc: jest.fn(),
+  deleteDoc: jest.fn(),
   doc: jest.fn(),
   collection: jest.fn(),
   getFirestore: jest.fn(),
@@ -281,6 +289,23 @@ describe('TransactionFirebaseRepository', () => {
         value: 200,
         date: new Date(),
       })
+    })
+  })
+
+  describe('remove()', () => {
+    it('should remove a transaction on success', async () => {
+      const mockedCollectionWithConverter = 'mockedCollectionWithConverter'
+      const withConverterMock = jest
+        .fn()
+        .mockReturnValue(mockedCollectionWithConverter)
+      ;(doc as jest.Mock).mockReturnValue({
+        withConverter: withConverterMock,
+      })
+      const sut = new TransactionFirebaseRepository()
+
+      await sut.remove('any_transaction_id')
+
+      expect(deleteDoc).toHaveBeenCalledWith(mockedCollectionWithConverter)
     })
   })
 })
