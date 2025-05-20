@@ -11,6 +11,7 @@ import {
   MakeMeusCartoes,
   MakeTransacoes,
 } from '@/main/factories/screens'
+import { Profile } from '@/presentation/screens'
 
 type Props = DrawerScreenProps<DrawerParamList, 'StackRoutes'>
 
@@ -70,13 +71,13 @@ export function StackRoutes({ navigation }: Props) {
           title: 'Meus cartões',
         }}
       />
-      {/* <Screen
+      <Screen
         name="Profile"
         component={Profile}
         options={{
           title: 'Meu perfil',
         }}
-      /> */}
+      />
       <Screen
         name="Transacoes"
         component={MakeTransacoes}
