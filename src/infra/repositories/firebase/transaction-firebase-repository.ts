@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   query,
@@ -16,6 +17,7 @@ import {
   LoadTransactionsByDateRepositoryResult,
   LoadTransactionsFilterParams,
   LoadTransactionsRepository,
+  RemoveTransactionRepository,
   UpdateTransactionRepository,
   UpdateTransactionRepositoryData,
 } from '@/data/contracts/transaction'
@@ -28,7 +30,8 @@ export class TransactionFirebaseRepository
     AddTransactionRepository,
     LoadTransactionsRepository<Timestamp>,
     LoadTransactionsByDateRepository,
-    UpdateTransactionRepository
+    UpdateTransactionRepository,
+    RemoveTransactionRepository
 {
   async add(transaction: AddTransactionRepositoryParams): Promise<string> {
     const result = await addDoc(
@@ -137,6 +140,14 @@ export class TransactionFirebaseRepository
         transactionConverter,
       ),
       transactionData,
+    )
+  }
+
+  async remove(transactionId: string): Promise<void> {
+    await deleteDoc(
+      doc(db, 'transactions', transactionId).withConverter(
+        transactionConverter,
+      ),
     )
   }
 }
