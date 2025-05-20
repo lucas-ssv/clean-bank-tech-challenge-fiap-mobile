@@ -12,7 +12,11 @@ class RemoveTransactionImpl implements RemoveTransaction {
   }
 }
 
-class RemoveTransactionRepositoryMock {
+interface RemoveTransactionRepository {
+  remove: (transactionId: string) => Promise<void>
+}
+
+class RemoveTransactionRepositoryMock implements RemoveTransactionRepository {
   async remove(transactionId: string): Promise<void> {}
 }
 
