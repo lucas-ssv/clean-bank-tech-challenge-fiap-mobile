@@ -16,12 +16,24 @@ class RemoveTransactionRepositoryMock {
   async remove(transactionId: string): Promise<void> {}
 }
 
+type SutTypes = {
+  sut: RemoveTransactionImpl
+  removeTransactionRepositoryMock: RemoveTransactionRepositoryMock
+}
+
+const makeSut = (): SutTypes => {
+  const removeTransactionRepositoryMock = new RemoveTransactionRepositoryMock()
+  const sut = new RemoveTransactionImpl(removeTransactionRepositoryMock)
+  return {
+    sut,
+    removeTransactionRepositoryMock,
+  }
+}
+
 describe('RemoveTransaction usecase', () => {
   it('should call RemoveTransactionRepository with correct values', async () => {
-    const removeTransactionRepositoryMock =
-      new RemoveTransactionRepositoryMock()
+    const { sut, removeTransactionRepositoryMock } = makeSut()
     const removeSpy = jest.spyOn(removeTransactionRepositoryMock, 'remove')
-    const sut = new RemoveTransactionImpl(removeTransactionRepositoryMock)
 
     await sut.execute('any_transaction_id')
 
