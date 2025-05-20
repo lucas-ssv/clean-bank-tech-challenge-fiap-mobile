@@ -9,6 +9,7 @@ import {
   MakeDashboard,
   MakeInvestimentos,
   MakeMeusCartoes,
+  MakeServicos,
   MakeTransacoes,
 } from '@/main/factories/screens'
 import { Profile } from '@/presentation/screens'
@@ -57,13 +58,13 @@ export function StackRoutes({ navigation }: Props) {
           title: 'Investimentos',
         }}
       />
-      {/* <Screen
+      <Screen
         name="Servicos"
-        component={Servicos}
+        component={MakeServicos}
         options={{
           title: 'Serviços',
         }}
-      /> */}
+      />
       <Screen
         name="MeusCartoes"
         component={MakeMeusCartoes}
