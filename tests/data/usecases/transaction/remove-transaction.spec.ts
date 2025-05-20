@@ -1,24 +1,5 @@
-import { RemoveTransaction } from '@/domain/usecases/transaction'
-
-class RemoveTransactionImpl implements RemoveTransaction {
-  private removeTransactionRepository
-
-  constructor(removeTransactionRepository: RemoveTransactionRepositoryMock) {
-    this.removeTransactionRepository = removeTransactionRepository
-  }
-
-  async execute(transactionId: string): Promise<void> {
-    await this.removeTransactionRepository.remove(transactionId)
-  }
-}
-
-interface RemoveTransactionRepository {
-  remove: (transactionId: string) => Promise<void>
-}
-
-class RemoveTransactionRepositoryMock implements RemoveTransactionRepository {
-  async remove(transactionId: string): Promise<void> {}
-}
+import { RemoveTransactionImpl } from '@/data/usecases/transaction'
+import { RemoveTransactionRepositoryMock } from '@tests/data/mocks/transaction'
 
 type SutTypes = {
   sut: RemoveTransactionImpl
