@@ -9,6 +9,7 @@ import { Alert } from 'react-native'
 
 import {
   LoadTransactionsMock,
+  RemoveTransactionMock,
   UpdateTransactionMock,
 } from '@tests/domain/usecases/transaction'
 import { GluestackUIProvider } from '@/presentation/components/ui/gluestack-ui-provider'
@@ -49,11 +50,13 @@ describe('<Transacoes />', () => {
     const loadTransactionsMock = new LoadTransactionsMock()
     jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([])
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
@@ -86,11 +89,13 @@ describe('<Transacoes />', () => {
       },
     ])
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
@@ -113,11 +118,13 @@ describe('<Transacoes />', () => {
     const loadTransactionsMock = new LoadTransactionsMock()
     jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([])
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
@@ -134,11 +141,13 @@ describe('<Transacoes />', () => {
     const loadTransactionsMock = new LoadTransactionsMock()
     jest.spyOn(loadTransactionsMock, 'execute').mockResolvedValue([])
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
@@ -175,11 +184,13 @@ describe('<Transacoes />', () => {
       },
     ])
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
@@ -215,11 +226,13 @@ describe('<Transacoes />', () => {
       },
     ])
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
@@ -261,11 +274,13 @@ describe('<Transacoes />', () => {
       },
     ])
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
@@ -308,11 +323,13 @@ describe('<Transacoes />', () => {
     ])
     const alertSpy = jest.spyOn(Alert, 'alert')
     const updateTransactionMock = new UpdateTransactionMock()
+    const removeTransactionMock = new RemoveTransactionMock()
     render(
       <GluestackUIProvider>
         <Transacoes
           loadTransactions={loadTransactionsMock}
           updateTransaction={updateTransactionMock}
+          removeTransaction={removeTransactionMock}
         />
       </GluestackUIProvider>,
     )
