@@ -39,4 +39,17 @@ describe('RemoveTransaction usecase', () => {
 
     expect(removeSpy).toHaveBeenCalledWith('any_transaction_id')
   })
+
+  it('should throw if RemoveTransactionRepository throws', async () => {
+    const { sut, removeTransactionRepositoryMock } = makeSut()
+    jest
+      .spyOn(removeTransactionRepositoryMock, 'remove')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+
+    const promise = sut.execute('any_transaction_id')
+
+    await expect(promise).rejects.toThrow()
+  })
 })
