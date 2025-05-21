@@ -1,0 +1,7 @@
+export * from './Home'
+export * from './Dashboard'
+export * from './Transacoes'
+export * from './Investimentos'
+export * from './MeusCartoes'
+export * from './Profile'
+export * from './Servicos'
