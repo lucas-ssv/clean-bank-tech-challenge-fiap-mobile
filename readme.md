@@ -63,8 +63,8 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 ### 1. Clone o repositório:
 
 ```sh
-  git clone https://github.com/lucas-ssv/bank-tech-challenge-fiap-mobile.git
-  cd bank-tech-challenge-fiap-mobile
+  git clone https://github.com/lucas-ssv/clean-bank-tech-challenge-fiap-mobile.git
+  cd clean-bank-tech-challenge-fiap-mobile
 ```
 
 ### 2. Instale as dependências:
